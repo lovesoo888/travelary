@@ -30,18 +30,18 @@ import {
   InputGroup,
   Row,
   Col,
-} from "reactstrap";
+} from 'reactstrap';
 
 const Login = () => {
   return (
     <>
-      <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
-          <CardHeader className="bg-transparent pb-5">
-            <div className="text-muted text-center mt-2 mb-3">
-              <small>Sign in with</small>
+      <Col lg='5' md='7'>
+        <Card className='bg-secondary shadow border-0'>
+          <CardHeader className='bg-transparent pb-2'>
+            <div className='text-muted text-center mt-2 mb-3'>
+              <big>Login</big>
             </div>
-            <div className="btn-wrapper text-center">
+            {/* <div className="btn-wrapper text-center">
               <Button
                 className="btn-neutral btn-icon"
                 color="default"
@@ -76,76 +76,76 @@ const Login = () => {
                 </span>
                 <span className="btn-inner--text">Google</span>
               </Button>
-            </div>
+            </div> */}
           </CardHeader>
-          <CardBody className="px-lg-5 py-lg-5">
-            <div className="text-center text-muted mb-4">
+          <CardBody className='px-lg-5 py-lg-5'>
+            {/* <div className='text-center text-muted mb-4'>
               <small>Or sign in with credentials</small>
-            </div>
-            <Form role="form">
-              <FormGroup className="mb-3">
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
+            </div> */}
+            <Form role='form'>
+              <FormGroup className='mb-3'>
+                <InputGroup className='input-group-alternative'>
+                  <InputGroupAddon addonType='prepend'>
                     <InputGroupText>
-                      <i className="ni ni-email-83" />
+                      <i className='ni ni-email-83' />
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Email"
-                    type="email"
-                    autoComplete="new-email"
+                    placeholder='Email'
+                    type='email'
+                    autoComplete='new-email'
                   />
                 </InputGroup>
               </FormGroup>
               <FormGroup>
-                <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
+                <InputGroup className='input-group-alternative'>
+                  <InputGroupAddon addonType='prepend'>
                     <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
+                      <i className='ni ni-lock-circle-open' />
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder="Password"
-                    type="password"
-                    autoComplete="new-password"
+                    placeholder='Password'
+                    type='password'
+                    autoComplete='new-password'
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
+              <div className='custom-control custom-control-alternative custom-checkbox'>
                 <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
+                  className='custom-control-input'
+                  id=' customCheckLogin'
+                  type='checkbox'
                 />
                 <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
+                  className='custom-control-label'
+                  htmlFor=' customCheckLogin'
                 >
-                  <span className="text-muted">Remember me</span>
+                  <span className='text-muted'>Remember me</span>
                 </label>
               </div>
-              <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+              <div className='text-center'>
+                <Button className='my-4' color='primary' type='button'>
                   Sign in
                 </Button>
               </div>
             </Form>
           </CardBody>
         </Card>
-        <Row className="mt-3">
-          <Col xs="6">
+        <Row className='mt-3'>
+          <Col xs='6'>
             <a
-              className="text-light"
-              href="#pablo"
+              className='text-light'
+              href='#pablo'
               onClick={(e) => e.preventDefault()}
             >
               <small>Forgot password?</small>
             </a>
           </Col>
-          <Col className="text-right" xs="6">
+          <Col className='text-right' xs='6'>
             <a
-              className="text-light"
-              href="#pablo"
+              className='text-light'
+              href='#pablo'
               onClick={(e) => e.preventDefault()}
             >
               <small>Create new account</small>
