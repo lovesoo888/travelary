@@ -44,18 +44,20 @@
     // Navbar collapse
 
     @include media-breakpoint-up(md) {
-        .navbar-collapse {
-            margin-left: -$navbar-padding-x;
-            margin-right: -$navbar-padding-x;
-            padding-left: $navbar-padding-x;
-            padding-right: $navbar-padding-x;
-
-            &:before {
-                content: '';
-                display: block;
-                margin: $navbar-padding-y (-$navbar-padding-x);
+       
+            .navbar-collapse {
+                margin-left: -$navbar-padding-x;
+                margin-right: -$navbar-padding-x;
+                padding-left: $navbar-padding-x;
+                padding-right: $navbar-padding-x;
+    
+                &:before {
+                    content: '';
+                    display: block;
+                    margin: $navbar-padding-y (-$navbar-padding-x);
+                }
             }
-        }
+        
     }
 
 
