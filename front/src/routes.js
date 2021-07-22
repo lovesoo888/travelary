@@ -45,19 +45,19 @@ var routes = [
     component: Tables,
     layout: "/admin",
   },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25",
-    component: Login,
-    layout: "/auth",
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08",
-    component: Register,
-    layout: "/auth",
-  },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   icon: "ni ni-key-25",
+  //   component: Login,
+  //   layout: "/auth",
+  // },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   icon: "ni ni-circle-08",
+  //   component: Register,
+  //   layout: "/auth",
+  // },
 ];
 export default routes;

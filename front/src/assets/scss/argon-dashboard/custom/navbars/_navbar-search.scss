@@ -22,18 +22,21 @@
 
 .navbar-search-dark {
     .input-group {
-        border-color: $navbar-search-dark-border-color;
+        border-color: $navbar-search-border-color;
     }
 
     .input-group-text {
-        color: $navbar-search-dark-color;
+        // color: $navbar-search-dark-color;
+        color: $navbar-search-dark-gray-border-color;
     }
 
     .form-control {
-        color: $navbar-search-dark-focus-color;
+        // color: $navbar-search-dark-focus-color;
+        color: $navbar-search-dark-gray-color;
 
         &::placeholder {
-            color: $navbar-search-dark-color;
+            // color: $navbar-search-dark-color;
+            color: $navbar-search-dark-gray-color;
         }
     }
 
