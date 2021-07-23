@@ -119,7 +119,7 @@ const Login = () => {
                 />
                 <label
                   className='custom-control-label'
-                  htmlFor=' customCheckLogin'
+                  htmlFor='customCheckLogin'
                 >
                   <span className='text-muted'>Remember me</span>
                 </label>
@@ -135,7 +135,7 @@ const Login = () => {
         <Row className='mt-3'>
           <Col xs='6'>
             <a
-              className='text-light'
+              className='text-muted'
               href='#pablo'
               onClick={(e) => e.preventDefault()}
             >
@@ -144,7 +144,7 @@ const Login = () => {
           </Col>
           <Col className='text-right' xs='6'>
             <a
-              className='text-light'
+              className='text-muted'
               href='#pablo'
               onClick={(e) => e.preventDefault()}
             >
