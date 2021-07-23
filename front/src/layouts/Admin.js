@@ -15,16 +15,16 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import React from 'react';
+import { useLocation, Route, Switch, Redirect } from 'react-router-dom';
 // reactstrap components
-import { Container, Media } from "reactstrap";
+import { Container, Media } from 'reactstrap';
 // core components
-import AdminNavbar from "components/Navbars/AdminNavbar.js";
-import AdminFooter from "components/Footers/AdminFooter.js";
-import Sidebar from "components/Sidebar/Sidebar.js";
+import AdminNavbar from 'components/Navbars/AdminNavbar.js';
+import AdminFooter from 'components/Footers/AdminFooter.js';
+import Sidebar from 'components/Sidebar/Sidebar.js';
 
-import routes from "routes.js";
+import routes from 'routes.js';
 
 const Admin = (props) => {
   const mainContent = React.useRef(null);
@@ -38,7 +38,7 @@ const Admin = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === '/admin') {
         return (
           <Route
             path={prop.layout + prop.path}
@@ -61,7 +61,7 @@ const Admin = (props) => {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return 'Brand';
   };
 
   return (
@@ -70,20 +70,22 @@ const Admin = (props) => {
         {...props}
         routes={routes}
         logo={{
-          innerLink: "/admin/index",
-          imgSrc: require("../assets/img/brand/argon-react.png").default,
-          imgAlt: "...",
+          innerLink: '/admin/index',
+          imgSrc: require('../assets/img/brand/argon-react.png').default,
+          imgAlt: '...',
         }}
       />
-      <div className="main-content" ref={mainContent}>
+      <div className='main-content' ref={mainContent}>
         <AdminNavbar
           {...props}
           brandText={getBrandText(props.location.pathname)}
         />
-        <Switch>
-          {getRoutes(routes)}
-          <Redirect from="*" to="/admin/index" />
-        </Switch>
+        <div style={{ margin: 'auto', maxWidth: '1200px' }}>
+          <Switch>
+            {getRoutes(routes)}
+            <Redirect from='*' to='/admin/index' />
+          </Switch>
+        </div>
         <Container fluid>
           <AdminFooter />
         </Container>
