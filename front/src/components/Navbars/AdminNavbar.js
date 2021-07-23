@@ -49,13 +49,27 @@ const AdminNavbar = (props) => {
             </FormGroup>
           </Form>
 
-          {/* 오른쪽 상단바 유저 프로필 이미지, 이미지를 클릭하면 나오는 메뉴 */}
-          <Nav className="align-items-center d-none d-md-flex " navbar>
-          <span className="icon icon-shape bg-secondary rounded-circle shadow">
-            <i className="ni ni-bell-55" />
-            <span class="badge badge-default">4</span>
-          </span>
-          </Nav>
+          {/* 알림창 영역입니다. */}
+          <Nav className="align-items-center">
+          
+          <UncontrolledDropdown nav>
+            <DropdownToggle nav className="nav-link-icon">
+              <i className="ni ni-bell-55" />
+              <span class="badge badge-default">4</span>
+            </DropdownToggle>
+            <DropdownMenu
+              aria-labelledby="navbar-default_dropdown_1"
+              className="dropdown-menu-arrow"
+              right
+            >
+              <DropdownItem>Action</DropdownItem>
+              <DropdownItem>Another action</DropdownItem>
+              <DropdownItem divider />
+              <DropdownItem>Something else here</DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
+
+        </Nav>
          
           {/* 유저 상단바 끝 */}
         </Container>

@@ -38,7 +38,7 @@ const Footer = () => {
           </div>
         </Col>
 
-        <Col xl="6">
+        {/* <Col xl="6">
           <Nav className="nav-footer justify-content-center justify-content-xl-end">
             <NavItem>
               <NavLink
@@ -80,7 +80,7 @@ const Footer = () => {
               </NavLink>
             </NavItem>
           </Nav>
-        </Col>
+        </Col> */}
       </Row>
     </footer>
   );

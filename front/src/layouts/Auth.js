@@ -65,12 +65,12 @@ const Auth = (props) => {
         {/* <div className='header bg-gradient-info py-7 py-lg-8'> */}
         <div className='header py-7 py-lg-8'>
           <Container>
-            <div className='header-body text-center mb-7'>
+            <div className='header-body text-center mb-4'>
               <Row className='justify-content-center'>
                 <Col lg='5' md='6'>
                   {/* Brand */}
 
-                  <h1 className='text-muted'>Travelary</h1>
+                  <h1 className='logo-default'>Travelary</h1>
                   {/* <p className="text-lead text-light">
                     Use these awesome forms to login or create new account in
                     your project for free.
