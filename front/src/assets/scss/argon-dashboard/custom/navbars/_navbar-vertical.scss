@@ -7,6 +7,7 @@
 // Creates a vertically aligned version of the navbar
 .navbar-vertical {
   box-shadow: $navbar-vertical-box-shadow;
+  background-color: #fff !important;
 
   .navbar {
     border-width: 0 0 1px 0;
