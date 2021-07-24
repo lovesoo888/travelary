@@ -1,27 +1,21 @@
 import React from 'react';
 import { Card, Container, Row, Col } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 const CategoryList = () => {
   return (
     <div className='header pb-8 pt-2 pt-md-7'>
       <Container fluid>
-        <button class='btn btn-primary mb-4' type='button'>
-          Add Category
-        </button>
+        <Link to='/admin/post/list'>
+          <button class='btn btn-primary mb-4' type='button'>
+            Add Category
+          </button>
+        </Link>
       </Container>
 
       <Container fluid>
-        <div
-          className='mb-4 noticeMent'
-          style={{
-            padding: '.5em 1em',
-            backgroundColor: '#ffffff',
-            borderRadius: '10px',
-          }}
-        >
-          <h3 style={{ lineHeight: '1.5em', marginBottom: '0' }}>
-            Please record your trip. 😘
-          </h3>
+        <div className='mb-4 noticeMent'>
+          <p>Please record your trip. 😘</p>
         </div>
         <div className='header-body'>
           {/* Card stats */}

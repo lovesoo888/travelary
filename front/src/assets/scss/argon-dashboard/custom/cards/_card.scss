@@ -6,6 +6,18 @@
   background-color: rgba(18, 91, 152, 0.08);
 }
 
+.noticeMent {
+  padding: 0.5em 1em;
+  background-color: #ffffff;
+  border-radius: 10px;
+
+  p {
+    font-size: 1.1em;
+    line-height: 1.5em;
+    margin-bottom: 0;
+  }
+}
+
 .postWrap {
   .imageThumbnail {
     color: $white;

@@ -7,6 +7,8 @@ import Register from 'views/examples/Register.js';
 import Login from 'views/examples/Login.js';
 import Tables from 'views/examples/Tables.js';
 import Icons from 'views/examples/Icons.js';
+import PostList from 'views/examples/PostList.js';
+import PostCreate from 'views/examples/PostCreate';
 
 var routes = [
   {
@@ -15,6 +17,7 @@ var routes = [
     icon: 'ni ni-collection',
     component: Index,
     layout: '/admin',
+    breadcrumb: 'My Travelary',
   },
   {
     path: '/icons',
@@ -57,6 +60,18 @@ var routes = [
     icon: 'ni ni-circle-08',
     component: Register,
     layout: '/auth',
+  },
+  {
+    path: '/post/list',
+    breadcrumb: 'My Travelary categories',
+    component: PostList,
+    layout: '/admin',
+  },
+  {
+    path: '/post/add',
+    breadcrumb: 'Created My Travelary',
+    component: PostCreate,
+    layout: '/admin',
   },
 ];
 export default routes;
