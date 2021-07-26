@@ -32,7 +32,56 @@ import {
   Col,
 } from 'reactstrap';
 
+import React, { useState } from 'react';
+import axios from 'axios';
+// import { useDispatch } from 'react-redux';
+
 const Login = () => {
+  const [login, setLogin] = useState({
+    email: '',
+    userPwd: '',
+  });
+
+  // 전역데이터 제어용 디스패치 상수 생성
+  // const globalDispatch = useDispatch();
+
+  const onLoginChange = (e) => {
+    setLogin({ ...login, [e.target.name]: e.target.value });
+  };
+
+  const onLogin = () => {
+    axios
+      .post('http://localhost:3003/member/login', login)
+      .then((res) => {
+        if (res.data.code === '200') {
+          console.log('JWT토큰값:', res.data.data.token);
+          console.log('로그인 사용자 정보:', res.data.data.member);
+
+          //토큰값을 웹브라우저 로컬스토리지에 보관하기
+          window.localStorage.setItem('jwtToken', res.data.data.token);
+
+          const storageToken = window.localStorage.getItem('jwtToken');
+          console.log('브라우저 로컬스토리지에 저장된 토큰:', storageToken);
+
+          //사용자 토큰 발급 후 백엔드 API 호출시 발급된 JWT토큰을
+          //Ajax 헤더에 x-access-token 영역에 기본 포함 시켜 백엔드 서비스를 호출하게 한다.
+          axios.defaults.headers.common[
+            'x-access-token'
+          ] = `${res.data.data.token}`;
+
+          //발급된 토큰값을 전역 데이터에 반영한다.
+          //globalDispatch(액션생성함수명(액션생성함수에 전달할 데이터));
+          //globalDispatch(memberLogin(res.data.data.token));
+
+          alert('정상 로그인 되었습니다.');
+        } else {
+          //서버측 에러 메시지 출력
+          alert(res.data.msg);
+        }
+      })
+      .catch(() => {});
+  };
+
   return (
     <>
       <Col lg='5' md='7'>
@@ -91,6 +140,9 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    name='email'
+                    value={setLogin.email}
+                    onChange={onLoginChange}
                     placeholder='Email'
                     type='email'
                     autoComplete='new-email'
@@ -105,6 +157,9 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    name='userPwd'
+                    value={setLogin.userPwd}
+                    onChange={onLoginChange}
                     placeholder='Password'
                     type='password'
                     autoComplete='new-password'
@@ -125,7 +180,12 @@ const Login = () => {
                 </label>
               </div>
               <div className='text-center'>
-                <Button className='my-4' color='primary' type='button'>
+                <Button
+                  className='my-4'
+                  color='primary'
+                  type='button'
+                  onClick={onLogin}
+                >
                   Sign in
                 </Button>
               </div>
