@@ -22,17 +22,21 @@ const PostList = () => {
           <Row>
             <Col lg='6' xl='4' className='postWrap'>
               <Card className='card-stats mb-4 mb-xl-0'>
-                <div className='imageThumbnail'>
-                  <img
-                    alt='...'
-                    src={
-                      require('../../assets/img/theme/team-4-800x800.jpg')
-                        .default
-                    }
-                  />
-                </div>
+                <Link to='/admin/post/view'>
+                  <div className='imageThumbnail'>
+                    <img
+                      alt='...'
+                      src={
+                        require('../../assets/img/theme/team-4-800x800.jpg')
+                          .default
+                      }
+                    />
+                  </div>
+                </Link>
               </Card>
-              <p>오늘 꾼 꿈나라 여행..</p>
+              <Link to='/admin/post/view'>
+                <p>오늘 꾼 꿈나라 여행..</p>
+              </Link>
             </Col>
           </Row>
         </div>

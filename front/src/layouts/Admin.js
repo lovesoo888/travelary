@@ -23,6 +23,7 @@ import { Container, Media } from 'reactstrap';
 import AdminNavbar from 'components/Navbars/AdminNavbar.js';
 import AdminFooter from 'components/Footers/AdminFooter.js';
 import Sidebar from 'components/Sidebar/Sidebar.js';
+import PostBg from 'components/Headers/PostBg';
 
 import routes from 'routes.js';
 
@@ -35,6 +36,13 @@ const Admin = (props) => {
     document.scrollingElement.scrollTop = 0;
     mainContent.current.scrollTop = 0;
   }, [location]);
+
+  React.useEffect(() => {
+    document.body.classList.add('bg-default');
+    return () => {
+      document.body.classList.remove('bg-default');
+    };
+  }, []);
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
@@ -75,6 +83,17 @@ const Admin = (props) => {
     }
   };
 
+  // /post/view/ url 일때만 보이는 백그라운드임.
+  // const Header = () => {
+  //   if (window.location.pathname === '/admin/post/view')
+  //     return (
+  //       <div className='pt-7'>
+  //         <PostBg />
+  //       </div>
+  //     );
+  //   return null;
+  // };
+
   return (
     <>
       <Sidebar
@@ -92,6 +111,10 @@ const Admin = (props) => {
           brandText={getBrandText(props.location.pathname)}
           breadcrumb={getBreadcrumb(props.location.pathname)}
         />
+
+        {/* post view 페이지에만 나오는 헤더영역 */}
+        {/* {Header()} */}
+
         <div style={{ margin: 'auto', maxWidth: '1200px' }}>
           <Switch>
             {getRoutes(routes)}

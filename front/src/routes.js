@@ -9,6 +9,7 @@ import Tables from 'views/examples/Tables.js';
 import Icons from 'views/examples/Icons.js';
 import PostList from 'views/examples/PostList.js';
 import PostCreate from 'views/examples/PostCreate';
+import Post from 'views/examples/Post';
 
 var routes = [
   {
@@ -63,7 +64,7 @@ var routes = [
   },
   {
     path: '/post/list',
-    breadcrumb: 'My Travelary categories',
+    breadcrumb: 'My Travelary Post List',
     component: PostList,
     layout: '/admin',
   },
@@ -71,6 +72,12 @@ var routes = [
     path: '/post/add',
     breadcrumb: 'Created My Travelary',
     component: PostCreate,
+    layout: '/admin',
+  },
+  {
+    path: '/post/view',
+    breadcrumb: 'Travelary View',
+    component: Post,
     layout: '/admin',
   },
 ];

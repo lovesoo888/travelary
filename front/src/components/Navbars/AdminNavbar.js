@@ -19,6 +19,8 @@ import {
   Media,
 } from 'reactstrap';
 
+import PostBg from 'components/Headers/PostBg';
+
 const AdminNavbar = (props) => {
   return (
     <>
@@ -26,10 +28,7 @@ const AdminNavbar = (props) => {
         <Container fluid>
           {/* page title 명 뜨는 상단 타이틀 부분  */}
           {/* Admin.js에서 getBrandText()로 routes에 있는 타이틀 텍스트를 불러온다. */}
-          <Link
-            className='h4 mb-0 text-white text-uppercase d-none d-lg-inline-block'
-            to='/'
-          >
+          <Link className='h4 mb-0 d-none d-lg-inline-block' to='/'>
             {props.breadcrumb}
           </Link>
 

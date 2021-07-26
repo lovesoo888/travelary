@@ -22,45 +22,21 @@ const CategoryList = () => {
           <Row>
             <Col lg='6' xl='4' className='postWrap'>
               <Card className='card-stats mb-4 mb-xl-0'>
-                <div className='imageThumbnail'>
-                  <img
-                    alt='...'
-                    src={
-                      require('../../assets/img/theme/team-4-800x800.jpg')
-                        .default
-                    }
-                  />
-                </div>
+                <Link to='/admin/post/list'>
+                  <div className='imageThumbnail'>
+                    <img
+                      alt='...'
+                      src={
+                        require('../../assets/img/theme/team-4-800x800.jpg')
+                          .default
+                      }
+                    />
+                  </div>
+                </Link>
               </Card>
-              <p>와 진짜 너무 졸리다....꿈나라 여행 간 후기</p>
-            </Col>
-            <Col lg='6' xl='4' className='postWrap'>
-              <Card className='card-stats mb-4 mb-xl-0'>
-                <div className='imageThumbnail'>
-                  <img
-                    alt='...'
-                    src={
-                      require('../../assets/img/theme/team-4-800x800.jpg')
-                        .default
-                    }
-                  />
-                </div>
-              </Card>
-              <p>와 진짜 너무 졸리다....꿈나라 여행 간 후기</p>
-            </Col>
-            <Col lg='6' xl='4' className='postWrap'>
-              <Card className='card-stats mb-4 mb-xl-0'>
-                <div className='imageThumbnail'>
-                  <img
-                    alt='...'
-                    src={
-                      require('../../assets/img/theme/team-4-800x800.jpg')
-                        .default
-                    }
-                  />
-                </div>
-              </Card>
-              <p>와 진짜 너무 졸리다....꿈나라 여행 간 후기</p>
+              <Link to='/admin/post/list'>
+                <p>와 진짜 너무 졸리다....꿈나라 여행 간 후기</p>
+              </Link>
             </Col>
           </Row>
         </div>
@@ -70,6 +46,7 @@ const CategoryList = () => {
       <Container className='firstPostWrap'>
         <div>
           <p>첫 여행 일기를 작성해주세요</p>
+          <span></span>
           <p>🛫</p>
         </div>
       </Container>
