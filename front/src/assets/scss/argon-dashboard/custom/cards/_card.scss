@@ -61,3 +61,94 @@
     font-size: 5em;
   }
 }
+
+// 카테고리 추가
+.categoryAddWrap {
+  .addWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .postWrap {
+      max-width: 80%;
+      min-width: 70%;
+      .card-stats {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        form {
+          width: 60%;
+          ul {
+            padding-left: 0;
+            list-style: none;
+            .inputStyle {
+              border: none !important;
+              border-bottom: 1px solid !important;
+              border-radius: 0 !important;
+            }
+
+            li {
+              .imageThumbnail {
+                width: 120px;
+                height: auto;
+                margin: 0 auto;
+                overflow: hidden;
+                img {
+                  height: auto;
+                }
+              }
+            }
+          }
+          .btnWrap {
+            text-align: right;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 포스트 보기
+
+.postViewWrap {
+  .postHeader {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+// 포스트 생성하기
+.postCreateWrap {
+  max-width: 900px;
+
+  .imageThumbnail {
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    img {
+      height: auto;
+    }
+  }
+
+  select {
+    max-width: 300px;
+    min-width: 180px;
+    width: auto;
+  }
+
+  dl {
+    display: flex;
+    justify-content: space-between;
+    dt {
+      width: 180px;
+      vertical-align: middle;
+    }
+    dd {
+      width: calc(100% - 180px);
+      vertical-align: top;
+    }
+  }
+
+  dl + dl {
+    margin-top: 30px;
+  }
+}

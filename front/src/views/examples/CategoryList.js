@@ -6,7 +6,7 @@ const CategoryList = () => {
   return (
     <div className='header pb-8 pt-2 pt-md-7'>
       <Container fluid>
-        <Link to='/admin/post/list'>
+        <Link to='/admin/category/add'>
           <button class='btn btn-primary mb-4' type='button'>
             Add Category
           </button>
@@ -35,7 +35,7 @@ const CategoryList = () => {
                 </Link>
               </Card>
               <Link to='/admin/post/list'>
-                <p>와 진짜 너무 졸리다....꿈나라 여행 간 후기</p>
+                <p>유럽에서 한 달 살기!</p>
               </Link>
             </Col>
           </Row>

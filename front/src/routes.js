@@ -10,6 +10,7 @@ import Icons from 'views/examples/Icons.js';
 import PostList from 'views/examples/PostList.js';
 import PostCreate from 'views/examples/PostCreate';
 import Post from 'views/examples/Post';
+import CatrgoryAdd from 'views/examples/CatrgoryAdd';
 
 var routes = [
   {
@@ -78,6 +79,12 @@ var routes = [
     path: '/post/view',
     breadcrumb: 'Travelary View',
     component: Post,
+    layout: '/admin',
+  },
+  {
+    path: '/category/add',
+    breadcrumb: 'Category Add',
+    component: CatrgoryAdd,
     layout: '/admin',
   },
 ];

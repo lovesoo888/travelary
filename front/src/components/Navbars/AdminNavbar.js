@@ -19,8 +19,6 @@ import {
   Media,
 } from 'reactstrap';
 
-import PostBg from 'components/Headers/PostBg';
-
 const AdminNavbar = (props) => {
   return (
     <>
