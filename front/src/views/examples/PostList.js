@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 const PostList = () => {
+  const [postList, setPostList] = useState([]);
+
   return (
     <div className='header pb-8 pt-2 pt-md-7'>
       <Container fluid>
@@ -20,24 +22,26 @@ const PostList = () => {
         <div className='header-body'>
           {/* Card stats */}
           <Row>
-            <Col lg='6' xl='4' className='postWrap'>
-              <Card className='card-stats mb-4 mb-xl-0'>
+            {postList.map((item, index) => (
+              <Col lg='6' xl='4' className='postWrap'>
+                <Card className='card-stats mb-4 mb-xl-0'>
+                  <Link to='/admin/post/view'>
+                    <div className='imageThumbnail'>
+                      <img
+                        alt='...'
+                        src={
+                          require('../../assets/img/theme/team-4-800x800.jpg')
+                            .default
+                        }
+                      />
+                    </div>
+                  </Link>
+                </Card>
                 <Link to='/admin/post/view'>
-                  <div className='imageThumbnail'>
-                    <img
-                      alt='...'
-                      src={
-                        require('../../assets/img/theme/team-4-800x800.jpg')
-                          .default
-                      }
-                    />
-                  </div>
+                  <p>오늘 꾼 꿈나라 여행..</p>
                 </Link>
-              </Card>
-              <Link to='/admin/post/view'>
-                <p>오늘 꾼 꿈나라 여행..</p>
-              </Link>
-            </Col>
+              </Col>
+            ))}
           </Row>
         </div>
       </Container>
