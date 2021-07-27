@@ -84,15 +84,15 @@ const Admin = (props) => {
   };
 
   // /post/view/ url 일때만 보이는 백그라운드임.
-  // const Header = () => {
-  //   if (window.location.pathname === '/admin/post/view')
-  //     return (
-  //       <div className='pt-7'>
-  //         <PostBg />
-  //       </div>
-  //     );
-  //   return null;
-  // };
+  const PostViewHeader = () => {
+    if (window.location.pathname === '/admin/post/view')
+      return (
+        <div className='pt-7'>
+          <PostBg />
+        </div>
+      );
+    return null;
+  };
 
   return (
     <>
@@ -113,7 +113,7 @@ const Admin = (props) => {
         />
 
         {/* post view 페이지에만 나오는 헤더영역 */}
-        {/* {Header()} */}
+        {PostViewHeader()}
 
         <div style={{ margin: 'auto', maxWidth: '1200px' }}>
           <Switch>

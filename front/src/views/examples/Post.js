@@ -3,13 +3,12 @@
 
 // reactstrap components
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
-import PostBg from '../../components/Headers/PostBg';
 
 const Header = () => {
   return (
     <>
       <div className='header postViewWrap pb-8 pt-md-6'>
-        <PostBg />
+        {/* <PostBg /> */}
         <Container className='mt--7' fluid>
           <Row>
             <Col className='mb-5 mb-xl-0' xl='12'>

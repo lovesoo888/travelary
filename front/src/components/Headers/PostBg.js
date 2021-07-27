@@ -7,7 +7,9 @@ import { Card, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
 const PostBg = () => {
   return (
     <>
-      <div className='header postHeader bg-gradient-info pb-8 pt-5 pt-md-8'></div>
+      <div className='header postHeader'>
+        <div className='bg-gradient-info pb-8 pt-5 pt-md-8'></div>
+      </div>
     </>
   );
 };
