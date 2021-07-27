@@ -3,25 +3,30 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 
+//ORM 참조하기
+var db = require('../models/index');
+var Member = db.Member;
+
+//! 로그인
 // localhost:3003/member/login
 router.post('/login', async (req, res) => {
   const email = req.body.email;
   const userPwd = req.body.userPwd;
 
   //동일 이메일주소 사용자 조회
-  // const loginUser = await Member.findOne({ where: { email: email } });
-  const loginUser = { email: '1004@aaa.aaa', userPwd: '1234' };
+  const loginUser = await Member.findOne({ where: { email: email } });
+  // const loginUser = { email: '1004@aaa.aaa', userPwd: '1234' };
 
   if (loginUser) {
     //전달 받은 사용자 암호와 DB에 저장된 암호가 같은지 비교
-    // const result = await bcrypt.compare(userPwd, loginUser.userPwd);
-    const result = true;
+    const result = await bcrypt.compare(userPwd, loginUser.userPwd);
+    // const result = true;
 
     if (result) {
       //JWT 토큰에 담을 JSON 데이터
       var memberData = {
         email: loginUser.email,
-        userName: loginUser.username,
+        userName: loginUser.userName,
       };
 
       //jwt.sign('JSON데이터',토큰인증키,{옵션(유효기간,발급자)})
@@ -39,16 +44,39 @@ router.post('/login', async (req, res) => {
       return res.json({
         code: '400',
         data: {},
-        msg: '입력한 암호가 다릅니다.',
+        msg: 'Wrong password. Try again!',
       });
     }
   } else {
     return res.json({
       code: '400',
       data: {},
-      msg: '아이디가 존재하지 않습니다.',
+      msg: 'Email address does not exists.',
     });
   }
+});
+
+//! 회원가입
+//localhost:3003/member/register
+router.post('/register', async (req, res, next) => {
+  const hashPwd = await bcrypt.hash(req.body.userPwd, 12);
+
+  var member = {
+    email: req.body.email,
+    userPwd: hashPwd,
+    userName: req.body.userName,
+    birthday: req.body.birthday,
+    // lastIp: req.ip,
+  };
+  console.log('0003148392--------------', member);
+
+  const memberRegisterResult = Member.create(member);
+
+  return res.json({
+    code: '200',
+    data: memberRegisterResult,
+    msg: 'Ok',
+  });
 });
 
 module.exports = router;

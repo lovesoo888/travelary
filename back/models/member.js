@@ -6,13 +6,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
-      userpwd: {
+      userPwd: {
         type: DataTypes.STRING(100),
         allowNull: false,
       },
-      username: {
+      userName: {
         type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      birthday: {
+        type: DataTypes.DATEONLY,
         allowNull: true,
+      },
+      userStatus: {
+        type: DataTypes.STRING(1),
+        allowNull: false,
+        defaultValue: '1',
       },
     },
     {
