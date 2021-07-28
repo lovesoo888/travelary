@@ -1,10 +1,10 @@
-// ! main page 상단 헤더 영역
-// ! 붙어다니는 상단 헤더영역이다....1번 메뉴, 2번, 3번 메뉴까지 얘가 같이 나옴...
+// 포스트 view 페이지
 
+import React from 'react';
 // reactstrap components
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
 
-const Header = () => {
+const Post = () => {
   return (
     <>
       <div className='header postViewWrap pb-8 pt-md-6'>
@@ -55,4 +55,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Post;

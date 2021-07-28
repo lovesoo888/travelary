@@ -4,6 +4,12 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const PostCreate = () => {
+  const [postContent, setPostContent] = useState({
+    title: '',
+    content: '',
+    thumbnailImg: '',
+  });
+
   // 데이터 담는 함수
   const useInput = () => {
     const initialValue = null;
@@ -44,6 +50,7 @@ const PostCreate = () => {
             <dd className='mt-2'>
               <CKEditor
                 editor={ClassicEditor}
+                value='content'
                 data='<p>내용을 입력해주세요</p>'
                 onReady={(editor) => {
                   // You can store the "editor" and use when it is needed.
