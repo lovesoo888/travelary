@@ -1,16 +1,28 @@
 // 카테고리 추가 페이지
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Card, Container, Row, Col, Form } from 'reactstrap';
 
-import { useDispatch } from 'react-redux';
-import { categoryAdd } from 'reducer/post';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCategory } from 'reducer/post';
+
+import CategoryList from './CategoryList';
 
 const CatrgoryAdd = () => {
   // 데이터 담는 함수
   const dispatch = useDispatch();
-  const onCategoryAdd = useCallback(() => {
-    dispatch(categoryAdd());
+
+  const { imagePaths } = useSelector((state) => state.post);
+  const [title, setTitle] = useState('');
+
+  const onChangeTitle = useCallback((e) => {
+    setTitle(e.target.value);
+  }, []);
+
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
+    dispatch(addCategory);
+    setTitle('');
   }, []);
 
   return (
@@ -20,7 +32,7 @@ const CatrgoryAdd = () => {
           <Col lg='6' xl='12' className='postWrap'>
             <Card className='card-stats mb-4 mb-xl-0 pt-6 pb-6'>
               <h4 className='mb-6'>당신의 여행 카테고리를 추가해주세요 :)</h4>
-              <Form>
+              <Form encType='multipart/form-data' onSubmit={onSubmit}>
                 <ul>
                   <li>
                     <label>Category Title</label>
@@ -29,6 +41,8 @@ const CatrgoryAdd = () => {
                       className='form-control inputStyle'
                       placeholder='Category Title'
                       name='title'
+                      value={title}
+                      onChange={onChangeTitle}
                     ></input>
                   </li>
                   <li className='mt-5'>
@@ -49,18 +63,28 @@ const CatrgoryAdd = () => {
                       </label>
                     </div>
                     <div className='imageThumbnail mt-3'>
-                      <img
-                        src='https://newsroom-prd-data.s3.ap-northeast-2.amazonaws.com/wp-content/uploads/2018/08/b_01.png'
-                        alt=''
-                      />
+                      {imagePaths.map((v) => (
+                        <div key={v}>
+                          <img src={v} alt={v} />
+                          <div>
+                            <button
+                              type='button'
+                              class='btn btn-default'
+                              // onClick={onCategoryAdd}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </li>
                 </ul>
                 <div className='btnWrap mt-5'>
                   <button
-                    type='button'
                     class='btn btn-default'
-                    onClick={onCategoryAdd}
+                    type='submit'
+                    // onClick={onCategoryAdd}
                   >
                     Category Add
                   </button>
@@ -70,6 +94,7 @@ const CatrgoryAdd = () => {
           </Col>
         </Row>
       </Container>
+      {/* <CategoryList /> */}
     </div>
   );
 };

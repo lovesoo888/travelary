@@ -1,8 +1,11 @@
 import React from 'react';
 import { Card, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const CategoryList = () => {
+  const { categoryList } = useSelector((state) => state.post);
+
   return (
     <div className='header pb-8 pt-2 pt-md-7'>
       <Container fluid>
@@ -20,24 +23,20 @@ const CategoryList = () => {
         <div className='header-body'>
           {/* Card stats */}
           <Row>
-            <Col lg='6' xl='4' className='postWrap'>
-              <Card className='card-stats mb-4 mb-xl-0'>
+            {categoryList.map((post) => (
+              <Col key={post.id} post={post} lg='6' xl='4' className='postWrap'>
+                <Card className='card-stats mb-4 mb-xl-0'>
+                  <Link to='/admin/post/list'>
+                    <div className='imageThumbnail'>
+                      <img alt='...' src={post.ThumnailImg.src} />
+                    </div>
+                  </Link>
+                </Card>
                 <Link to='/admin/post/list'>
-                  <div className='imageThumbnail'>
-                    <img
-                      alt='...'
-                      src={
-                        require('../../assets/img/theme/team-4-800x800.jpg')
-                          .default
-                      }
-                    />
-                  </div>
+                  <p>{post.title}</p>
                 </Link>
-              </Card>
-              <Link to='/admin/post/list'>
-                <p>유럽에서 한 달 살기!</p>
-              </Link>
-            </Col>
+              </Col>
+            ))}
           </Row>
         </div>
       </Container>
