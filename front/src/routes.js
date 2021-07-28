@@ -89,7 +89,7 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/forgotPassword',
+    path: '/forgotpassword',
     breadcrumb: 'ForgotPassword',
     component: ForgotPassword,
     layout: '/auth',

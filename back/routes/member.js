@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+// const ejs = require('ejs');
+// const path = require('path');
+// var appDir = path.dirname(require.main.filename);
+const { v4: uuidv4 } = require('uuid');
 
 //ORM 참조하기
 var db = require('../models/index');
@@ -96,6 +101,67 @@ router.post('/checkEmail', async (req, res) => {
       code: '400',
       data: [],
       msg: 'Email address already in use',
+    });
+  }
+});
+
+//! 비밀번호 초기화 이메일 요쳥
+router.post('/forgotpassword', async (req, res) => {
+  const userEmail = req.body.email;
+  const checkEmailResult = await Member.findOne({
+    where: { email: userEmail },
+  });
+  if (checkEmailResult == null) {
+    // 일치하는 메일 주소가 없을 경우
+    return res.json({
+      code: '400',
+      data: [],
+      msg: 'No matching mail address found',
+    });
+  } else {
+    // 일치하는 메일 주소가 있을 경우
+
+    // 랜덤 비밀번호 생성하고 비밀번호 업데이트 - uuid 라이브러리 이용
+    const tempPwd = uuidv4();
+    const pwdChangeResult = await Member.update(
+      { userPwd: tempPwd },
+      { where: { email: userEmail } }
+    );
+
+    // 등록된 메일 주소로 비밀번호 전송하기 - nodemailer 라이브러리 이용
+    let transporter = nodemailer.createTransport({
+      service: 'gmail', //사용하고자 하는 서비스
+      prot: 587,
+      host: 'smtp.gmlail.com',
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
+      },
+    });
+    let message = await transporter.sendMail({
+      from: 'Travelary@aaa.aaa', //? 보내는 주소 입력 -> 안됨?
+      to: userEmail, // 위에서 선언해준 받는 사람 이메일
+      subject: 'Here is your password reset', //메일 제목
+      html: ` <div
+                style="
+                  border: 1px solid grey;
+                  border-radius: 5px;
+                  width: 600px;
+                  height: 100px;
+                "
+              >
+                <div style="padding: 10px">
+                  Temporary passsword :
+                  <h2>${tempPwd}</h2>
+                </div>
+              </div>`, // 내용
+    });
+    return res.json({
+      code: '200',
+      data: [],
+      msg: 'Temporary password has been sent. Please check your email.',
     });
   }
 });

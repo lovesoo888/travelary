@@ -38,16 +38,37 @@ import { useHistory, Link } from 'react-router-dom';
 // import { useDispatch } from 'react-redux';
 
 const ForgotPassword = () => {
-  const [login, setLogin] = useState({
-    email: '',
-    userPwd: '',
-  });
+  const [email, setEmail] = useState('');
 
   // 전역데이터 제어용 디스패치 상수 생성
   // const globalDispatch = useDispatch();
 
   const history = useHistory();
 
+  const onEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const onForgetPassword = () => {
+    if (email === '') {
+      alert('Please fill out your name!');
+    }
+    console.log('email', email);
+    axios
+      .post('http://localhost:3003/member/forgotpassword', { email: email })
+      .then((res) => {
+        console.log('데이터 처리결과:', res.data);
+        if (res.data.code === '200') {
+          alert(res.data.msg);
+          history.push('/auth/login');
+        } else {
+          alert(res.data.msg);
+        }
+        // alert('Welcome to Travelary! Please Sign In.');
+        // history.push('/auth/login');
+      })
+      .catch(() => {});
+  };
   return (
     <>
       <Col lg='5' md='7'>
@@ -117,8 +138,8 @@ const ForgotPassword = () => {
                   </InputGroupAddon>
                   <Input
                     name='email'
-                    // value={setLogin.email}
-                    // onChange={onLoginChange}
+                    value={email}
+                    onChange={onEmailChange}
                     placeholder='Email'
                     type='email'
                     autoComplete='new-email'
@@ -157,6 +178,7 @@ const ForgotPassword = () => {
               </div> */}
               <div className='text-center'>
                 <Button
+                  onClick={onForgetPassword}
                   className='my-4'
                   color='primary'
                   type='button'

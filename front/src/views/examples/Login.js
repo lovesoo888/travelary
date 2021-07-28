@@ -206,7 +206,9 @@ const Login = () => {
               href='#pablo'
               onClick={(e) => e.preventDefault()}
             >
-              <small>Forgot password?</small>
+              <Link to='/auth/forgotpassword'>
+                <small>Forgot password?</small>
+              </Link>
             </a>
           </Col>
           <Col className='text-right' xs='6'>
