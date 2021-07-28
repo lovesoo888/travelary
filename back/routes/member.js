@@ -15,12 +15,10 @@ router.post('/login', async (req, res) => {
 
   //동일 이메일주소 사용자 조회
   const loginUser = await Member.findOne({ where: { email: email } });
-  // const loginUser = { email: '1004@aaa.aaa', userPwd: '1234' };
 
   if (loginUser) {
     //전달 받은 사용자 암호와 DB에 저장된 암호가 같은지 비교
     const result = await bcrypt.compare(userPwd, loginUser.userPwd);
-    // const result = true;
 
     if (result) {
       //JWT 토큰에 담을 JSON 데이터
@@ -77,6 +75,29 @@ router.post('/register', async (req, res, next) => {
     data: memberRegisterResult,
     msg: 'Ok',
   });
+});
+
+//! 메일 중복 검사
+//localhost:3003/member/checkEmail
+router.post('/checkEmail', async (req, res) => {
+  const email = req.body.email;
+  // console.log('0003148392--------------', email);
+  // console.log('0003148392--------------', req.body);
+
+  const checkEmailResult = await Member.findOne({ where: { email: email } });
+  if (checkEmailResult == null) {
+    return res.json({
+      code: '200',
+      data: [],
+      msg: 'Valid email address',
+    });
+  } else {
+    return res.json({
+      code: '400',
+      data: [],
+      msg: 'Email address already in use',
+    });
+  }
 });
 
 module.exports = router;

@@ -11,6 +11,7 @@ import PostList from 'views/examples/PostList.js';
 import PostCreate from 'views/examples/PostCreate';
 import Post from 'views/examples/Post';
 import CatrgoryAdd from 'views/examples/CatrgoryAdd';
+import ForgotPassword from 'views/examples/ForgotPassword';
 
 var routes = [
   {
@@ -86,6 +87,12 @@ var routes = [
     breadcrumb: 'Category Add',
     component: CatrgoryAdd,
     layout: '/admin',
+  },
+  {
+    path: '/forgotPassword',
+    breadcrumb: 'ForgotPassword',
+    component: ForgotPassword,
+    layout: '/auth',
   },
 ];
 export default routes;

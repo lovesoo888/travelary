@@ -43,11 +43,10 @@ const Register = () => {
     birthday: '',
   });
 
+  //? 비밀번호 확인 인풋을 useState로 상태관리하면 값이 바로 안담기는 이슈..?
+  // const [pwdRepeat, setPwdRepeat] = useState('');
+
   const history = useHistory();
-  const [passwordConfirm, setPasswordConfirm] = useState({
-    check: false,
-    value: '',
-  });
 
   // 이메일 유효성 검사 -> 이메일 인증으로 대체?
   // const checkEmail = (e) => {
@@ -59,35 +58,75 @@ const Register = () => {
 
   const onMemberChange = (e) => {
     setMember({ ...member, [e.target.name]: e.target.value });
-    // console.log(member.userPwd);
-    // 비밀번호 유효성 검사
+
+    // 비밀번호 유효성 검사 - 8 ~ 15자 영문, 숫자 조합
     const regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,15}$/;
-    setPasswordConfirm({
-      ...passwordConfirm,
-      check: regExp.test(e.target.value),
-      value: e.target.value,
-    });
 
     if (e.target.name === 'userPwd') {
-      let passinfo = document.querySelector('.passinfo');
+      let pwdCheck = document.querySelector('.pwdCheck');
       let password = e.target.value;
-      let passCheck = regExp.test(password);
+      let pwdRegExp = regExp.test(password);
 
+      // 아직 아무것도 치지 않았을 때 공백
       if (password === '') {
-        passinfo.innerText = '';
+        pwdCheck.innerText = '';
         return;
       }
 
-      if (passCheck) {
-        passinfo.classList.add('text-success');
-        passinfo.classList.remove('text-muted');
-        passinfo.innerText = 'strong';
+      // 유효성 검사 통과 시 초록색으로 strong 뜨기
+      if (pwdRegExp) {
+        pwdCheck.classList.add('text-success');
+        pwdCheck.classList.remove('text-muted');
+        pwdCheck.innerText = 'strong';
       } else {
-        passinfo.classList.add('text-muted');
-        passinfo.classList.remove('text-success');
-        passinfo.innerText = 'week';
+        // 통과 못했을 시 회색으로 week 뜨기
+        pwdCheck.classList.add('text-muted');
+        pwdCheck.classList.remove('text-success');
+        pwdCheck.innerText = 'week';
       }
     }
+  };
+
+  // 비밀번호 재확인
+  const onPwdRepeatChange = (e) => {
+    // 아래 주석 두 줄 : 상태관리로 비번 재확인 인풋 value 관리 하려는데 잘 안됨.
+    // setPwdRepeat(e.target.value);
+    // console.log(pwdRepeat);
+    let pwdRepeat = e.target.value;
+    let pwdCheckIcon = document.querySelector('.pwdCheckIcon');
+
+    if (pwdRepeat === member.userPwd) {
+      pwdCheckIcon.classList.add('text-success');
+    } else {
+      pwdCheckIcon.classList.remove('text-success');
+    }
+  };
+
+  // 이메일 중복 검사
+  const checkEmail = (e) => {
+    // 인풋박스에 메일을 적고 마우스를 때는 순간 서버로 조회 요청하기
+    const checkEmail = document.querySelector('.checkEmail');
+    const emailCheckIcon = document.querySelector('.emailCheckIcon');
+
+    axios
+      .post('http://localhost:3003/member/checkEmail', { email: member.email })
+      .then((res) => {
+        console.log('데이터 처리결과:', res.data);
+        if (res.data.code === '200') {
+          // 사용 가능한 이메일일 경우
+          checkEmail.classList.add('text-success');
+          checkEmail.classList.remove('text-muted');
+          checkEmail.innerText = 'Email address available';
+          emailCheckIcon.classList.add('text-success');
+        } else {
+          // 이미 사용 중인 이메일일 경우
+          checkEmail.classList.add('text-muted');
+          checkEmail.classList.remove('text-success');
+          checkEmail.innerText = 'Email address already in use';
+          emailCheckIcon.classList.remove('text-success');
+        }
+      })
+      .catch(() => {});
   };
 
   // 로그인 여부 체크 - 로긴 안했으면 로긴페이지로 이동시키기
@@ -96,12 +135,21 @@ const Register = () => {
   //   history.push('/member/login');
   // }
 
+  // 회원 등록 버튼 실행 함수
   const onRegister = () => {
+    // 빈 칸 작성시 알림창으로 알려주기
+    if (member.userName === '') {
+      alert('Please fill out your name!');
+    }
+    if (member.email === '') {
+      alert('Please fill out your Email address!');
+    }
+
     axios
       .post('http://localhost:3003/member/register', member)
       .then((res) => {
         console.log('데이터 처리결과:', res.data);
-        alert('Welcome! Please Sign In.');
+        alert('Welcome to Travelary! Please Sign In.');
         history.push('/auth/login');
       })
       .catch(() => {});
@@ -174,22 +222,32 @@ const Register = () => {
                 </InputGroup>
               </FormGroup>
               <FormGroup>
-                <InputGroup className='input-group-alternative mb-3'>
+                <InputGroup className='input-group-alternative mb-0'>
                   <InputGroupAddon addonType='prepend'>
                     <InputGroupText>
                       <i className='ni ni-email-83' />
                     </InputGroupText>
                   </InputGroupAddon>
-                  {/* email 중복 검사 넣기 */}
                   <Input
                     name='email'
                     value={member.email}
                     onChange={onMemberChange}
+                    onBlur={checkEmail}
                     placeholder='Email'
                     type='email'
                     autoComplete='new-email'
                   />
+                  <InputGroupAddon addonType='prepend'>
+                    <InputGroupText>
+                      <i className='ni ni-check-bold emailCheckIcon' />
+                    </InputGroupText>
+                  </InputGroupAddon>
                 </InputGroup>
+                {/*//! 이메일 중복 검사 */}
+                <small>
+                  {/* <span className='text-success font-weight-700'>strong</span> */}
+                  <span className='checkEmail font-italic'></span>
+                </small>
               </FormGroup>
               <FormGroup>
                 <InputGroup className='input-group-alternative'>
@@ -202,9 +260,8 @@ const Register = () => {
                     name='userPwd'
                     value={member.userPwd}
                     onChange={onMemberChange}
-                    // onKeyUp={checkPassword}
                     placeholder='Password'
-                    // placeholder='8 - 10 characters, must contain both letters and numbers'
+                    // placeholder='8 - 15 characters, must contain both letters and numbers'
                     type='password'
                     autoComplete='new-password'
                   />
@@ -213,14 +270,15 @@ const Register = () => {
                   8 - 10 characters, must contain both letters and numbers
                 </small>
                 <div className='text-muted font-italic'>
+                  {/* 비밀번호 유효성 검사 */}
                   <small>
                     password strength:
                     {/* <span className='text-success font-weight-700'>strong</span> */}
-                    <span className='passinfo font-weight-700'></span>
+                    <span className='pwdCheck font-weight-700'></span>
                   </small>
                 </div>
               </FormGroup>
-              {/* 비밀번호 확인 */}
+              {/* 비밀번호 재확인 */}
               <FormGroup>
                 <InputGroup className='input-group-alternative'>
                   <InputGroupAddon addonType='prepend'>
@@ -229,10 +287,17 @@ const Register = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    placeholder='Password Confirm'
+                    onChange={onPwdRepeatChange}
+                    // value={pwdRepeat}
+                    placeholder='Confirm Password'
                     type='password'
                     autoComplete='new-password'
                   />
+                  <InputGroupAddon addonType='prepend'>
+                    <InputGroupText>
+                      <i className='ni ni-check-bold pwdCheckIcon' />
+                    </InputGroupText>
+                  </InputGroupAddon>
                 </InputGroup>
               </FormGroup>
               <FormGroup>
@@ -242,7 +307,7 @@ const Register = () => {
                       <i className='ni ni-calendar-grid-58' />
                     </InputGroupText>
                   </InputGroupAddon>
-                  {/* date 타입 브라우저 지원문제 예외처리하기 */}
+                  {/* date 타입 브라우저 지원 문제 예외처리하기 */}
                   <Input
                     name='birthday'
                     value={member.birthday}
@@ -253,7 +318,7 @@ const Register = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <Row className='my-4'>
+              {/* <Row className='my-4'>
                 <Col xs='12'>
                   <div className='custom-control custom-control-alternative custom-checkbox'>
                     <input
@@ -274,7 +339,7 @@ const Register = () => {
                     </label>
                   </div>
                 </Col>
-              </Row>
+              </Row> */}
               <div className='text-center'>
                 <Button
                   onClick={onRegister}
