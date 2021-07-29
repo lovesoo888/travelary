@@ -44,6 +44,8 @@ export const initialState = {
 // 액션 타입을 상수로 빼준 이유 : 오타방지
 const ADD_CATEGORY = 'ADD_CATEGORY';
 const ADD_POST = 'ADD_POST';
+
+// 액션 타입 불러오기, 나중에 컴포넌트에서 onSubmit 같은 액션으로 액션을 불러와준다.
 export const addCategory = {
   type: ADD_CATEGORY,
 };
