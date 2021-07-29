@@ -80,9 +80,8 @@ const ForgotPassword = () => {
             <div className='btn-wrapper text-center'>
               {/* <small>
                 <span className='text-muted font-italic'>
-                  We just need your registered email address to send you
-                  password reset. Enter the email address associated with your
-                  account and we'll wend you a link to reset your password
+                  Enter the email address associated with your account and we'll
+                  send you a temporary password
                 </span>
               </small> */}
               {/* <Button
@@ -122,10 +121,10 @@ const ForgotPassword = () => {
             </div>
           </CardHeader>
           <CardBody className='px-lg-5 py-lg-5'>
-            <div className='text-center text-muted mb-4'>
+            <div className='text-center text-muted mb-5'>
               <small>
-                We just need your registered email address to send you password
-                reset.
+                Enter the email address associated with your account and we'll
+                send you a temporary password
               </small>
             </div>
             <Form role='form'>

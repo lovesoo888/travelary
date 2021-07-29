@@ -43,7 +43,9 @@ const Register = () => {
     birthday: '',
   });
 
-  //? 비밀번호 확인 인풋을 useState로 상태관리하면 값이 바로 안담기는 이슈..?
+  // ? 비밀번호 확인 인풋을 useState로 상태관리하면 값이 바로 안담김
+  // setState는 해당 스코프를 벗어날때 실행됨.
+  // useEffect로 나중에 수정하기
   // const [pwdRepeat, setPwdRepeat] = useState('');
 
   const history = useHistory();
@@ -89,7 +91,7 @@ const Register = () => {
 
   // 비밀번호 재확인
   const onPwdRepeatChange = (e) => {
-    // 아래 주석 두 줄 : 상태관리로 비번 재확인 인풋 value 관리 하려는데 잘 안됨.
+    // 아래 주석 두 줄 : 나중에 useEffect로 수정하기
     // setPwdRepeat(e.target.value);
     // console.log(pwdRepeat);
     let pwdRepeat = e.target.value;

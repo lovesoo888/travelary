@@ -1,6 +1,7 @@
 // ! 메인 페이지의 네비바
+import React, { useState, useEffect } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 // reactstrap components
 import {
   DropdownMenu,
@@ -18,8 +19,33 @@ import {
   Container,
   Media,
 } from 'reactstrap';
+//각종 유틸리티 함수를 참조한다.
+import {
+  getJWTToken,
+  isMemberLogined,
+  getLoginMember,
+} from '../../helpers/authUtils';
 
 const AdminNavbar = (props) => {
+  const history = useHistory();
+
+  //사용자 로그아웃 처리 - 로컬 스토리지를 삭제한다.
+  const logOut = () => {
+    if (window.confirm('Are you sure to log-out?') === true) {
+      window.localStorage.removeItem('jwtToken');
+      history.push('/auth/login');
+    } else {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    const storageToken = window.localStorage.getItem('jwtToken');
+    console.log('----------------------', storageToken);
+    const st = getLoginMember();
+    console.log('~~~~~~~~~~~', st);
+  }, []);
+
   return (
     <>
       <Navbar className='navbar-top navbar-dark' expand='md' id='navbar-main'>
@@ -49,7 +75,7 @@ const AdminNavbar = (props) => {
             <UncontrolledDropdown nav>
               <DropdownToggle nav className='nav-link-icon'>
                 <i className='ni ni-bell-55' />
-                <span class='badge badge-default'>4</span>
+                <span class='badge badge-default'>7</span>
               </DropdownToggle>
               <DropdownMenu
                 aria-labelledby='navbar-default_dropdown_1'
@@ -62,6 +88,11 @@ const AdminNavbar = (props) => {
                 <DropdownItem>Something else here</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            {/* 로그아웃 버튼 */}
+            <DropdownToggle nav>
+              <i className='ni ni-button-power' onClick={logOut} />
+              {/* <span class='badge badge-default'></span> */}
+            </DropdownToggle>
           </Nav>
 
           {/* 유저 상단바 끝 */}

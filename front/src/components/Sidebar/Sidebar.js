@@ -1,7 +1,7 @@
 // ! 반응형 사이즈 줄였을 때 나오는 메뉴바 (네비게이션, 프로필...)
 
 /*eslint-disable*/
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink as NavLinkRRD, Link } from 'react-router-dom';
 // nodejs library to set properties for components
 import { PropTypes } from 'prop-types';
@@ -36,10 +36,17 @@ import {
   Row,
   Col,
 } from 'reactstrap';
+//각종 유틸리티 함수를 참조한다.
+import {
+  getJWTToken,
+  isMemberLogined,
+  getLoginMember,
+} from '../../helpers/authUtils';
 
 var ps;
 
 const Sidebar = (props) => {
+  const [userName, setUserName] = useState();
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -86,6 +93,22 @@ const Sidebar = (props) => {
     };
   }
 
+  //사용자 로그아웃 처리 - 로컬 스토리지를 삭제한다.
+  const logOut = () => {
+    if (window.confirm('Are you sure to log-out?') === true) {
+      window.localStorage.removeItem('jwtToken');
+      history.push('/auth/login');
+    } else {
+      return;
+    }
+  };
+
+  // 로딩 시 최초 한 번 실행
+  useEffect(() => {
+    // 로그인한 사용자 이름 사이더바에 넣어주기 - 임시로 이름 박아놓음 나중에 고치기
+    setUserName(getLoginMember().userName);
+  }, []);
+
   return (
     <Navbar
       className='navbar-vertical fixed-left navbar-light bg-white'
@@ -118,9 +141,8 @@ const Sidebar = (props) => {
           </div>
           <div className='flexbox'>
             <Media className='ml-2 d-lg-block align-items-center'>
-              <span className='mb-0 text-ml font-weight-bold'>
-                Jessica Jones
-              </span>
+              {/* <span className='mb-0 text-ml font-weight-bold'>{userName}</span> */}
+              <span className='mb-0 text-ml font-weight-bold'>UserName</span>
             </Media>
             <Nav className='align-items-center d-md-none'>
               <UncontrolledDropdown nav>
@@ -138,6 +160,11 @@ const Sidebar = (props) => {
                   <DropdownItem>Something else here</DropdownItem>
                 </DropdownMenu>
               </UncontrolledDropdown>
+              {/* 로그아웃 버튼 */}
+              <DropdownToggle nav>
+                <i className='ni ni-button-power' onClick={logOut} />
+                {/* <span class='badge badge-default'></span> */}
+              </DropdownToggle>
             </Nav>
           </div>
         </Media>

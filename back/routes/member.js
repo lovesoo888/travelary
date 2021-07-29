@@ -123,8 +123,9 @@ router.post('/forgotpassword', async (req, res) => {
 
     // 랜덤 비밀번호 생성하고 비밀번호 업데이트 - uuid 라이브러리 이용
     const tempPwd = uuidv4();
+    const hashPwd = await bcrypt.hash(tempPwd, 12);
     const pwdChangeResult = await Member.update(
-      { userPwd: tempPwd },
+      { userPwd: hashPwd },
       { where: { email: userEmail } }
     );
 

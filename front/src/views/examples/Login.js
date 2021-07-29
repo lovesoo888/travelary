@@ -58,16 +58,16 @@ const Login = () => {
       .then((res) => {
         if (res.data.code === '200') {
           // console.log('JWT토큰값:', res.data.data.token);
-          console.log('로그인 사용자 정보:', res.data.data.member);
+          // console.log('로그인 사용자 정보:', res.data.data.member);
 
           //토큰값을 웹브라우저 로컬스토리지에 보관하기
           window.localStorage.setItem('jwtToken', res.data.data.token);
 
-          const storageToken = window.localStorage.getItem('jwtToken');
-          console.log(
-            '로그인 시 브라우저 로컬스토리지에 저장된 토큰:',
-            storageToken
-          );
+          // const storageToken = window.localStorage.getItem('jwtToken');
+          // console.log(
+          //   '로그인 시 브라우저 로컬스토리지에 저장된 토큰:',
+          //   storageToken
+          // );
 
           //사용자 토큰 발급 후 백엔드 API 호출시 발급된 JWT토큰을
           //Ajax 헤더에 x-access-token 영역에 기본 포함 시켜 백엔드 서비스를 호출하게 한다.
@@ -201,26 +201,14 @@ const Login = () => {
         </Card>
         <Row className='mt-3'>
           <Col xs='6'>
-            <a
-              className='text-muted'
-              href='#pablo'
-              onClick={(e) => e.preventDefault()}
-            >
-              <Link to='/auth/forgotpassword'>
-                <small>Forgot password?</small>
-              </Link>
-            </a>
+            <Link to='/auth/forgotpassword' className='text-muted'>
+              <small>Forgot password?</small>
+            </Link>
           </Col>
           <Col className='text-right' xs='6'>
-            <a
-              className='text-muted'
-              href='#pablo'
-              onClick={(e) => e.preventDefault()}
-            >
-              <Link to='/auth/register'>
-                <small>Create new account</small>
-              </Link>
-            </a>
+            <Link to='/auth/register' className='text-muted'>
+              <small>Create new account</small>
+            </Link>
           </Col>
         </Row>
       </Col>
