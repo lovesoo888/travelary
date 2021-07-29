@@ -5,7 +5,8 @@ export const initialState = {
   categoryList: [
     {
       id: 1,
-      User: {
+      categoryCode: 1, // 공유/개인 인지 확인
+      Member: {
         id: 1,
         nickname: '테스터',
       },
@@ -15,8 +16,26 @@ export const initialState = {
       },
     },
   ],
+  postList: [
+    {
+      id: 1,
+      categoryCode: 1, // 공유/개인 인지 확인
+      Member: {
+        id: 1,
+        nickname: '테스터',
+      },
+      title: '발리에서 생긴일 part.1',
+      ThumnailImg: {
+        src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
+      },
+    },
+  ],
+  title: '발리에서 생긴일 post1',
+  contents: ['난 안되겠니~~ 이 세상에서~~'],
+  categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   categoryAdded: false, // 카테고리 추가가 완료 되면 true로 반환
+  postAdded: false,
 };
 
 //? 액션 함수 시작
@@ -24,8 +43,13 @@ export const initialState = {
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
 const ADD_CATEGORY = 'ADD_CATEGORY';
+const ADD_POST = 'ADD_POST';
 export const addCategory = {
   type: ADD_CATEGORY,
+};
+
+export const addPost = {
+  type: ADD_POST,
 };
 
 const dummyCategory = {
@@ -41,6 +65,18 @@ const dummyCategory = {
   },
 };
 
+const dummyPost = {
+  id: 2,
+  Member: {
+    id: 1,
+    nickname: '테스터',
+  },
+  title: '발리에서 생긴일 part2',
+  ThumnailImg: {
+    src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
+  },
+};
+
 // 리듀서 함수
 const reducer = (state = initialState, action) => {
   switch (action.type) {
@@ -50,6 +86,12 @@ const reducer = (state = initialState, action) => {
         // 앞에다 추가를 해주어야 최신글이 위로 주르륵 올라온다 (왼쪽), 기존 리스트의 불변성도 지켜주자
         categoryList: [dummyCategory, ...state.categoryList],
         categoryAdded: true,
+      };
+    case ADD_POST:
+      return {
+        ...state,
+        postList: [dummyPost, ...state.postList],
+        postAdded: true,
       };
     default:
       return state;

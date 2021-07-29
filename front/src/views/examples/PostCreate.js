@@ -2,33 +2,36 @@ import React, { useState, useCallback } from 'react';
 import { Container, Form } from 'reactstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { addPost } from 'reducer/post';
 
 const PostCreate = () => {
-  const [postContent, setPostContent] = useState({
+  const dispatch = useDispatch();
+
+  const { imagePaths } = useSelector((state) => state.post);
+  const [postContents, setPostContents] = useState({
     title: '',
-    content: '',
-    thumbnailImg: '',
+    contents: '',
+    imagePaths: '',
   });
 
-  // 데이터 담는 함수
-  const useInput = () => {
-    const initialValue = null;
-    const [value, setValue] = useState(initialValue);
-    const handler = useCallback((e) => {
-      setValue(e.target.value);
-    }, []);
-    console.log(value);
-    return [value, handler, setValue];
-  };
+  // 새터함수에 데이터 담기
+  const onChangePosts = useCallback((e) => {
+    setPostContents({ ...postContents, [e.target.name]: e.target.value });
+  });
 
-  const [title, onChangeTitle, thumbnailImg] = useInput('');
-
-  // 제목 입력
+  //
+  const onSubmit = useCallback((e) => {
+    e.preventDefault();
+    dispatch(addPost);
+    setPostContents('');
+  }, []);
 
   return (
     <div className='pb-8 pt-2 pt-md-7'>
       <Container className='postCreateWrap'>
-        <Form>
+        <Form onSubmit={onSubmit}>
           <dl>
             <dt>Category Name</dt>
             <dd className='mt-2'>유럽에서 한달살기</dd>
@@ -40,8 +43,9 @@ const PostCreate = () => {
                 type='text'
                 className='form-control'
                 placeholder='제목을 입력해주세요'
-                onChange={onChangeTitle}
-                value={title}
+                onChange={onChangePosts}
+                value={postContents.title}
+                name='title'
               ></input>
             </dd>
           </dl>
@@ -82,7 +86,8 @@ const PostCreate = () => {
                   className='custom-file-input'
                   id='customFileLang'
                   lang='en'
-                  value={thumbnailImg}
+                  value={postContents.imagePaths}
+                  name='imagePaths'
                 />
                 <label
                   className='custom-file-label inputStyle'
@@ -109,7 +114,9 @@ const PostCreate = () => {
             </dd>
           </dl>
           <div>
-            <button class='btn btn-primary'>Submit</button>
+            <button type='submit' class='btn btn-primary'>
+              Submit
+            </button>
           </div>
         </Form>
       </Container>
