@@ -4,7 +4,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { addPost } from 'reducer/post';
+import { addPostAction } from 'reducer/post';
 
 const PostCreate = () => {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const PostCreate = () => {
   //
   const onSubmit = useCallback((e) => {
     e.preventDefault();
-    dispatch(addPost);
+    dispatch(addPostAction());
     setPostContents('');
   }, []);
 

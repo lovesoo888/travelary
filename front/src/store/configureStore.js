@@ -1,17 +1,18 @@
 import { createWrapper } from 'next-redux-wrapper';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import createSagaMiddleware from '@redux-saga/core';
+import createSagaMiddleware from 'redux-saga';
 
 // reducer 불러와서
 import reducer from '../reducers';
 import rootSaga from '../sagas';
 
 // 미들웨어 설정
-const loggerMiddleware =
+const loggerMiddlewarereturn =
   ({ dispatch, getState }) =>
   (next) =>
   (action) => {
+    // 삼단 고차 함수
     console.log(action);
     return next(action);
   };
@@ -19,7 +20,7 @@ const loggerMiddleware =
 const configureStore = () => {
   // 사가 미들웨어 사용
   const sagaMiddleware = createSagaMiddleware();
-  const middlewares = [sagaMiddleware, loggerMiddleware];
+  const middlewares = [sagaMiddleware, loggerMiddlewarereturn];
 
   // 리덕스 개발 툴 설정
   const enhancer =

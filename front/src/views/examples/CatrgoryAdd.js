@@ -1,29 +1,46 @@
 // 카테고리 추가 페이지
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Card, Container, Row, Col, Form } from 'reactstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategory } from 'reducer/post';
+import { addCategoryAction } from 'reducer/post';
+import useInput from 'helpers/useInput';
 
-import CategoryList from './CategoryList';
-
-const CatrgoryAdd = () => {
+const CatrgoryAdd = ({ post }) => {
   // 데이터 담는 함수
   const dispatch = useDispatch();
+  const history = useHistory();
 
-  const { imagePaths } = useSelector((state) => state.post);
+  const { ImagePaths, addCategoryDone } = useSelector((state) => state.post);
   const [title, setTitle] = useState('');
+
+  useEffect(() => {
+    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
+    if (addCategoryDone) {
+      setTitle('');
+      history.push('/admin/index');
+    }
+  }, [addCategoryDone]);
 
   const onChangeTitle = useCallback((e) => {
     setTitle(e.target.value);
   }, []);
 
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-    dispatch(addCategory);
-    setTitle('');
-  }, []);
+  // 카테고리 추가 액션
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      dispatch(addCategoryAction(title));
+    },
+    [title]
+  );
+
+  const imageInput = useRef();
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
 
   return (
     <div className='pb-8 pt-2 pt-md-7 categoryAddWrap'>
@@ -58,12 +75,13 @@ const CatrgoryAdd = () => {
                       <label
                         className='custom-file-label inputStyle'
                         for='customFileLang'
+                        onClick={onClickImageUpload}
                       >
                         Select file
                       </label>
                     </div>
                     <div className='imageThumbnail mt-3'>
-                      {imagePaths.map((v) => (
+                      {ImagePaths.map((v) => (
                         <div key={v}>
                           <img src={v} alt={v} />
                           <div>

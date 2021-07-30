@@ -33,31 +33,45 @@ export const initialState = {
   title: '발리에서 생긴일 post1',
   contents: ['난 안되겠니~~ 이 세상에서~~'],
   categoryCode: 1, // 공유/개인 인지 확인
-  imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
+  ImagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   categoryAdded: false, // 카테고리 추가가 완료 되면 true로 반환
-  postAdded: false,
+  addPostLoading: false, // 포스트 추가시 로딩
+  addPostDone: false,
+  addPostError: false,
+  addCategoryLoading: false, // 카테고리 추가시 로딩
+  addCategoryDone: false,
+  addCategoryError: false,
 };
 
 //? 액션 함수 시작
 
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
-const ADD_CATEGORY = 'ADD_CATEGORY';
-const ADD_POST = 'ADD_POST';
+export const ADD_CATEGORY_REQUEST = 'ADD_CATEGORY_REQUEST';
+export const ADD_CATEGORY_SUCCESS = 'ADD_CATEGORY_SUCCESS';
+export const ADD_CATEGORY_FAILURE = 'ADD_CATEGORY_FAILURE';
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+export const SHARE_CATEGORY_REQUEST = 'SHARE_CATEGORY_REQUEST';
+export const SHARE_CATEGORY_SUCCESS = 'SHARE_CATEGORY_SUCCESS';
+export const SHARE_CATEGORY_FAILURE = 'SHARE_CATEGORY_FAILURE';
 
-// 액션 타입 불러오기, 나중에 컴포넌트에서 onSubmit 같은 액션으로 액션을 불러와준다.
-export const addCategory = {
-  type: ADD_CATEGORY,
-};
+// 액션 타입 불러오기, 나중에 컴포넌트에서 onSubmit 같은 액션으로 해당 타입액션을 불러와준다.
+export const addCategoryAction = (data) => ({
+  type: ADD_CATEGORY_REQUEST,
+  data,
+});
 
-export const addPost = {
-  type: ADD_POST,
-};
+export const addPostAction = (data) => ({
+  type: ADD_POST_REQUEST,
+  data,
+});
 
 const dummyCategory = {
   //아직 게시글 저장을 하지 못해서 테스트로 넣어보는 데이터
   id: 2,
-  User: {
+  Member: {
     id: 1,
     nickname: '테스터',
   },
@@ -82,18 +96,47 @@ const dummyPost = {
 // 리듀서 함수
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_CATEGORY:
+    case ADD_CATEGORY_REQUEST:
+      console.log('reducer categoryadd');
+      return {
+        ...state,
+        addCategoryLoading: true,
+        addCategoryDone: false,
+        addCategoryError: null,
+      };
+    case ADD_CATEGORY_SUCCESS:
       return {
         ...state,
         // 앞에다 추가를 해주어야 최신글이 위로 주르륵 올라온다 (왼쪽), 기존 리스트의 불변성도 지켜주자
         categoryList: [dummyCategory, ...state.categoryList],
-        categoryAdded: true,
+        addCategoryLoading: false,
+        addCategoryDone: true,
       };
-    case ADD_POST:
+    case ADD_CATEGORY_FAILURE:
+      return {
+        ...state,
+        addCategoryLoading: false,
+        addCategoryError: action.error,
+      };
+    case ADD_POST_REQUEST:
+      return {
+        ...state,
+        addPostLoading: true,
+        addPostDone: false,
+        addPostError: null,
+      };
+    case ADD_POST_SUCCESS:
       return {
         ...state,
         postList: [dummyPost, ...state.postList],
-        postAdded: true,
+        addPostLoading: false,
+        addPostDone: true,
+      };
+    case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostLoading: false,
+        addPostError: action.error,
       };
     default:
       return state;

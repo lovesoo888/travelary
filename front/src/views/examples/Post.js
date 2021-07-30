@@ -12,6 +12,7 @@ const Post = ({ post }) => {
   const { title, contents } = useSelector((state) => state.post);
   return (
     <>
+      {/* 배경 백그라운드 이미지로 까는거 잊지 말기 */}
       <div className='header postViewWrap pb-8 pt-md-6'>
         {/* <PostBg /> */}
         <Container className='mt--7' fluid>

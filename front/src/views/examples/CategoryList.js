@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const CategoryList = ({ post }) => {
+const CategoryList = () => {
   const { categoryList } = useSelector((state) => state.post);
 
   // 카테고리 deletedAt 이 1인지 0인지 체크 해주자..나중에...
@@ -58,6 +58,13 @@ const CategoryList = ({ post }) => {
     return (
       <div className='header pb-8 pt-2 pt-md-7'>
         {/* 유저가 아무런 카테고리를 작성하지 않았을 때 */}
+        <Container fluid>
+          <Link to='/admin/category/add'>
+            <button class='btn btn-primary mb-4' type='button'>
+              Add Category
+            </button>
+          </Link>
+        </Container>
         <Container className='firstPostWrap'>
           <div>
             <p>첫 여행 일기를 작성해주세요</p>
