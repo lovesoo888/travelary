@@ -1,32 +1,44 @@
-import React, { useState, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { Container, Form } from 'reactstrap';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addPostAction } from 'reducer/post';
+import useInput from 'helpers/useInput';
 
 const PostCreate = () => {
   const dispatch = useDispatch();
 
-  const { imagePaths } = useSelector((state) => state.post);
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
+
   const [postContents, setPostContents] = useState({
     title: '',
     contents: '',
-    imagePaths: '',
+    // imagePaths: '',
+    // categoryCode: '',
   });
 
   // 새터함수에 데이터 담기
   const onChangePosts = useCallback((e) => {
     setPostContents({ ...postContents, [e.target.name]: e.target.value });
+    console.log(e.target.name, e.target.value);
   });
 
+  useEffect(() => {
+    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
+    if (addPostDone) {
+      console.log('post 등록 완료');
+    }
+  }, [addPostDone]);
   //
-  const onSubmit = useCallback((e) => {
-    e.preventDefault();
-    dispatch(addPostAction());
-    setPostContents('');
-  }, []);
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      dispatch(addPostAction(postContents));
+    },
+    [postContents]
+  );
 
   return (
     <div className='pb-8 pt-2 pt-md-7'>
@@ -54,7 +66,7 @@ const PostCreate = () => {
             <dd className='mt-2'>
               <CKEditor
                 editor={ClassicEditor}
-                value='content'
+                // value={postContents.content}
                 data='<p>내용을 입력해주세요</p>'
                 onReady={(editor) => {
                   // You can store the "editor" and use when it is needed.
@@ -63,12 +75,10 @@ const PostCreate = () => {
                 onChange={(event, editor) => {
                   const data = editor.getData();
                   console.log({ event, editor, data });
-                }}
-                onBlur={(event, editor) => {
-                  console.log('Blur.', editor);
-                }}
-                onFocus={(event, editor) => {
-                  console.log('Focus.', editor);
+                  setPostContents({
+                    ...postContents,
+                    contents: data,
+                  });
                 }}
               />
             </dd>
@@ -86,8 +96,6 @@ const PostCreate = () => {
                   className='custom-file-input'
                   id='customFileLang'
                   lang='en'
-                  value={postContents.imagePaths}
-                  name='imagePaths'
                 />
                 <label
                   className='custom-file-label inputStyle'
@@ -107,9 +115,8 @@ const PostCreate = () => {
           <dl>
             <dt>공유 카테고리</dt>
             <dd className='mt-2'>
-              <select class='form-control'>
-                <option>공유 안함</option>
-                <option></option>
+              <select class='form-control' name='categoryCode'>
+                <option value={postContents.categoryCode}>공유 안함</option>
               </select>
             </dd>
           </dl>

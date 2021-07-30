@@ -28,6 +28,7 @@ function* addCategory(action) {
     // call(categoryAPI, action.data) -> categoryAPI(action.data) 라고 보면 된다.
     yield delay(1000); // 서버 연동이 안된 상태에선 딜레이 이펙트를 준다.
     // 아직 데이터가 없으니 비동기적인 효과를 주는 것이다.
+    console.log('딜레이 후에는?');
     yield put({
       // put: dispatch 라고 생각해라
       type: ADD_CATEGORY_SUCCESS,
@@ -48,9 +49,6 @@ function postAPI(data) {
 
 function* addPost(action) {
   try {
-    yield put({
-      type: ADD_POST_REQUEST,
-    });
     // const result = yield call(postAPI, action.data);
     yield delay(1000);
     yield put({

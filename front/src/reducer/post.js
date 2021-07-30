@@ -1,3 +1,4 @@
+import shortId from 'shortid';
 import produce from 'immer';
 
 // 초기 설정
@@ -30,8 +31,7 @@ export const initialState = {
       },
     },
   ],
-  title: '발리에서 생긴일 post1',
-  contents: ['난 안되겠니~~ 이 세상에서~~'],
+  poseView: [],
   categoryCode: 1, // 공유/개인 인지 확인
   ImagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   categoryAdded: false, // 카테고리 추가가 완료 되면 true로 반환
@@ -68,30 +68,43 @@ export const addPostAction = (data) => ({
   data,
 });
 
-const dummyCategory = {
+const dummyCategory = (data) => ({
   //아직 게시글 저장을 하지 못해서 테스트로 넣어보는 데이터
-  id: 2,
+  id: shortId.generate(),
   Member: {
     id: 1,
     nickname: '테스터',
   },
-  title: '파리의 연인',
+  title: data,
   ThumnailImg: {
     src: 'https://post-phinf.pstatic.net/MjAxODAxMDhfMTA2/MDAxNTE1NDAyOTM1NzMw.6AVV-NKg21QLqsVY6S1HV-lMOoO5JoFqevouh2Jwp9Ug.1pvMx529vfdUddfAxx54V1xriC-PMjud1zcxt1OfjY8g.PNG/2018-01-08_18%3B12%3B38.PNG?type=w1200',
   },
-};
+});
 
-const dummyPost = {
-  id: 2,
+const dummyPostList = (data) => ({
+  id: shortId.generate(),
   Member: {
     id: 1,
     nickname: '테스터',
   },
-  title: '발리에서 생긴일 part2',
+  title: data,
   ThumnailImg: {
     src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
   },
-};
+});
+
+const dummyPost = (data) => ({
+  id: shortId.generate(),
+  Member: {
+    id: 1,
+    nickname: '테스터',
+  },
+  title: data,
+  contents: '저기요ㅠㅠ',
+  ThumnailImg: {
+    src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
+  },
+});
 
 // 리듀서 함수
 const reducer = (state = initialState, action) => {
@@ -108,7 +121,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         // 앞에다 추가를 해주어야 최신글이 위로 주르륵 올라온다 (왼쪽), 기존 리스트의 불변성도 지켜주자
-        categoryList: [dummyCategory, ...state.categoryList],
+        categoryList: [dummyCategory(action.data), ...state.categoryList],
         addCategoryLoading: false,
         addCategoryDone: true,
       };
@@ -119,6 +132,7 @@ const reducer = (state = initialState, action) => {
         addCategoryError: action.error,
       };
     case ADD_POST_REQUEST:
+      console.log('reducer post add');
       return {
         ...state,
         addPostLoading: true,
@@ -128,7 +142,8 @@ const reducer = (state = initialState, action) => {
     case ADD_POST_SUCCESS:
       return {
         ...state,
-        postList: [dummyPost, ...state.postList],
+        postList: [dummyPostList(action.data.title), ...state.postList],
+        postView: [dummyPost(action.data), ...state.postView],
         addPostLoading: false,
         addPostDone: true,
       };

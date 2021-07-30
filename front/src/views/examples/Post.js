@@ -1,6 +1,6 @@
 // 포스트 view 페이지
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 // reactstrap components
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
@@ -9,7 +9,7 @@ const Post = ({ post }) => {
   // 내 아이디 값 불러오는...건데
   // ? user reducer가 없으니까 어떻게 불러올지는 나중에 수정하자
   // const id = useSelector((state) => state.user.me?.id);
-  const { title, contents } = useSelector((state) => state.post);
+  const { title, contents, postView } = useSelector((state) => state.post);
   return (
     <>
       {/* 배경 백그라운드 이미지로 까는거 잊지 말기 */}

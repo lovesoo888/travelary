@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { post } from 'jquery';
 
 const PostList = ({ post }) => {
   const { postList } = useSelector((state) => state.post);
@@ -29,7 +28,7 @@ const PostList = ({ post }) => {
             {postList.map((post) => (
               <Col key={post.id} lg='6' xl='4' className='postWrap'>
                 <Card className='card-stats mb-4 mb-xl-0'>
-                  <Link to='/admin/post/view'>
+                  <Link to={`/admin/post/view/${post.id}`}>
                     <div className='imageThumbnail'>
                       <img alt='...' src={post.ThumnailImg.src} />
                     </div>

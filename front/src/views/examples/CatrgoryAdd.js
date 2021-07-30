@@ -1,6 +1,6 @@
 // 카테고리 추가 페이지
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Card, Container, Row, Col, Form } from 'reactstrap';
 
@@ -8,31 +8,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addCategoryAction } from 'reducer/post';
 import useInput from 'helpers/useInput';
 
-const CatrgoryAdd = ({ post }) => {
+import CategoryList from './CategoryList';
+
+const CatrgoryAdd = () => {
   // 데이터 담는 함수
   const dispatch = useDispatch();
   const history = useHistory();
 
   const { ImagePaths, addCategoryDone } = useSelector((state) => state.post);
-  const [title, setTitle] = useState('');
+  const [title, onChangeTitle, setTitle] = useInput('');
 
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addCategoryDone) {
       setTitle('');
-      history.push('/admin/index');
     }
   }, [addCategoryDone]);
 
-  const onChangeTitle = useCallback((e) => {
-    setTitle(e.target.value);
-  }, []);
+  // const onChangeTitle = useCallback((e) => {
+  //   setTitle(e.target.value);
+  // }, []);
 
   // 카테고리 추가 액션
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
       dispatch(addCategoryAction(title));
+      history.push('/admin/index');
     },
     [title]
   );
@@ -112,7 +114,7 @@ const CatrgoryAdd = ({ post }) => {
           </Col>
         </Row>
       </Container>
-      {/* <CategoryList /> */}
+      <CategoryList />
     </div>
   );
 };

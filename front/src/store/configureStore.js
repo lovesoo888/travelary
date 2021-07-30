@@ -1,10 +1,10 @@
-import { createWrapper } from 'next-redux-wrapper';
 import { applyMiddleware, compose, createStore } from 'redux';
+import { createWrapper } from 'next-redux-wrapper';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
 // reducer 불러와서
-import reducer from '../reducers';
+import reducer from '../reducer';
 import rootSaga from '../sagas';
 
 // 미들웨어 설정

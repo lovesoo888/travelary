@@ -77,14 +77,15 @@ const CategoryList = () => {
   }
 };
 
-CategoryList.propTypes = {
-  post: PropTypes.shape({
-    id: PropTypes.number,
-    Member: PropTypes.object,
-    content: PropTypes.string,
-    createAt: PropTypes.object,
-    ThumnailImg: PropTypes.object,
-  }).isRequired,
-};
+// CategoryList.propTypes = {
+//   post: PropTypes.shape({
+//     id: PropTypes.number,
+//     Member: PropTypes.object,
+//     contents: PropTypes.string,
+//     title: PropTypes.string,
+//     createAt: PropTypes.object,
+//     ThumnailImg: PropTypes.object,
+//   }).isRequired,
+// };
 
 export default CategoryList;
