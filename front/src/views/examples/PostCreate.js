@@ -20,9 +20,22 @@ const PostCreate = () => {
   });
 
   // 새터함수에 데이터 담기
+  // const onChangePosts = useCallback((e) => {
+  //   setPostContents({ ...postContents, [e.target.name]: e.target.value });
+  //   setPostContents({
+  //     ...postContents,
+  //     contents: data,
+  //   });
+  //   console.log(e.target.name, e.target.value);
+  // });
+
   const onChangePosts = useCallback((e) => {
-    setPostContents({ ...postContents, [e.target.name]: e.target.value });
-    console.log(e.target.name, e.target.value);
+    const { name, value } = e.target;
+    setPostContents({
+      ...postContents,
+      [name]: value,
+    });
+    console.log(postContents);
   });
 
   useEffect(() => {
@@ -67,18 +80,19 @@ const PostCreate = () => {
               <CKEditor
                 editor={ClassicEditor}
                 // value={postContents.content}
-                data='<p>내용을 입력해주세요</p>'
+                data=''
                 onReady={(editor) => {
                   // You can store the "editor" and use when it is needed.
                   console.log('Editor is ready to use!', editor);
                 }}
                 onChange={(event, editor) => {
                   const data = editor.getData();
-                  console.log({ event, editor, data });
+                  console.log(data);
                   setPostContents({
                     ...postContents,
                     contents: data,
                   });
+                  console.log(postContents);
                 }}
               />
             </dd>

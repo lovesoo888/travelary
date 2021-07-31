@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { all, fork, put, delay, takeLatest } from 'redux-saga/effects'; // saga 이펙트
+import { all, fork, put, delay, takeLatest, throttle } from 'redux-saga/effects'; // saga 이펙트
+import shortid from 'shortid';
 import {
   ADD_CATEGORY_SUCCESS,
   ADD_CATEGORY_REQUEST,
@@ -7,6 +8,16 @@ import {
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
   ADD_POST_FAILURE,
+  REMOVE_CATEGORY_REQUEST,
+  REMOVE_CATEGORY_SUCCESS,
+  REMOVE_CATEGORY_FAILURE,
+  REMOVE_POST_REQUEST,
+  REMOVE_POST_SUCCESS,
+  REMOVE_POST_FAILURE,
+  LOAD_CATEGORY_REQUEST,
+  LOAD_CATEGORY_SUCCESS,
+  LOAD_CATEGORY_FAILURE,
+  generateDummyCategory,
 } from '../reducer/post';
 
 // ! API 는 제네레이터 함수를 사용하지 않는다.
@@ -18,26 +29,44 @@ function categoryAPI(data) {
 
 // Step 1. action에서 데이터 보내서
 function* addCategory(action) {
-  // 요청이 실패했을 때를 대비해서 try catch로 받아준다.
-  // 성공 결과 : result.data
-  // 실패 결과 : err.response.data
   console.log('saga AddCategory');
   try {
     // ? 근데 아직 서버 연동을 안해주었으니 api를 불러오면 에러가 뜬다 나중에 수정해주자.
-    // const result = yield call(categoryAPI, action.data); // 서버에 api 요청한 결과 값을 받는다.
-    // call(categoryAPI, action.data) -> categoryAPI(action.data) 라고 보면 된다.
     yield delay(1000); // 서버 연동이 안된 상태에선 딜레이 이펙트를 준다.
     // 아직 데이터가 없으니 비동기적인 효과를 주는 것이다.
-    console.log('딜레이 후에는?');
+    const id = shortid.generate();
     yield put({
-      // put: dispatch 라고 생각해라
       type: ADD_CATEGORY_SUCCESS,
-      // data: result.data,
-      data: action.data, //ADD_CATEGORY_REQUEST 에서 보낸 데이터를 바로 SUCCESS로 보냄
+      data: {
+        id,
+        contents: action.data,
+        title: action.data,
+      },
     });
   } catch (err) {
     yield put({
       type: ADD_CATEGORY_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function loadCategoryAPI(data) {
+  // 실제 서버에 요청을 보냄
+  return axios.get('/api/categories', data);
+}
+
+function* loadCategory(action) {
+  try {
+    yield delay(1000);
+    const id = shortid.generate();
+    yield put({
+      type: LOAD_CATEGORY_SUCCESS,
+      data: generateDummyCategory(10),
+    });
+  } catch (err) {
+    yield put({
+      type: LOAD_CATEGORY_FAILURE,
       data: err.response.data,
     });
   }
@@ -64,6 +93,44 @@ function* addPost(action) {
   }
 }
 
+function removeCategoryAPI(data) {
+  return axios.delete('/api/category', data);
+}
+
+function* removeCategory(action) {
+  try {
+    delay(1000);
+    yield put({
+      type: REMOVE_CATEGORY_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    yield put({
+      type: REMOVE_CATEGORY_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function removePostAPI(data) {
+  return axios.delete('/api/post', data);
+}
+
+function* removePost(action) {
+  try {
+    delay(1000);
+    yield put({
+      type: REMOVE_POST_SUCCESS,
+      data: action.data,
+    });
+  } catch (err) {
+    yield put({
+      type: REMOVE_POST_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
 // 비동기 액션 생성 함수
 function* watchAddCategory() {
   // take : ADD_CATEGORY_REQUEST (해당)액션이 실행되기 까지 기다리겠다.
@@ -82,6 +149,24 @@ function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
+function* watchRemoveCategory() {
+  yield takeLatest(REMOVE_CATEGORY_REQUEST, removeCategory);
+}
+
+function* watchRemovePost() {
+  yield takeLatest(REMOVE_POST_REQUEST, removePost);
+}
+
+function* watchLoadCategory() {
+  yield throttle(5000, LOAD_CATEGORY_REQUEST, loadCategory);
+}
+
 export default function* postSaga() {
-  yield all([fork(watchAddCategory), fork(watchAddPost)]);
+  yield all([
+    fork(watchLoadCategory),
+    fork(watchAddCategory),
+    fork(watchAddPost),
+    fork(watchRemoveCategory),
+    fork(watchRemovePost),
+  ]);
 }
