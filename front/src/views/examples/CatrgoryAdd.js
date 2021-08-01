@@ -102,20 +102,18 @@ const CatrgoryAdd = () => {
                       </label>
                     </div>
                     <div className='imageThumbnail mt-3'>
-                      {/* {imagePaths.map((v) => (
-                        <div key={v}>
-                          <img src={v} alt={v} />
+                      {imagePaths.map((v, i) => (
+                        <div key={v} style={{ display: 'inline-block' }}>
+                          <img
+                            src={`http://localhost:3065/${v}`}
+                            style={{ width: '200px' }}
+                            alt={v}
+                          />
                           <div>
-                            <button
-                              type='button'
-                              class='btn btn-default'
-                              // onClick={onCategoryAdd}
-                            >
-                              Remove
-                            </button>
+                            {/* <Button onClick={onRemoveImage(i)}>제거</Button> */}
                           </div>
                         </div>
-                      ))} */}
+                      ))}
                     </div>
                   </li>
                 </ul>

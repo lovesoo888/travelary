@@ -44,10 +44,10 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, //20 메가 제한
 });
 
-router.post('/images', upload.single('image'), async (req, res, next) => {
+router.post('/images', upload.array('image'), async (req, res, next) => {
   // post/images
   console.log(req.files);
-  res.json(req.filename);
+  res.json(req.files.map((v) => v.filename));
 });
 
 router.delete('/:postCategoryId', async (req, res, next) => {
