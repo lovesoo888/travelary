@@ -41,18 +41,20 @@ export const initialState = {
   removePostError: false,
 };
 
-export const generateDummyCategory = (number) => Array(9).fill().map(() => ({
-  id: shortId.generate(),
-  ThumnailImg: {
-    src: faker.image.image(),
-  },
-  Member: {
-    id: shortId.generate(),
-    nickname: faker.name.findName(),
-  },
-  title: faker.lorem.text(),
-}));
-
+export const generateDummyCategory = (number) =>
+  Array(9)
+    .fill()
+    .map(() => ({
+      id: shortId.generate(),
+      ThumnailImg: {
+        src: faker.image.image(),
+      },
+      Member: {
+        id: shortId.generate(),
+        nickname: faker.name.findName(),
+      },
+      title: faker.lorem.text(),
+    }));
 
 //? 액션 함수 시작
 // 카테고리 추가
@@ -117,7 +119,7 @@ const dummyPostList = (data) => ({
 
 // 리듀서 함수
 // 이전 상태를 액션을 통해 다음 상태로 만들어 내는 함수(불변성 지키면서)
-const reducer = (state = initialState, action) => 
+const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case LOAD_CATEGORY_REQUEST:
@@ -128,7 +130,7 @@ const reducer = (state = initialState, action) =>
       case LOAD_CATEGORY_SUCCESS:
         draft.loadCategoryLoading = false;
         draft.loadCategoryDone = true;
-        draft.categoryList = action.data.concat((draft.categoryList).reverse());
+        draft.categoryList = action.data.concat(draft.categoryList);
         draft.hasMoreCategory = draft.categoryList.length < 50;
         break;
       case LOAD_CATEGORY_FAILURE:

@@ -114,7 +114,6 @@ const CatrgoryAdd = () => {
           </Col>
         </Row>
       </Container>
-      <CategoryList />
     </div>
   );
 };

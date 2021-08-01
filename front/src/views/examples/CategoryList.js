@@ -3,18 +3,19 @@ import { Card, Container, Row, Col, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { LOAD_CATEGORY_REQUEST, REMOVE_CATEGORY_REQUEST } from '../../reducer/post';
+import {
+  LOAD_CATEGORY_REQUEST,
+  REMOVE_CATEGORY_REQUEST,
+} from '../../reducer/post';
 
 const CategoryList = ({ post }) => {
-
-  
-
   const dispatch = useDispatch();
-  const { categoryList, hasMoreCategory, loadCategoryLoading } = useSelector((state) => state.post);
+  const { categoryList, hasMoreCategory, loadCategoryLoading } = useSelector(
+    (state) => state.post
+  );
 
   // 카테고리 삭제..
-  const onRemovePost = useCallback((post) => {
-    console.log(post);
+  const onRemovePost = useCallback(() => {
     dispatch({
       type: REMOVE_CATEGORY_REQUEST,
       data: post.id,
@@ -25,14 +26,17 @@ const CategoryList = ({ post }) => {
   useEffect(() => {
     dispatch({
       type: LOAD_CATEGORY_REQUEST,
-    })
+    });
   }, []);
 
   // 스크롤 길이
   useEffect(() => {
-    function onScroll(){
-      if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
-        if(hasMoreCategory && !loadCategoryLoading){
+    function onScroll() {
+      if (
+        window.scrollY + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (hasMoreCategory && !loadCategoryLoading) {
           dispatch({
             type: LOAD_CATEGORY_REQUEST,
           });
@@ -44,7 +48,6 @@ const CategoryList = ({ post }) => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [hasMoreCategory, loadCategoryLoading]);
-
 
   // 카테고리 deletedAt 이 1인지 0인지 체크 해주자..나중에...
   if (categoryList.length >= 1) {
