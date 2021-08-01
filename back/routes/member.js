@@ -24,7 +24,6 @@ router.post('/login', async (req, res) => {
   if (loginUser) {
     //전달 받은 사용자 암호와 DB에 저장된 암호가 같은지 비교
     const result = await bcrypt.compare(userPwd, loginUser.userPwd);
-
     if (result) {
       //JWT 토큰에 담을 JSON 데이터
       var memberData = {
@@ -106,6 +105,7 @@ router.post('/checkEmail', async (req, res) => {
 });
 
 //! 비밀번호 초기화 이메일 요쳥
+//localhost:3003/member/forgotpassword
 router.post('/forgotpassword', async (req, res) => {
   const userEmail = req.body.email;
   const checkEmailResult = await Member.findOne({
@@ -163,6 +163,97 @@ router.post('/forgotpassword', async (req, res) => {
       code: '200',
       data: [],
       msg: 'Temporary password has been sent. Please check your email.',
+    });
+  }
+});
+
+//! 회원 프로필 조회
+// localhost:3003/member/userProfile
+router.post('/userProfile', async (req, res) => {
+  const email = req.body.userEmail;
+
+  try {
+    const loginUser = await Member.findOne({
+      attributes: [
+        'email',
+        'userName',
+        'birthday',
+        'thought',
+        'profileImg',
+        'profileImgTitle',
+      ],
+      where: { email: email },
+    });
+    // console.log('~~~~~~~~~~백앤두두두', loginUser);
+    return res.json({ code: '200', data: loginUser, msg: '사용자 정보 조회' });
+  } catch (err) {
+    console.log('서버에러내용:', err);
+    return res.json({
+      code: '500',
+      data: {},
+      msg: '회원 프로필 조회 사용자 정보 조회 에러 발생',
+    });
+  }
+});
+
+//! 회원 정보 수정
+// localhost:3003/member/saveprofile
+router.post('/saveprofile', async (req, res) => {
+  const member = req.body;
+  // console.log('0000000----00000000', member);
+  if (req.body.userPwd != null) {
+    const hashPwd = await bcrypt.hash(req.body.userPwd, 12);
+
+    const updated = await Member.update(
+      {
+        userPwd: hashPwd,
+        userName: req.body.username,
+        birthday: req.body.birthday,
+        profileImg: req.body.profileImg,
+        profileImgTitle: req.body.profileImgTitle,
+      },
+      { where: { email: req.body.email } }
+    );
+
+    return res.json({
+      code: '200',
+      data: { updated },
+      msg: 'Ok',
+    });
+  } else {
+    const updated = await Member.update(
+      {
+        userName: req.body.username,
+        birthday: req.body.birthday,
+        profileImg: req.body.profileImg,
+        profileImgTitle: req.body.profileImgTitle,
+      },
+      { where: { email: req.body.email } }
+    );
+
+    return res.json({
+      code: '200',
+      data: { updated },
+      msg: 'Ok',
+    });
+  }
+});
+
+//! 회원 정보 삭제
+// localhost:3003/member/delete
+router.post('/delete', async (req, res) => {
+  const email = req.body.userEmail;
+  const deleteResult = await Member.destroy({
+    where: { email: email },
+  });
+  console.log('회원 삭제 처리 결과 ', deleteResult);
+  if (deleteResult === 1) {
+    return res.json({ code: '200', data: {}, msg: 'deleted successfully' });
+  } else {
+    return res.json({
+      code: '500',
+      data: {},
+      msg: '사용자 정보 조회 에러 발생',
     });
   }
 });

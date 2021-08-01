@@ -19,6 +19,7 @@ import {
   Container,
   Media,
 } from 'reactstrap';
+
 //각종 유틸리티 함수를 참조한다.
 import {
   getJWTToken,
@@ -38,13 +39,6 @@ const AdminNavbar = (props) => {
       return;
     }
   };
-
-  useEffect(() => {
-    const storageToken = window.localStorage.getItem('jwtToken');
-    console.log('----------------------', storageToken);
-    const st = getLoginMember();
-    console.log('~~~~~~~~~~~', st);
-  }, []);
 
   return (
     <>

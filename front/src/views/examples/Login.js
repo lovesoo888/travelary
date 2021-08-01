@@ -31,6 +31,12 @@ import {
   Row,
   Col,
 } from 'reactstrap';
+//각종 유틸리티 함수를 참조한다.
+import {
+  getJWTToken,
+  isMemberLogined,
+  getLoginMember,
+} from '../../helpers/authUtils';
 
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -45,8 +51,13 @@ const Login = () => {
 
   // 전역데이터 제어용 디스패치 상수 생성
   // const globalDispatch = useDispatch();
-
   const history = useHistory();
+
+  // 로그인 여부 체크 - 로긴 했으면 메인 페이지로 이동시키기
+  const isLogin = isMemberLogined();
+  if (isLogin == true) {
+    history.push('/');
+  }
 
   const onLoginChange = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });

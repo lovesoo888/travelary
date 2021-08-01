@@ -15,13 +15,28 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       birthday: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY, //DataTypes.DATEONLY
         allowNull: true,
       },
       userStatus: {
         type: DataTypes.STRING(1),
         allowNull: false,
         defaultValue: '1',
+      },
+      thought: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: 'Write your own quotes!',
+      },
+      profileImg: {
+        type: DataTypes.TEXT('medium'),
+        allowNull: true,
+        // defaultValue: '',
+      },
+      profileImgTitle: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        //defaultValue: '',
       },
     },
     {

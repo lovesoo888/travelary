@@ -239,7 +239,7 @@ const Register = () => {
                     type='email'
                     autoComplete='new-email'
                   />
-                  <InputGroupAddon addonType='prepend'>
+                  <InputGroupAddon addonType='append'>
                     <InputGroupText>
                       <i className='ni ni-check-bold emailCheckIcon' />
                     </InputGroupText>
@@ -295,7 +295,7 @@ const Register = () => {
                     type='password'
                     autoComplete='new-password'
                   />
-                  <InputGroupAddon addonType='prepend'>
+                  <InputGroupAddon addonType='append'>
                     <InputGroupText>
                       <i className='ni ni-check-bold pwdCheckIcon' />
                     </InputGroupText>
