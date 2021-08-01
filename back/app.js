@@ -20,7 +20,6 @@ var usersRouter = require('./routes/users');
 var memberRouter = require('./routes/member');
 
 var app = express();
-
 //노드 어플리케이션에 cors기능 적용 - 모든 리소스 접근 CORS 허용하기
 app.use(cors());
 
@@ -32,8 +31,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
+// express 서버 용량 제한 늘리기
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: false }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -42,11 +42,18 @@ import {
   isMemberLogined,
   getLoginMember,
 } from '../../helpers/authUtils';
+import axios from 'axios';
 
 var ps;
 
 const Sidebar = (props) => {
-  const [userName, setUserName] = useState();
+  // 사용자 정보 초기화
+  // const [userName, setUserName] = useState();
+  const [loginMember, setLoginMember] = useState({
+    userName: '',
+    profileImg: '',
+  });
+
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName) => {
@@ -103,10 +110,27 @@ const Sidebar = (props) => {
     }
   };
 
-  // 로딩 시 최초 한 번 실행
+  //! 로그인한 사용자 이름 사이더바에 넣어주기 - 임시로 이름 박아놓음 나중에 고치기
   useEffect(() => {
-    // 로그인한 사용자 이름 사이더바에 넣어주기 - 임시로 이름 박아놓음 나중에 고치기
-    setUserName(getLoginMember().userName);
+    setLoginMember({ ...loginMember, userName: getLoginMember().userName });
+  }, []);
+
+  // 로딩 시 최초 한 번 실행
+  const userEmail = getLoginMember().email;
+  useEffect(() => {
+    axios
+      .post('http://localhost:3003/member/userProfile', { userEmail })
+      .then((res) => {
+        console.log(res.data);
+
+        setLoginMember({
+          ...loginMember,
+          profileImg: res.data.profileImg,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   return (
@@ -131,18 +155,25 @@ const Sidebar = (props) => {
           </NavbarBrand>
         ) : null}
 
-        {/* 사이드바 프로필 영역 */}
+        {/* //!사이드바 프로필 영역 */}
         <Media className='align-items-center avatar-main-wrap'>
           <div className='avatar-main avatar-xl rounded-circle'>
             <img
               alt='...'
-              src={require('../../assets/img/theme/team-4-800x800.jpg').default}
+              src={
+                // loginMember.profileImg
+                loginMember.profileImg == null || loginMember.profileImg == ''
+                  ? require('../../assets/img/theme/team-4-800x800.jpg').default
+                  : loginMember.profileImg
+              }
             />
           </div>
           <div className='flexbox'>
             <Media className='ml-2 d-lg-block align-items-center'>
-              {/* <span className='mb-0 text-ml font-weight-bold'>{userName}</span> */}
-              <span className='mb-0 text-ml font-weight-bold'>UserName</span>
+              <span className='mb-0 text-ml font-weight-bold'>
+                {loginMember.userName}
+              </span>
+              {/* <span className='mb-0 text-ml font-weight-bold'>UserName</span> */}
             </Media>
             <Nav className='align-items-center d-md-none'>
               <UncontrolledDropdown nav>

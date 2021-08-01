@@ -33,7 +33,10 @@ const getLoginMember = () => {
   }
   //토큰에서 디코딩된 값을 추출한다.
   const decoded = jwtDecode(storageToken);
-  const member = { email: decoded.email, userName: decoded.userName };
+  const member = {
+    email: decoded.email,
+    userName: decoded.userName,
+  };
   return member;
 };
 

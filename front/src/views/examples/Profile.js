@@ -41,13 +41,209 @@ import {
   Progress,
   Table,
   UncontrolledTooltip,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
 } from 'reactstrap';
 
 // core components
 import UserHeader from 'components/Headers/UserHeader.js';
 import Header from 'components/Headers/Header';
 
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
+//ajax library axio팩키지를 참조한다.
+import axios from 'axios';
+//각종 유틸리티 함수를 참조한다.
+import {
+  getJWTToken,
+  isMemberLogined,
+  getLoginMember,
+} from '../../helpers/authUtils';
+
 const Profile = () => {
+  const [member, setMember] = useState({
+    email: '',
+    userPwd: '',
+    userName: '',
+    birthday: '',
+    thought: '',
+    profileImg: '',
+    profileImgTitle: '',
+  });
+  const [pwdRepeat, setPwdRepeat] = useState('');
+
+  // 로그인 한 멤버 메일주소 변수 저장
+  const userEmail = getLoginMember().email;
+  // history 참조 변수
+  const history = useHistory();
+
+  useEffect(() => {
+    axios
+      .post('http://localhost:3003/member/userProfile', { userEmail })
+      .then((res) => {
+        if (res.data.code === '200') {
+          setMember(res.data.data);
+          // setMember({
+          //   userName: memberInfo.userName,
+          //   userPwd: memberInfo.userPwd,
+          //   email: memberInfo.email,
+          //   birthday: memberInfo.birthday,
+          // });
+        } else {
+          alert('백엔드 새로고침 해주세요');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  // input type=file value 값은 상태관리가 안돼서 useEffect 불가능
+  const onMemberChange = (e) => {
+    setMember({ ...member, [e.target.name]: e.target.value });
+  };
+
+  // 프로필이미지 업로드 버튼 이벤트 디스패치
+  // const imgUploadMouseEvent = () => {
+  //   const event = new MouseEvent('click', {
+  //     view: window,
+  //     bubbles: true,
+  //     cancelable: true,
+  //   });
+  //   document.querySelector('#imgUpload').dispatchEvent(event);
+  // };
+
+  // 프로필 이미지 업로드
+  const onImgUploadChange = (e) => {
+    e.preventDefault();
+    // 업로드 된 파일 객체 담아주기
+    let file = e.target.files[0];
+
+    // 용량 제한 걸어주기
+    if (file.size > 1 * 1024 * 1024) {
+      alert('Image size should be smaller than 1MByte.');
+      // value 에 접근해서 비어있게 하는 초기화는 가능
+      e.target.value = '';
+      // 사진 비워주기
+      onError();
+      return;
+    }
+    // 파일 이름 담아주기 - 이곳에 담겼다가 지먹대로 초기화됨
+    console.log('업로드 된 파일의 이름', file.name);
+    setMember({ ...member, profileImgTitle: file.name });
+    // FileReader 인스턴스 생성
+    let fileReader = new FileReader();
+
+    // 이미지가 로드가 된 경우
+    fileReader.onload = (e) => {
+      const previewImage = document.getElementById('preview-image');
+      // useState로 저장
+      setMember({ ...member, profileImg: e.target.result });
+      previewImage.src = e.target.result;
+    };
+    // reader가 이미지 읽도록 하기
+    fileReader.readAsDataURL(e.target.files[0]);
+  };
+
+  const onSaveProfile = () => {
+    console.log('~~~~~~~~~~~~~!!!!!!!!!!!', member);
+
+    //회원 정보 수정 버튼
+    axios
+      .post('http://localhost:3003/member/saveprofile', member)
+      .then((res) => {
+        if (res.data.code === '200') {
+          alert('Profile has changed successfully!');
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  // useEffect(() => {
+  //   console.log('프로필이미지 상태 변했음', member.profileImgTitle);
+  // }, [member.profileImgTitle]);
+
+  // 비밀번호 유효성 검사
+  useEffect(() => {
+    // 비밀번호 유효성 검사 - 8 ~ 15자 영문, 숫자 조합
+    const regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,15}$/;
+
+    // if (e.target.name === 'userPwd') {
+    let pwdCheck = document.querySelector('.pwdCheck');
+    //   let password = e.target.value;
+    let pwdRegExp = regExp.test(member.userPwd);
+
+    // 아직 아무것도 치지 않았을 때 공백
+    if (member.userPwd == undefined || member.userPwd == '') {
+      pwdCheck.innerText = '';
+      return;
+    }
+    // 유효성 검사 통과 시 초록색으로 strong 뜨기
+    if (pwdRegExp) {
+      pwdCheck.classList.add('text-success');
+      pwdCheck.classList.remove('text-muted');
+      pwdCheck.innerText = 'strong';
+    } else {
+      // 통과 못했을 시 회색으로 week 뜨기
+      pwdCheck.classList.add('text-muted');
+      pwdCheck.classList.remove('text-success');
+      pwdCheck.innerText = 'week';
+    }
+  }, [member.userPwd]);
+
+  // 비밀번호 재확인용 변수 업데이트
+  const onPwdRepeatChange = (e) => {
+    setPwdRepeat(e.target.value);
+  };
+
+  // 비밀번호 재확인
+  useEffect(() => {
+    // setPwdRepeat(e.target.value);
+    // console.log(pwdRepeat);
+    // let pwdRepeat = e.target.value;
+    let pwdCheckIcon = document.querySelector('.pwdCheckIcon');
+    if (pwdRepeat === member.userPwd) {
+      pwdCheckIcon.classList.add('text-success');
+    } else {
+      pwdCheckIcon.classList.remove('text-success');
+    }
+  }, [pwdRepeat, member.userPwd]);
+
+  // 프로필 사진 없을 경우 디폴트 사진 불러오는 함수
+  const onError = () => {
+    setMember({
+      ...member,
+      profileImg: require('../../assets/img/theme/team-4-800x800.jpg').default,
+    });
+  };
+
+  // 탈퇴하기
+  const onDeleteAccount = () => {
+    if (window.confirm('Are you sure to delete account?') === true) {
+      axios
+        .post('http://localhost:3003/member/delete', { userEmail })
+        .then((res) => {
+          if (res.data.code === '200') {
+            alert('Account deleted successfully.');
+            // 토큰 지우기
+            window.localStorage.removeItem('jwtToken');
+            // 페이지 이동
+            history.push('/auth/regist');
+          } else {
+            alert('sever error : Please try again. ');
+          }
+        })
+        .catch((err) => {
+          alert('error : Please try again.');
+        });
+    } else {
+      return;
+    }
+  };
+
   return (
     <>
       {/* <UserHeader /> */}
@@ -160,10 +356,11 @@ const Profile = () => {
                     <Button
                       color='primary'
                       href='#pablo'
-                      onClick={(e) => e.preventDefault()}
+                      // onClick={(e) => e.preventDefault()}
+                      onClick={onSaveProfile}
                       size='sm'
                     >
-                      Settings
+                      Save
                     </Button>
                   </Col>
                 </Row>
@@ -184,10 +381,13 @@ const Profile = () => {
                             Username
                           </label>
                           <Input
-                            className='form-control-alternative'
-                            defaultValue='lucky.jesse'
+                            name='userName'
+                            value={member.userName}
+                            onChange={onMemberChange}
                             id='input-username'
-                            placeholder='Username'
+                            className='form-control-alternative'
+                            // defaultValue='lucky.jesse'
+                            // placeholder='Username'
                             type='text'
                           />
                         </FormGroup>
@@ -201,8 +401,11 @@ const Profile = () => {
                             Email address
                           </label>
                           <Input
-                            className='form-control-alternative'
+                            // name='email'
+                            value={member.email}
+                            onChange={onMemberChange}
                             id='input-email'
+                            className='form-control-alternative'
                             placeholder='jesse@example.com'
                             type='email'
                           />
@@ -214,34 +417,59 @@ const Profile = () => {
                         <FormGroup>
                           <label
                             className='form-control-label'
-                            htmlFor='input-first-name'
+                            htmlFor='input-password'
                           >
                             Password
                           </label>
                           <Input
+                            name='userPwd'
+                            value={member.userPwd}
+                            onChange={onMemberChange}
                             className='form-control-alternative'
-                            defaultValue='Lucky'
-                            id='input-first-name'
-                            // placeholder='First name'
+                            id='input-password'
+                            placeholder='Password'
                             type='password'
                           />
+                          <div>
+                            <small className='text-muted text-center'>
+                              8 - 10 characters, must contain both letters and
+                              numbers
+                            </small>
+                            <div className='text-muted font-italic'>
+                              {/* 비밀번호 유효성 검사 */}
+                              <small>
+                                password strength:
+                                {/* <span className='text-success font-weight-700'>strong</span> */}
+                                <span className='pwdCheck font-weight-700'></span>
+                              </small>
+                            </div>
+                          </div>
                         </FormGroup>
                       </Col>
                       <Col lg='6'>
+                        {/* 비밀번호 재확인 */}
                         <FormGroup>
                           <label
                             className='form-control-label'
                             htmlFor='input-last-name'
                           >
-                            Password Confirm
+                            Confirm Password
                           </label>
-                          <Input
-                            className='form-control-alternative'
-                            defaultValue='Jesse'
-                            id='input-last-name'
-                            placeholder='Password'
-                            type='password'
-                          />
+                          <InputGroup className='input-group-alternative'>
+                            <Input
+                              name='pwdRepeat'
+                              onChange={onPwdRepeatChange}
+                              value={pwdRepeat}
+                              placeholder='Confirm Password'
+                              type='password'
+                              autoComplete='new-password'
+                            />
+                            <InputGroupAddon addonType='append'>
+                              <InputGroupText>
+                                <i className='ni ni-check-bold pwdCheckIcon' />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                          </InputGroup>
                         </FormGroup>
                       </Col>
                     </Row>
@@ -250,38 +478,85 @@ const Profile = () => {
                         <FormGroup>
                           <label
                             className='form-control-label'
-                            htmlFor='input-first-name'
+                            htmlFor='input-birthday'
                           >
                             Birthday
                           </label>
                           <Input
+                            name='birthday'
+                            value={member.birthday}
+                            onChange={onMemberChange}
+                            id='input-birthday'
                             className='form-control-alternative'
                             defaultValue='Lucky'
-                            id='input-first-name'
                             placeholder='First name'
                             type='date'
                           />
                         </FormGroup>
                       </Col>
                     </Row>
+                    <hr className='my-4' />
+                    {/* <br></br> */}
                     <Row>
-                      <Col lg='12'>
+                      <Col lg='7'>
                         <FormGroup>
                           <label
                             className='form-control-label'
-                            htmlFor='input-last-name'
+                            htmlFor='input-profile-Image'
                           >
                             Profile Picture
                           </label>
-                          <Input
-                            className='form-control-alternative'
-                            // defaultValue='Jesse'
-                            id='input-last-name'
-                            placeholder=''
-                            type='file'
-                          />
-                          <img src=''></img>
+                          <div>
+                            <small className='text-muted'>
+                              Click the picture to upload profile photo
+                            </small>
+                          </div>
+                          {/* //! 프로필 사진 업로드 */}
+                          {/* profileImgTitle이 안보여서 버튼 지우고 라벨로 대체 */}
+                          {/* <InputGroup className='input-group-alternative'>
+                            <InputGroupAddon addonType='prepend'>
+                              <Button
+                                id='imgUploadBtn'
+                                className='text-muted'
+                                onClick={imgUploadMouseEvent}
+                              >
+                                upload
+                              </Button>
+                            </InputGroupAddon>
+                            <span id='input-profile-Image'>
+                              {member.profileImgTitle}
+                            </span>
+                          </InputGroup> */}
+                          {/* 숨겨놓은 못생긴 인풋 박스 */}
+                          <div style={{ display: 'none' }}>
+                            <Input
+                              name='imgUpload'
+                              id='imgUpload'
+                              onChange={onImgUploadChange}
+                              type='file'
+                              accept='image/*'
+                            />
+                          </div>
                         </FormGroup>
+                      </Col>
+                      <Col>
+                        <label for='imgUpload'>
+                          <Media className='align-items-center avatar-main-wrap'>
+                            <div className='avatar-main avatar-sm rounded-circle'>
+                              <img
+                                id='preview-image'
+                                alt='...'
+                                src={
+                                  member.profileImg == null ||
+                                  member.profileImg === ''
+                                    ? onError()
+                                    : member.profileImg
+                                }
+                                //onError={onError}
+                              />
+                            </div>
+                          </Media>
+                        </label>
                       </Col>
                     </Row>
                   </div>
@@ -371,7 +646,10 @@ const Profile = () => {
                     <FormGroup>
                       {/* <label></label> */}
                       <Input
+                        name='thought'
                         className='form-control-alternative'
+                        value={member.thought}
+                        onChange={onMemberChange}
                         placeholder='A few words about you ...'
                         rows='4'
                         defaultValue='만난 사람 모두에게서 무언가를 배울 수 있는 사람이 세상에서 제일 현명하다.'
@@ -384,6 +662,43 @@ const Profile = () => {
             </Card>
           </Col>
         </Row>
+        <br></br>
+        <Card className='bg-secondary shadow'>
+          <CardHeader className='bg-white border-0'>
+            <Row>
+              <Col xs='12'>
+                <h6 className='heading-small text-muted mb-4'>
+                  Delete account
+                </h6>
+              </Col>
+            </Row>
+          </CardHeader>
+          <CardBody>
+            <Row>
+              <Col xs='10'>
+                <small className='text-muted'>
+                  Are you absolutely sure that you want to delete your Travelary
+                  account? &nbsp;
+                  <b>
+                    Please note that there is no option to restore the account
+                    or its data. &nbsp;
+                  </b>
+                  If you click the button, your account will be deleted.
+                </small>
+              </Col>
+              <Col xs='2'>
+                <button
+                  onClick={onDeleteAccount}
+                  type='button'
+                  class='btn btn-secondary btn-sm text-muted'
+                >
+                  Delete account
+                </button>
+              </Col>
+            </Row>
+          </CardBody>
+        </Card>
+
         {/* Table */}
         <Row>
           <div className='col'>
