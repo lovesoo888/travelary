@@ -21,13 +21,23 @@ const sequelize = new Sequelize(
   config
 );
 
+// member 모델을 DB의 Member 속성으로 노출시킨다.
+db.Member = require('./member.js')(sequelize, Sequelize);
+db.Attachment = require('./attachment.js')(sequelize, Sequelize);
+db.Post = require('./post.js')(sequelize, Sequelize);
+db.PostCategory = require('./postCategory.js')(sequelize, Sequelize);
+db.Alarm = require('./alarm.js')(sequelize, Sequelize);
+db.Comment = require('./comment.js')(sequelize, Sequelize);
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 // DB객체에 시퀄라이즈 객체를 속성에 바인딩한다.
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
-db.Config = config;
-
-// member 모델을 DB의 Member 속성으로 노출시킨다.
-db.Member = require('./member.js')(sequelize, Sequelize);
+// db.Config = config;
 
 // DB관리객체 모듈 출력
 module.exports = db;

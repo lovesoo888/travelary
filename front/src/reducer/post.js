@@ -20,9 +20,9 @@ export const initialState = {
       },
     },
   ],
-  poseView: [],
+  postView: [],
   categoryCode: 1, // 공유/개인 인지 확인
-  ImagePaths: [], // 이미지 업로드할때 이미지 경로 저장
+  imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   hasMoreCategory: true, // 카테고리가 없어졌을때
   loadCategoryLoading: false, // 포스트 추가시 로딩
   loadCategoryDone: false,
@@ -39,6 +39,9 @@ export const initialState = {
   removePostLoading: false, // 포스트 삭제시 로딩
   removePostDone: false,
   removePostError: false,
+  uploadImagesLoading: false, // 포스트 삭제시 로딩
+  uploadImagesDone: false,
+  uploadImagesError: false,
 };
 
 export const generateDummyCategory = (number) =>
@@ -59,15 +62,22 @@ export const generateDummyCategory = (number) =>
 //? 액션 함수 시작
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
+export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
+export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
+export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
+
 export const LOAD_CATEGORY_REQUEST = 'LOAD_CATEGORY_REQUEST';
 export const LOAD_CATEGORY_SUCCESS = 'LOAD_CATEGORY_SUCCESS';
 export const LOAD_CATEGORY_FAILURE = 'LOAD_CATEGORY_FAILURE';
+
 export const ADD_CATEGORY_REQUEST = 'ADD_CATEGORY_REQUEST';
 export const ADD_CATEGORY_SUCCESS = 'ADD_CATEGORY_SUCCESS';
 export const ADD_CATEGORY_FAILURE = 'ADD_CATEGORY_FAILURE';
+
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
 export const SHARE_CATEGORY_REQUEST = 'SHARE_CATEGORY_REQUEST';
 export const SHARE_CATEGORY_SUCCESS = 'SHARE_CATEGORY_SUCCESS';
 export const SHARE_CATEGORY_FAILURE = 'SHARE_CATEGORY_FAILURE';
@@ -76,6 +86,7 @@ export const SHARE_CATEGORY_FAILURE = 'SHARE_CATEGORY_FAILURE';
 export const REMOVE_CATEGORY_REQUEST = 'REMOVE_CATEGORY_REQUEST';
 export const REMOVE_CATEGORY_SUCCESS = 'REMOVE_CATEGORY_SUCCESS';
 export const REMOVE_CATEGORY_FAILURE = 'REMOVE_CATEGORY_FAILURE';
+
 export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
@@ -89,32 +100,6 @@ export const addCategoryAction = (data) => ({
 export const addPostAction = (data) => ({
   type: ADD_POST_REQUEST,
   data,
-});
-
-const dummyCategory = (data) => ({
-  //아직 게시글 저장을 하지 못해서 테스트로 넣어보는 데이터
-  id: data.id,
-  title: data.title,
-  Member: {
-    id: 1,
-    nickname: '테스터',
-  },
-  ThumnailImg: {
-    src: 'https://post-phinf.pstatic.net/MjAxODAxMDhfMTA2/MDAxNTE1NDAyOTM1NzMw.6AVV-NKg21QLqsVY6S1HV-lMOoO5JoFqevouh2Jwp9Ug.1pvMx529vfdUddfAxx54V1xriC-PMjud1zcxt1OfjY8g.PNG/2018-01-08_18%3B12%3B38.PNG?type=w1200',
-  },
-});
-
-const dummyPostList = (data) => ({
-  id: shortId.generate(),
-  Member: {
-    id: 1,
-    nickname: '테스터',
-  },
-  title: data.title,
-  contents: data.contents,
-  ThumnailImg: {
-    src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
-  },
 });
 
 // 리듀서 함수
@@ -145,7 +130,7 @@ const reducer = (state = initialState, action) =>
       case ADD_CATEGORY_SUCCESS:
         draft.addCategoryLoading = false;
         draft.addCategoryDone = true;
-        draft.categoryList.unshift(dummyCategory(action.data));
+        draft.categoryList.unshift(action.data);
         break;
       case ADD_CATEGORY_FAILURE:
         draft.addCategoryLoading = false;
@@ -157,9 +142,12 @@ const reducer = (state = initialState, action) =>
         draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
+        const category = draft.categoryList.find(
+          (v) => v.id === action.data.CategoryId
+        );
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.postList = [dummyPostList(action.data), ...state.postList];
+        draft.postList.unshift(action.data);
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
@@ -174,7 +162,7 @@ const reducer = (state = initialState, action) =>
         draft.removeCategoryLoading = false;
         draft.removeCategoryDone = true;
         draft.categoryList = draft.categoryList.filter(
-          (v) => v.id !== action.data
+          (v) => v.id !== action.data.CategoryId
         );
         break;
       case REMOVE_CATEGORY_FAILURE:
@@ -189,11 +177,25 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_SUCCESS:
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.postList = draft.categoryList.filter((v) => v.id === action.data);
+        draft.postList = draft.postList.filter((v) => v.id === action.data);
         break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
         draft.removePostError = action.error;
+        break;
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_IMAGES_SUCCESS:
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
         break;
       default:
         break;

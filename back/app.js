@@ -19,6 +19,9 @@ var usersRouter = require('./routes/users');
 //사용자 정보 관리 라우팅 파일 참조
 var memberRouter = require('./routes/member');
 
+const postRouter = require('./routes/post');
+const categoryRouter = require('./routes/category');
+
 var app = express();
 //노드 어플리케이션에 cors기능 적용 - 모든 리소스 접근 CORS 허용하기
 app.use(cors());
@@ -45,6 +48,10 @@ app.use('/users', usersRouter);
 
 // member 라우터 파일 기본 URL주소 정의
 app.use('/member', memberRouter);
+
+// post 라우터 불러오기
+app.use('/post', postRouter);
+app.use('/category', categoryRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { Card, Container, Row, Col, Form } from 'reactstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategoryAction } from 'reducer/post';
+import { addCategoryAction, UPLOAD_IMAGES_REQUEST } from 'reducer/post';
 import useInput from 'helpers/useInput';
 
 import CategoryList from './CategoryList';
@@ -15,13 +15,13 @@ const CatrgoryAdd = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { ImagePaths, addCategoryDone } = useSelector((state) => state.post);
-  const [title, onChangeTitle, setTitle] = useInput('');
+  const { imagePaths, addCategoryDone } = useSelector((state) => state.post);
+  const [categoryName, onChangeTitle, setCategoryName] = useInput('');
 
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addCategoryDone) {
-      setTitle('');
+      setCategoryName('');
     }
   }, [addCategoryDone]);
 
@@ -32,17 +32,33 @@ const CatrgoryAdd = () => {
   // 카테고리 추가 액션
   const onSubmit = useCallback(
     (e) => {
+      if (!categoryName || !categoryName.trim()) {
+        return alert('카테고리명을 작성하세요');
+      }
       e.preventDefault();
-      dispatch(addCategoryAction(title));
-      history.push('/admin/index');
+      dispatch(addCategoryAction(categoryName));
+      // history.push('/admin/index');
     },
-    [title]
+    [categoryName]
   );
 
   const imageInput = useRef();
+
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
   }, [imageInput.current]);
+
+  const onChangeImages = useCallback((e) => {
+    console.log('images', e.target.files);
+    const imageFormData = new FormData();
+    [].forEach.call(e.target.files, (f) => {
+      imageFormData.append('image', f);
+    });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      data: imageFormData,
+    });
+  }, []);
 
   return (
     <div className='pb-8 pt-2 pt-md-7 categoryAddWrap'>
@@ -59,8 +75,8 @@ const CatrgoryAdd = () => {
                       type='text'
                       className='form-control inputStyle'
                       placeholder='Category Title'
-                      name='title'
-                      value={title}
+                      name='categoryName'
+                      value={categoryName}
                       onChange={onChangeTitle}
                     ></input>
                   </li>
@@ -71,8 +87,11 @@ const CatrgoryAdd = () => {
                         type='file'
                         className='custom-file-input'
                         id='customFileLang'
-                        lang='en'
+                        multiple
                         name='thumnailImg'
+                        name='image'
+                        ref={imageInput}
+                        onChange={onChangeImages}
                       />
                       <label
                         className='custom-file-label inputStyle'
@@ -83,7 +102,7 @@ const CatrgoryAdd = () => {
                       </label>
                     </div>
                     <div className='imageThumbnail mt-3'>
-                      {ImagePaths.map((v) => (
+                      {/* {imagePaths.map((v) => (
                         <div key={v}>
                           <img src={v} alt={v} />
                           <div>
@@ -96,7 +115,7 @@ const CatrgoryAdd = () => {
                             </button>
                           </div>
                         </div>
-                      ))}
+                      ))} */}
                     </div>
                   </li>
                 </ul>

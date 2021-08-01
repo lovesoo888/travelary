@@ -15,6 +15,13 @@ const CategoryList = ({ post }) => {
   );
 
   // 카테고리 삭제..
+  // const onRemovePost = useCallback(() => {
+  //   dispatch({
+  //     type: REMOVE_CATEGORY_REQUEST,
+  //     data: post.id,
+  //   });
+  // }, []);
+
   const onRemovePost = useCallback(() => {
     dispatch({
       type: REMOVE_CATEGORY_REQUEST,
@@ -79,19 +86,19 @@ const CategoryList = ({ post }) => {
                   <Card className='card-stats mb-4 mb-xl-0'>
                     <Link to='/admin/post/list'>
                       <div className='imageThumbnail'>
-                        <img
+                        {/* <img
                           alt={post.ThumnailImg.src}
                           src={post.ThumnailImg.src}
-                        />
+                        /> */}
                       </div>
                     </Link>
                   </Card>
                   <Link to='/admin/post/list'>
-                    <p>{post.title}</p>
+                    <p>{post.categoryName}</p>
                   </Link>
-                  <Button className='btn btn-danger' onClick={onRemovePost}>
+                  {/* <Button className='btn btn-danger' onClick={onRemovePost}>
                     삭제
-                  </Button>
+                  </Button> */}
                 </Col>
               ))}
             </Row>

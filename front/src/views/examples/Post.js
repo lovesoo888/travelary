@@ -9,7 +9,8 @@ const Post = ({ post }) => {
   // 내 아이디 값 불러오는...건데
   // ? user reducer가 없으니까 어떻게 불러올지는 나중에 수정하자
   // const id = useSelector((state) => state.user.me?.id);
-  const { postList } = useSelector((state) => state.post);
+  const { postList, title, contents } = useSelector((state) => state.post);
+  console.log(postList.contents);
   return (
     <>
       {/* 배경 백그라운드 이미지로 까는거 잊지 말기 */}
@@ -22,7 +23,7 @@ const Post = ({ post }) => {
                 {}
                 <CardHeader className='bg-transparent'>
                   <Row className='align-items-center postHeader pl-3 pr-3'>
-                    <h3>{postList.title}</h3>
+                    <h3>{title}</h3>
                     <div>
                       <button class='btn btn-secondary'>목록</button>
                       <button class='btn btn-primary'>수정</button>
@@ -40,7 +41,7 @@ const Post = ({ post }) => {
                 <CardBody>
                   {/* Chart */}
                   <div>
-                    <p>{postList.contents}</p>
+                    <p>{contents}</p>
                   </div>
                 </CardBody>
               </Card>
