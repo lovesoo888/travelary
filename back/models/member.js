@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define(
-    'member',
+  const Member = sequelize.define(
+    'Member',
     {
       email: {
         type: DataTypes.STRING(50),
@@ -44,4 +44,9 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
+  Member.associate = (db) => {
+    db.Member.hasMany(db.PostCategory);
+    db.Member.hasMany(db.Post);
+  };
+  return Member;
 };

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   Post.associate = (db) => {
     db.Post.hasMany(db.Attachment);
     db.Post.hasMany(db.Comment);
-    // db.Post.belongsTo(db.Member);
+    db.Post.belongsTo(db.Member);
     db.Post.belongsTo(db.PostCategory);
   };
   return Post;

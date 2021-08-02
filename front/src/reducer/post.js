@@ -91,6 +91,8 @@ export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
+
 // 액션 타입 불러오기, 나중에 컴포넌트에서 onSubmit 같은 액션으로 해당 타입액션을 불러와준다.
 export const addCategoryAction = (data) => ({
   type: ADD_CATEGORY_REQUEST,
@@ -115,8 +117,8 @@ const reducer = (state = initialState, action) =>
       case LOAD_CATEGORY_SUCCESS:
         draft.loadCategoryLoading = false;
         draft.loadCategoryDone = true;
-        draft.categoryList = action.data.concat(draft.categoryList);
-        draft.hasMoreCategory = draft.categoryList.length < 50;
+        draft.categoryList = draft.categoryList.concat(action.data);
+        draft.hasMoreCategory = action.data.length === 9;
         break;
       case LOAD_CATEGORY_FAILURE:
         draft.loadCategoryLoading = false;
@@ -131,6 +133,7 @@ const reducer = (state = initialState, action) =>
         draft.addCategoryLoading = false;
         draft.addCategoryDone = true;
         draft.categoryList.unshift(action.data);
+        // draft.imagePaths = [];
         break;
       case ADD_CATEGORY_FAILURE:
         draft.addCategoryLoading = false;
@@ -196,6 +199,9 @@ const reducer = (state = initialState, action) =>
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break;
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
         break;
       default:
         break;

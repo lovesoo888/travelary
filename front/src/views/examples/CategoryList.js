@@ -30,11 +30,11 @@ const CategoryList = ({ post }) => {
   }, []);
 
   // 무한 스크롤
-  useEffect(() => {
-    dispatch({
-      type: LOAD_CATEGORY_REQUEST,
-    });
-  }, []);
+  // useEffect(() => {
+  //   dispatch({
+  //     type: LOAD_CATEGORY_REQUEST,
+  //   });
+  // }, []);
 
   // 스크롤 길이
   useEffect(() => {
@@ -44,8 +44,11 @@ const CategoryList = ({ post }) => {
         document.documentElement.scrollHeight - 300
       ) {
         if (hasMoreCategory && !loadCategoryLoading) {
+          console.log(categoryList.length);
+          const lastId = categoryList[categoryList.length - 1]?.id;
           dispatch({
             type: LOAD_CATEGORY_REQUEST,
+            lastId,
           });
         }
       }
@@ -54,7 +57,28 @@ const CategoryList = ({ post }) => {
     return () => {
       window.removeEventListener('scroll', onScroll);
     };
-  }, [hasMoreCategory, loadCategoryLoading]);
+  }, [hasMoreCategory, loadCategoryLoading, categoryList]);
+
+  useEffect(() => {
+    function onScroll() {
+      if (
+        window.pageYOffset + document.documentElement.clientHeight >
+        document.documentElement.scrollHeight - 300
+      ) {
+        if (hasMoreCategory && !loadCategoryLoading) {
+          const lastId = categoryList[categoryList.length - 1]?.id;
+          dispatch({
+            type: LOAD_CATEGORY_REQUEST,
+            lastId,
+          });
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [hasMoreCategory, loadCategoryLoading, categoryList]);
 
   // 카테고리 deletedAt 이 1인지 0인지 체크 해주자..나중에...
   if (categoryList.length >= 1) {
@@ -84,12 +108,12 @@ const CategoryList = ({ post }) => {
                   className='postWrap'
                 >
                   <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to='/admin/post/list'>
+                    <Link to={`/admin/${post.id}/post/list`}>
                       <div className='imageThumbnail'>
-                        {/* <img
-                          alt={post.ThumnailImg.src}
-                          src={post.ThumnailImg.src}
-                        /> */}
+                        <img
+                          src={`http://localhost:3003/${post.thumbnail}`}
+                          alt={post.thumbnail}
+                        />
                       </div>
                     </Link>
                   </Card>

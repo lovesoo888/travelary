@@ -2,10 +2,14 @@
 
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Card, Container, Row, Col, Form } from 'reactstrap';
+import { Card, Container, Row, Col, Form, Button } from 'reactstrap';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategoryAction, UPLOAD_IMAGES_REQUEST } from 'reducer/post';
+import {
+  ADD_CATEGORY_REQUEST,
+  UPLOAD_IMAGES_REQUEST,
+  REMOVE_IMAGE,
+} from 'reducer/post';
 import useInput from 'helpers/useInput';
 
 import CategoryList from './CategoryList';
@@ -36,10 +40,18 @@ const CatrgoryAdd = () => {
         return alert('카테고리명을 작성하세요');
       }
       e.preventDefault();
-      dispatch(addCategoryAction(categoryName));
+      const formData = new FormData();
+      imagePaths.forEach((p) => {
+        formData.append('image', p);
+      });
+      formData.append('categoryName', categoryName);
+      return dispatch({
+        type: ADD_CATEGORY_REQUEST,
+        data: formData,
+      });
       // history.push('/admin/index');
     },
-    [categoryName]
+    [categoryName, imagePaths]
   );
 
   const imageInput = useRef();
@@ -59,6 +71,13 @@ const CatrgoryAdd = () => {
       data: imageFormData,
     });
   }, []);
+
+  const onRemoveImage = useCallback((index) => () => {
+    dispatch({
+      type: REMOVE_IMAGE,
+      data: index,
+    });
+  });
 
   return (
     <div className='pb-8 pt-2 pt-md-7 categoryAddWrap'>
@@ -105,12 +124,12 @@ const CatrgoryAdd = () => {
                       {imagePaths.map((v, i) => (
                         <div key={v} style={{ display: 'inline-block' }}>
                           <img
-                            src={`http://localhost:3065/${v}`}
+                            src={`http://localhost:3003/${v}`}
                             style={{ width: '200px' }}
                             alt={v}
                           />
-                          <div>
-                            {/* <Button onClick={onRemoveImage(i)}>제거</Button> */}
+                          <div className='removeBtnWrap'>
+                            <Button onClick={onRemoveImage(i)}>X</Button>
                           </div>
                         </div>
                       ))}

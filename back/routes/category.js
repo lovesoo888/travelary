@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const { PostCategory } = require('../models');
+const { PostCategory, Attachment } = require('../models');
 
 const router = express.Router();
 
@@ -13,19 +13,6 @@ try {
   console.log('upload 폴더가 없으므로 생성합니다.');
   fs.mkdirSync('public/upload');
 }
-
-// 카테고리 추가
-router.post('/', async (req, res, next) => {
-  try {
-    const category = await PostCategory.create({
-      categoryName: req.body.categoryName,
-    });
-    res.status(201).json(category);
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -38,10 +25,45 @@ const upload = multer({
     filename(req, file, done) {
       const ext = path.extname(file.originalname); // 이미지 명 중복 방지, 확장자 추출
       const basename = path.basename(file.originalname, ext); // 이미지명 추출
-      done(null, basename + new Date().getTime() + ext); // ex) 이미지명210802.png
+      done(null, basename + '_' + new Date().getTime() + ext); // ex) 이미지명210802.png
     },
   }),
   limits: { fileSize: 20 * 1024 * 1024 }, //20 메가 제한
+});
+
+// 카테고리 추가
+router.post('/', upload.none(), async (req, res, next) => {
+  try {
+    const category = await PostCategory.create({
+      categoryName: req.body.categoryName,
+      thumbnail: req.body.image,
+    });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(
+          req.body.image.map((image) => Attachment.create({ src: image }))
+        );
+        await category.addAttachment(images);
+      } else {
+        // 이미지를 하나만 올리면 image: 제로초.png
+        const image = await Attachment.create({ src: req.body.image });
+        await category.addAttachment(image);
+      }
+    }
+    const fullCategory = await PostCategory.findOne({
+      where: { id: category.id },
+      include: [
+        {
+          model: Attachment,
+        },
+      ],
+    });
+    res.status(201).json(fullCategory);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 router.post('/images', upload.array('image'), async (req, res, next) => {

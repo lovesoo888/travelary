@@ -1,23 +1,43 @@
 const express = require('express');
 
-const { PostCategory, Post } = require('../models');
+const { PostCategory, Post, Attachment } = require('../models');
 
 const router = express.Router();
 
 router.post('/:postCategoryId/post', async (req, res, next) => {
   try {
-    const category = await PostCategory.findeOne({
-      where: { id: req.params.postCategoryId },
-    });
-    if (!category) {
-      return res.status(403).send('카테고리가 존재하지 않습니다.');
-    }
-    const post = await PostCategory.create({
+    const postCategory = await PostCategory.create({
       title: req.body.title,
       content: req.body.content,
       CategoryId: req.params.postCategoryId,
     });
-    res.status(201).json(post);
+
+    if (!category) {
+      return res.status(403).send('카테고리가 존재하지 않습니다.');
+    }
+
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Attachment.create({ src: image }))
+        );
+        await postCategory.addImages(images);
+      } else {
+        const images = await Attachment.create({ src: req.body.image });
+        await postCategory.addImages(images);
+      }
+    }
+
+    const fullCategory = await PostCategory.findeOne({
+      where: { id: postCategory.id },
+      include: [
+        {
+          model: Attachment,
+        },
+      ],
+    });
+
+    res.status(201).json(fullCategory);
   } catch (error) {
     console.error(error);
     next(error);

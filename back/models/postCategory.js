@@ -31,8 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   PostCategory.associate = (db) => {
-    // db.PostCategory.belongsTo(db.Attachment);
-    // db.PostCategory.belongsTo(db.Member);
+    db.PostCategory.hasMany(db.Attachment);
+    db.PostCategory.belongsTo(db.Member);
     db.PostCategory.hasMany(db.Post);
   };
   return PostCategory;

@@ -88,12 +88,31 @@
 
             li {
               .imageThumbnail {
+                position: relative;
                 width: 120px;
                 height: auto;
                 margin: 0 auto;
                 overflow: hidden;
                 img {
                   height: auto;
+                }
+                .removeBtnWrap {
+                  position: absolute;
+                  top: 0;
+                  right: 0;
+                  width: 30px;
+                  height: 30px;
+                  text-align: center;
+                  vertical-align: middle;
+                  background-color: rgba(0, 0, 0, 0.6);
+                  button {
+                    padding: 0;
+                    width: auto;
+                    font-size: 1em;
+                    color: #ffffff;
+                    background-color: transparent;
+                    border: none;
+                  }
                 }
               }
             }

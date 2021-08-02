@@ -8,7 +8,6 @@ import {
   takeLatest,
   throttle,
 } from 'redux-saga/effects'; // saga 이펙트
-import shortid from 'shortid';
 import {
   ADD_CATEGORY_SUCCESS,
   ADD_CATEGORY_REQUEST,
@@ -34,15 +33,12 @@ import {
 // Step 2. 데이터를 api 로 보내준다.
 function categoryAPI(data) {
   // 실제 서버에 요청을 보냄
-  return axios.post('/category', { categoryName: data });
+  return axios.post('/category', data);
 }
 
 // Step 1. action에서 데이터 보내서
 function* addCategory(action) {
   try {
-    console.log('사가 실행 되나요?');
-    // ? 근데 아직 서버 연동을 안해주었으니 api를 불러오면 에러가 뜬다 나중에 수정해주자.
-    // 아직 데이터가 없으니 비동기적인 효과를 주는 것이다.
     const result = yield call(categoryAPI, action.data);
     yield put({
       type: ADD_CATEGORY_SUCCESS,
@@ -56,19 +52,20 @@ function* addCategory(action) {
   }
 }
 
-function loadCategoryAPI(data) {
+function loadCategoryAPI(lastId) {
   // 실제 서버에 요청을 보냄
-  return axios.get('/categories', data);
+  return axios.get(`/categories?lastId=${lastId || 0}`);
 }
 
 function* loadCategory(action) {
-  const result = yield call(loadCategoryAPI, action.data);
   try {
+    const result = yield call(loadCategoryAPI, action.lastId);
     yield put({
       type: LOAD_CATEGORY_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.log('로딩에러입니다: ', err);
     yield put({
       type: LOAD_CATEGORY_FAILURE,
       data: err.response.data,

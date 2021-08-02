@@ -13,23 +13,27 @@ router.get('/', async (req, res, next) => {
       // 초기 로딩이 아닐 때
       where.id = { [Op.lt]: parseInt(req.query.lastId, 9) };
     }
-    const categories = await PostCategory.findAll({
+    const posts = await PostCategory.findAll({
       where,
       limit: 9,
       order: [
         ['createdAt', 'DESC'], // 게시글 내림차순
       ],
       include: [
-        // {
-        //   model: Member,
-        // },
+        {
+          model: Member,
+        },
+        {
+          model: PostCategory,
+          attributes: ['id'],
+        },
         {
           model: Attachment,
         },
       ],
     }); // 모든 게시물 가져온다
-    console.log(categories);
-    res.status(200).json(categories);
+    console.log(posts);
+    res.status(200).json(posts);
   } catch (error) {
     console.error(error);
     next(error);
