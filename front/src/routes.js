@@ -13,6 +13,7 @@ import Post from 'views/examples/Post';
 import CatrgoryAdd from 'views/examples/CatrgoryAdd';
 import ForgotPassword from 'views/examples/ForgotPassword';
 import SharedMemberManage from 'views/examples/SharedMemberManage';
+import CategoryList from 'views/examples/CategoryList';
 
 var routes = [
   {
@@ -66,9 +67,9 @@ var routes = [
     layout: '/auth',
   },
   {
-    path: '/post/list',
+    path: '/index/:id/posts',
     breadcrumb: 'My Travelary Post List',
-    component: PostList,
+    component: CategoryList,
     layout: '/admin',
   },
   {

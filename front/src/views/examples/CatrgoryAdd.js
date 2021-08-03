@@ -125,7 +125,7 @@ const CatrgoryAdd = () => {
                         <div key={v} style={{ display: 'inline-block' }}>
                           <img
                             src={`http://localhost:3003/${v}`}
-                            style={{ width: '200px' }}
+                            style={{ width: '120px', height: '120px' }}
                             alt={v}
                           />
                           <div className='removeBtnWrap'>

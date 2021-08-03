@@ -30,11 +30,11 @@ const CategoryList = ({ post }) => {
   }, []);
 
   // 무한 스크롤
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_CATEGORY_REQUEST,
-  //   });
-  // }, []);
+  useEffect(() => {
+    dispatch({
+      type: LOAD_CATEGORY_REQUEST,
+    });
+  }, []);
 
   // 스크롤 길이
   // useEffect(() => {
@@ -108,7 +108,7 @@ const CategoryList = ({ post }) => {
                   className='postWrap'
                 >
                   <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/${post.id}/post/list`}>
+                    <Link to={`/admin/index/${post.id}/posts`}>
                       <div className='imageThumbnail'>
                         <img
                           src={`http://localhost:3003/${post.thumbnail}`}
