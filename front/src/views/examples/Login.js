@@ -32,16 +32,18 @@ import {
   Col,
 } from 'reactstrap';
 //각종 유틸리티 함수를 참조한다.
+
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useHistory, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { memberLoginToken, memberLoginUpdate } from 'reducer/member';
+
 import {
   getJWTToken,
   isMemberLogined,
   getLoginMember,
 } from '../../helpers/authUtils';
-
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useHistory, Link } from 'react-router-dom';
-// import { useDispatch } from 'react-redux';
 
 const Login = () => {
   const [login, setLogin] = useState({
@@ -49,13 +51,13 @@ const Login = () => {
     userPwd: '',
   });
 
-  // 전역데이터 제어용 디스패치 상수 생성
-  // const globalDispatch = useDispatch();
   const history = useHistory();
+  // 전역데이터 제어용 디스패치 함수 생성
+  const dispatch = useDispatch();
 
   // 로그인 여부 체크 - 로긴 했으면 메인 페이지로 이동시키기
-  const isLogin = isMemberLogined();
-  if (isLogin == true) {
+  const isLogin = isMemberLogined('login.js');
+  if (isLogin === true) {
     history.push('/');
   }
 
@@ -68,27 +70,17 @@ const Login = () => {
       .post('http://localhost:3003/member/login', login)
       .then((res) => {
         if (res.data.code === '200') {
-          // console.log('JWT토큰값:', res.data.data.token);
-          // console.log('로그인 사용자 정보:', res.data.data.member);
-
           //토큰값을 웹브라우저 로컬스토리지에 보관하기
           window.localStorage.setItem('jwtToken', res.data.data.token);
 
-          // const storageToken = window.localStorage.getItem('jwtToken');
-          // console.log(
-          //   '로그인 시 브라우저 로컬스토리지에 저장된 토큰:',
-          //   storageToken
-          // );
-
-          //사용자 토큰 발급 후 백엔드 API 호출시 발급된 JWT토큰을
-          //Ajax 헤더에 x-access-token 영역에 기본 포함 시켜 백엔드 서비스를 호출하게 한다.
+          //백엔드 API 호출시 발급된 JWT토큰을 Ajax 헤더에 x-access-token 영역에 기본 포함시키기
           axios.defaults.headers.common[
             'x-access-token'
           ] = `${res.data.data.token}`;
 
-          //발급된 토큰값을 전역 데이터에 반영한다.
-          //globalDispatch(액션생성함수명(액션생성함수에 전달할 데이터));
-          //globalDispatch(memberLogin(res.data.data.token));
+          //발급된 토큰값과 로그인한 유저 정보를 전역 데이터에 반영한다.
+          dispatch(memberLoginToken(res.data.data.token));
+          dispatch(memberLoginUpdate(res.data.data.member));
 
           alert(`WELCOME, ${res.data.data.member.userName}!`);
           history.push('/');
@@ -212,7 +204,7 @@ const Login = () => {
         </Card>
         <Row className='mt-3'>
           <Col xs='6'>
-            <Link to='/auth/forgotpassword' className='text-muted'>
+            <Link to='/auth/forgot-password' className='text-muted'>
               <small>Forgot password?</small>
             </Link>
           </Col>

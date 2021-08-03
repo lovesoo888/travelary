@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
       return res.json({
         code: '400',
         data: {},
-        msg: 'Wrong password. Try again!',
+        msg: 'Wrong password. Please try again',
       });
     }
   } else {
@@ -70,7 +70,6 @@ router.post('/register', async (req, res, next) => {
     birthday: req.body.birthday,
     // lastIp: req.ip,
   };
-  console.log('0003148392--------------', member);
 
   const memberRegisterResult = Member.create(member);
 
@@ -85,8 +84,6 @@ router.post('/register', async (req, res, next) => {
 //localhost:3003/member/checkEmail
 router.post('/checkEmail', async (req, res) => {
   const email = req.body.email;
-  // console.log('0003148392--------------', email);
-  // console.log('0003148392--------------', req.body);
 
   const checkEmailResult = await Member.findOne({ where: { email: email } });
   if (checkEmailResult == null) {
@@ -184,10 +181,8 @@ router.post('/userProfile', async (req, res) => {
       ],
       where: { email: email },
     });
-    // console.log('~~~~~~~~~~백앤두두두', loginUser);
     return res.json({ code: '200', data: loginUser, msg: '사용자 정보 조회' });
   } catch (err) {
-    console.log('서버에러내용:', err);
     return res.json({
       code: '500',
       data: {},
@@ -200,15 +195,15 @@ router.post('/userProfile', async (req, res) => {
 // localhost:3003/member/saveprofile
 router.post('/saveprofile', async (req, res) => {
   const member = req.body;
-  // console.log('0000000----00000000', member);
   if (req.body.userPwd != null) {
     const hashPwd = await bcrypt.hash(req.body.userPwd, 12);
 
     const updated = await Member.update(
       {
         userPwd: hashPwd,
-        userName: req.body.username,
+        userName: req.body.userName,
         birthday: req.body.birthday,
+        thought: req.body.thought,
         profileImg: req.body.profileImg,
         profileImgTitle: req.body.profileImgTitle,
       },
@@ -223,8 +218,9 @@ router.post('/saveprofile', async (req, res) => {
   } else {
     const updated = await Member.update(
       {
-        userName: req.body.username,
+        userName: req.body.userName,
         birthday: req.body.birthday,
+        thought: req.body.thought,
         profileImg: req.body.profileImg,
         profileImgTitle: req.body.profileImgTitle,
       },
@@ -246,14 +242,13 @@ router.post('/delete', async (req, res) => {
   const deleteResult = await Member.destroy({
     where: { email: email },
   });
-  console.log('회원 삭제 처리 결과 ', deleteResult);
   if (deleteResult === 1) {
     return res.json({ code: '200', data: {}, msg: 'deleted successfully' });
   } else {
     return res.json({
       code: '500',
       data: {},
-      msg: '사용자 정보 조회 에러 발생',
+      msg: '탈퇴 처리 에러 발생',
     });
   }
 });

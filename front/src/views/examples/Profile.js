@@ -52,9 +52,9 @@ import Header from 'components/Headers/Header';
 
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-//ajax library axio팩키지를 참조한다.
+import { useDispatch } from 'react-redux';
+import { isProfileChanged } from 'reducer/member';
 import axios from 'axios';
-//각종 유틸리티 함수를 참조한다.
 import {
   getJWTToken,
   isMemberLogined,
@@ -77,6 +77,7 @@ const Profile = () => {
   const userEmail = getLoginMember().email;
   // history 참조 변수
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     axios
@@ -99,20 +100,23 @@ const Profile = () => {
       });
   }, []);
 
-  // input type=file value 값은 상태관리가 안돼서 useEffect 불가능
   const onMemberChange = (e) => {
     setMember({ ...member, [e.target.name]: e.target.value });
   };
+  // 비밀번호 재확인용 변수 업데이트
+  const onPwdRepeatChange = (e) => {
+    setPwdRepeat(e.target.value);
+  };
 
   // 프로필이미지 업로드 버튼 이벤트 디스패치
-  // const imgUploadMouseEvent = () => {
-  //   const event = new MouseEvent('click', {
-  //     view: window,
-  //     bubbles: true,
-  //     cancelable: true,
-  //   });
-  //   document.querySelector('#imgUpload').dispatchEvent(event);
-  // };
+  const imgUploadMouseEvent = () => {
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
+    document.querySelector('#imgUpload').dispatchEvent(event);
+  };
 
   // 프로필 이미지 업로드
   const onImgUploadChange = (e) => {
@@ -129,9 +133,10 @@ const Profile = () => {
       onError();
       return;
     }
+
     // 파일 이름 담아주기 - 이곳에 담겼다가 지먹대로 초기화됨
     console.log('업로드 된 파일의 이름', file.name);
-    setMember({ ...member, profileImgTitle: file.name });
+    // setMember({ ...member, profileImgTitle: file.name });
     // FileReader 인스턴스 생성
     let fileReader = new FileReader();
 
@@ -139,7 +144,11 @@ const Profile = () => {
     fileReader.onload = (e) => {
       const previewImage = document.getElementById('preview-image');
       // useState로 저장
-      setMember({ ...member, profileImg: e.target.result });
+      setMember({
+        ...member,
+        profileImg: e.target.result,
+        profileImgTitle: file.name,
+      });
       previewImage.src = e.target.result;
     };
     // reader가 이미지 읽도록 하기
@@ -147,13 +156,12 @@ const Profile = () => {
   };
 
   const onSaveProfile = () => {
-    console.log('~~~~~~~~~~~~~!!!!!!!!!!!', member);
-
     //회원 정보 수정 버튼
     axios
       .post('http://localhost:3003/member/saveprofile', member)
       .then((res) => {
         if (res.data.code === '200') {
+          dispatch(isProfileChanged(true));
           alert('Profile has changed successfully!');
         }
       })
@@ -161,24 +169,19 @@ const Profile = () => {
         alert(err);
       });
   };
-
-  // useEffect(() => {
-  //   console.log('프로필이미지 상태 변했음', member.profileImgTitle);
-  // }, [member.profileImgTitle]);
-
   // 비밀번호 유효성 검사
   useEffect(() => {
     // 비밀번호 유효성 검사 - 8 ~ 15자 영문, 숫자 조합
     const regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,15}$/;
 
-    // if (e.target.name === 'userPwd') {
     let pwdCheck = document.querySelector('.pwdCheck');
-    //   let password = e.target.value;
     let pwdRegExp = regExp.test(member.userPwd);
+    let pwdCheckIcon = document.querySelector('.pwdCheckIcon');
 
     // 아직 아무것도 치지 않았을 때 공백
     if (member.userPwd == undefined || member.userPwd == '') {
       pwdCheck.innerText = '';
+      pwdCheckIcon.classList.remove('text-success');
       return;
     }
     // 유효성 검사 통과 시 초록색으로 strong 뜨기
@@ -186,25 +189,17 @@ const Profile = () => {
       pwdCheck.classList.add('text-success');
       pwdCheck.classList.remove('text-muted');
       pwdCheck.innerText = 'strong';
+      // setPwdPass(false);
+      // pwdPass.current = false;
+      // alert(pwdPass.current.value);
     } else {
       // 통과 못했을 시 회색으로 week 뜨기
       pwdCheck.classList.add('text-muted');
       pwdCheck.classList.remove('text-success');
       pwdCheck.innerText = 'week';
     }
-  }, [member.userPwd]);
 
-  // 비밀번호 재확인용 변수 업데이트
-  const onPwdRepeatChange = (e) => {
-    setPwdRepeat(e.target.value);
-  };
-
-  // 비밀번호 재확인
-  useEffect(() => {
-    // setPwdRepeat(e.target.value);
-    // console.log(pwdRepeat);
-    // let pwdRepeat = e.target.value;
-    let pwdCheckIcon = document.querySelector('.pwdCheckIcon');
+    // 비밀번호 재확인
     if (pwdRepeat === member.userPwd) {
       pwdCheckIcon.classList.add('text-success');
     } else {
@@ -216,7 +211,7 @@ const Profile = () => {
   const onError = () => {
     setMember({
       ...member,
-      profileImg: require('../../assets/img/theme/team-4-800x800.jpg').default,
+      profileImg: require('../../assets/img/theme/default-avatar.png').default,
     });
   };
 
@@ -358,7 +353,6 @@ const Profile = () => {
                       href='#pablo'
                       // onClick={(e) => e.preventDefault()}
                       onClick={onSaveProfile}
-                      size='sm'
                     >
                       Save
                     </Button>
@@ -498,7 +492,7 @@ const Profile = () => {
                     <hr className='my-4' />
                     {/* <br></br> */}
                     <Row>
-                      <Col lg='7'>
+                      <Col lg='6'>
                         <FormGroup>
                           <label
                             className='form-control-label'
@@ -511,9 +505,9 @@ const Profile = () => {
                               Click the picture to upload profile photo
                             </small>
                           </div>
-                          {/* //! 프로필 사진 업로드 */}
-                          {/* profileImgTitle이 안보여서 버튼 지우고 라벨로 대체 */}
-                          {/* <InputGroup className='input-group-alternative'>
+                          <br></br>
+                          {/* 프로필 사진 업로드 */}
+                          <InputGroup className='input-group-alternative text-center'>
                             <InputGroupAddon addonType='prepend'>
                               <Button
                                 id='imgUploadBtn'
@@ -523,10 +517,17 @@ const Profile = () => {
                                 upload
                               </Button>
                             </InputGroupAddon>
-                            <span id='input-profile-Image'>
+                            <div
+                              id='input-profile-Image'
+                              className='text-center'
+                              style={{
+                                lineHeight: '40px',
+                                paddingLeft: '10px',
+                              }}
+                            >
                               {member.profileImgTitle}
-                            </span>
-                          </InputGroup> */}
+                            </div>
+                          </InputGroup>
                           {/* 숨겨놓은 못생긴 인풋 박스 */}
                           <div style={{ display: 'none' }}>
                             <Input
@@ -539,24 +540,45 @@ const Profile = () => {
                           </div>
                         </FormGroup>
                       </Col>
-                      <Col>
-                        <label for='imgUpload'>
-                          <Media className='align-items-center avatar-main-wrap'>
-                            <div className='avatar-main avatar-sm rounded-circle'>
-                              <img
-                                id='preview-image'
-                                alt='...'
-                                src={
-                                  member.profileImg == null ||
-                                  member.profileImg === ''
-                                    ? onError()
-                                    : member.profileImg
-                                }
-                                //onError={onError}
-                              />
-                            </div>
-                          </Media>
-                        </label>
+
+                      <Col lg='6'>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            // alignItems: 'center',
+                          }}
+                        >
+                          <label for='imgUpload'>
+                            <Media className='align-items-center avatar-main-wrap'>
+                              <div
+                                className='avatar-main avatar-sm rounded-circle'
+                                style={{
+                                  width: '300px',
+                                  height: '300px',
+                                  justifyContent: 'center',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <img
+                                  id='preview-image'
+                                  alt='...'
+                                  src={
+                                    member.profileImg == null ||
+                                    member.profileImg === ''
+                                      ? onError()
+                                      : member.profileImg
+                                  }
+                                  style={{
+                                    width: '300px',
+                                    height: '300px',
+                                  }}
+                                />
+                              </div>
+                            </Media>
+                          </label>
+                        </div>
                       </Col>
                     </Row>
                   </div>

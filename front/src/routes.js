@@ -12,6 +12,7 @@ import PostCreate from 'views/examples/PostCreate';
 import Post from 'views/examples/Post';
 import CatrgoryAdd from 'views/examples/CatrgoryAdd';
 import ForgotPassword from 'views/examples/ForgotPassword';
+import SharedMemberManage from 'views/examples/SharedMemberManage';
 
 var routes = [
   {
@@ -89,9 +90,15 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/forgotpassword',
+    path: '/forgot-password',
     breadcrumb: 'ForgotPassword',
     component: ForgotPassword,
+    layout: '/auth',
+  },
+  {
+    path: '/shared-member-manage',
+    breadcrumb: 'Shared Member Manage',
+    component: SharedMemberManage,
     layout: '/auth',
   },
 ];

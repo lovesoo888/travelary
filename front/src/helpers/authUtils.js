@@ -4,18 +4,21 @@ import jwtDecode from 'jwt-decode';
 //사용자 인증 토큰 조회하기 유틸함수
 const getJWTToken = () => {
   const storageToken = window.localStorage.getItem('jwtToken');
-  if (storageToken != undefined) {
+  if (storageToken !== undefined) {
     return storageToken;
   } else {
-    return '';
+    return '발급된 토큰이 없습니다.';
   }
 };
 
 //현재 사용자 로그인 여부 체크 함수
-const isMemberLogined = () => {
+const isMemberLogined = (e) => {
   const storageToken = window.localStorage.getItem('jwtToken');
 
-  console.log('로그인 상태체크 토큰  ====>', storageToken);
+  console.log(
+    `${e} 에서 호출한 로그인 상태체크 함수(return boolean)입니다. null 이면 로긴해서 토큰 받기 ==>`,
+    storageToken
+  );
 
   if (storageToken != null) {
     return true;

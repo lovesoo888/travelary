@@ -2,6 +2,7 @@
 
 /*eslint-disable*/
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink as NavLinkRRD, Link } from 'react-router-dom';
 // nodejs library to set properties for components
 import { PropTypes } from 'prop-types';
@@ -43,6 +44,7 @@ import {
   getLoginMember,
 } from '../../helpers/authUtils';
 import axios from 'axios';
+import { isProfileChanged } from 'reducer/member';
 
 var ps;
 
@@ -53,6 +55,12 @@ const Sidebar = (props) => {
     userName: '',
     profileImg: '',
   });
+
+  const profilePicUpdate = useSelector(
+    (state) => state.member.profilePicUpdate
+  );
+
+  const dispatch = useDispatch();
 
   const [collapseOpen, setCollapseOpen] = useState();
   // verifies if routeName is the one active (in browser input)
@@ -110,28 +118,41 @@ const Sidebar = (props) => {
     }
   };
 
-  //! 로그인한 사용자 이름 사이더바에 넣어주기 - 임시로 이름 박아놓음 나중에 고치기
-  useEffect(() => {
-    setLoginMember({ ...loginMember, userName: getLoginMember().userName });
-  }, []);
+  const userEmail = getLoginMember().email;
 
   // 로딩 시 최초 한 번 실행
-  const userEmail = getLoginMember().email;
   useEffect(() => {
     axios
       .post('http://localhost:3003/member/userProfile', { userEmail })
       .then((res) => {
-        console.log(res.data);
-
         setLoginMember({
           ...loginMember,
-          profileImg: res.data.profileImg,
+          profileImg: res.data.data.profileImg,
+          userName: res.data.data.userName,
         });
       })
       .catch((err) => {
         console.error(err);
       });
   }, []);
+
+  useEffect(() => {
+    if (profilePicUpdate) {
+      axios
+        .post('http://localhost:3003/member/userProfile', { userEmail })
+        .then((res) => {
+          setLoginMember({
+            ...loginMember,
+            profileImg: res.data.data.profileImg,
+            userName: res.data.data.userName,
+          });
+          dispatch(isProfileChanged(false));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [profilePicUpdate]);
 
   return (
     <Navbar
@@ -155,15 +176,25 @@ const Sidebar = (props) => {
           </NavbarBrand>
         ) : null}
 
-        {/* //!사이드바 프로필 영역 */}
+        {/* 사이드바 프로필 영역 */}
         <Media className='align-items-center avatar-main-wrap'>
-          <div className='avatar-main avatar-xl rounded-circle'>
+          <div
+            className='avatar-main avatar-xl rounded-circle'
+            style={{
+              justifyContent: 'center',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <img
+              style={{
+                // width: '100%',
+                height: '128.28px',
+              }}
               alt='...'
               src={
-                // loginMember.profileImg
                 loginMember.profileImg == null || loginMember.profileImg == ''
-                  ? require('../../assets/img/theme/team-4-800x800.jpg').default
+                  ? require('../../assets/img/theme/default-avatar.png').default
                   : loginMember.profileImg
               }
             />
