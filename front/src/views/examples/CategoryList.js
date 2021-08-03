@@ -37,27 +37,27 @@ const CategoryList = ({ post }) => {
   // }, []);
 
   // 스크롤 길이
-  useEffect(() => {
-    function onScroll() {
-      if (
-        window.scrollY + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
-      ) {
-        if (hasMoreCategory && !loadCategoryLoading) {
-          console.log(categoryList.length);
-          const lastId = categoryList[categoryList.length - 1]?.id;
-          dispatch({
-            type: LOAD_CATEGORY_REQUEST,
-            lastId,
-          });
-        }
-      }
-    }
-    window.addEventListener('scroll', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [hasMoreCategory, loadCategoryLoading, categoryList]);
+  // useEffect(() => {
+  //   function onScroll() {
+  //     if (
+  //       window.scrollY + document.documentElement.clientHeight >
+  //       document.documentElement.scrollHeight - 300
+  //     ) {
+  //       if (hasMoreCategory && !loadCategoryLoading) {
+  //         console.log(categoryList.length);
+  //         const lastId = categoryList[categoryList.length - 1]?.id;
+  //         dispatch({
+  //           type: LOAD_CATEGORY_REQUEST,
+  //           lastId,
+  //         });
+  //       }
+  //     }
+  //   }
+  //   window.addEventListener('scroll', onScroll);
+  //   return () => {
+  //     window.removeEventListener('scroll', onScroll);
+  //   };
+  // }, [hasMoreCategory, loadCategoryLoading, categoryList]);
 
   useEffect(() => {
     function onScroll() {

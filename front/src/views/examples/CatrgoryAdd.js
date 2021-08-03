@@ -26,6 +26,7 @@ const CatrgoryAdd = () => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addCategoryDone) {
       setCategoryName('');
+      history.push('admin/index');
     }
   }, [addCategoryDone]);
 
@@ -49,7 +50,6 @@ const CatrgoryAdd = () => {
         type: ADD_CATEGORY_REQUEST,
         data: formData,
       });
-      // history.push('/admin/index');
     },
     [categoryName, imagePaths]
   );

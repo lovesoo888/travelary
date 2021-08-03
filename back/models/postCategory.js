@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(200),
         allowNull: true,
       },
+      categoryTrue: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
     },
     {
       charset: 'utf8mb4',

@@ -37,6 +37,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     const category = await PostCategory.create({
       categoryName: req.body.categoryName,
       thumbnail: req.body.image,
+      categoryTrue: 1,
     });
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
