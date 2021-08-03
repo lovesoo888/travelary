@@ -184,11 +184,13 @@ const Sidebar = (props) => {
               justifyContent: 'center',
               display: 'flex',
               alignItems: 'center',
+              width: '128.28px',
+              height: '128.28px',
             }}
           >
             <img
               style={{
-                // width: '100%',
+                width: '128.28px',
                 height: '128.28px',
               }}
               alt='...'

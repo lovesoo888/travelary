@@ -38,7 +38,6 @@ const getLoginMember = () => {
   const decoded = jwtDecode(storageToken);
   const member = {
     email: decoded.email,
-    userName: decoded.userName,
   };
   return member;
 };
