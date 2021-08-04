@@ -5,26 +5,16 @@ import faker from 'faker';
 // 초기 설정
 export const initialState = {
   categoryList: [],
-  postList: [
-    {
-      id: 1,
-      categoryCode: 1, // 공유/개인 인지 확인
-      Member: {
-        id: 1,
-        nickname: '테스터',
-      },
-      title: '발리에서 생긴일 part.1',
-      contents: '으음',
-      ThumnailImg: {
-        src: 'http://www.travelnbike.com/news/photo/201903/77604_141293_4837.png',
-      },
-    },
-  ],
+  postList: [],
   postView: [],
   categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   hasMoreCategory: true, // 카테고리가 없어졌을때
-  loadCategoryLoading: false, // 포스트 추가시 로딩
+  hasMorePost: true, // 카테고리가 없어졌을때
+  loadPostLoading: false, // 포스트 추가시 로딩
+  loadPostDone: false,
+  loadPostError: false,
+  loadCategoryLoading: false, // 카테고리 추가시 로딩
   loadCategoryDone: false,
   loadCategoryError: false,
   addPostLoading: false, // 포스트 추가시 로딩
@@ -62,9 +52,18 @@ export const generateDummyCategory = (number) =>
 //? 액션 함수 시작
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
+
+export const UPLOAD_POST_IMAGES_REQUEST = 'UPLOAD_POST_IMAGES_REQUEST';
+export const UPLOAD_POST_IMAGES_SUCCESS = 'UPLOAD_POST_IMAGES_SUCCESS';
+export const UPLOAD_POST_IMAGES_FAILURE = 'UPLOAD_POST_IMAGES_FAILURE';
+
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
+
+// export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+// export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+// export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const LOAD_CATEGORY_REQUEST = 'LOAD_CATEGORY_REQUEST';
 export const LOAD_CATEGORY_SUCCESS = 'LOAD_CATEGORY_SUCCESS';
@@ -109,6 +108,22 @@ export const addPostAction = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
+      // case LOAD_POST_REQUEST:
+      //   draft.loadPostLoading = true;
+      //   draft.loadPostDone = false;
+      //   draft.loadPostError = null;
+      //   break;
+      // case LOAD_POST_SUCCESS:
+      //   draft.loadPostLoading = false;
+      //   draft.loadPostDone = true;
+      //   // draft.postlist = draft.postlist.concat(action);
+      //   draft.postlist = action.data;
+      //   // draft.hasMorePost = action.data.length === 9;
+      //   break;
+      // case LOAD_POST_FAILURE:
+      //   draft.loadCategoryLoading = false;
+      //   draft.loadCategoryError = action.error;
+      //   break;
       case LOAD_CATEGORY_REQUEST:
         draft.loadCategoryLoading = true;
         draft.loadCategoryDone = false;
@@ -145,9 +160,9 @@ const reducer = (state = initialState, action) =>
         draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
-        const category = draft.categoryList.find(
-          (v) => v.id === action.data.CategoryId
-        );
+        // const category = draft.categoryList.find(
+        //   (v) => v.id === action.data.id
+        // );
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.postList.unshift(action.data);
@@ -197,6 +212,20 @@ const reducer = (state = initialState, action) =>
         draft.uploadImagesDone = true;
         break;
       case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+      case UPLOAD_POST_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_POST_IMAGES_SUCCESS:
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      case UPLOAD_POST_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
         break;

@@ -24,9 +24,15 @@ import {
   LOAD_CATEGORY_REQUEST,
   LOAD_CATEGORY_SUCCESS,
   LOAD_CATEGORY_FAILURE,
+  // LOAD_POST_REQUEST,
+  // LOAD_POST_SUCCESS,
+  // LOAD_POST_FAILURE,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
+  UPLOAD_POST_IMAGES_REQUEST,
+  UPLOAD_POST_IMAGES_SUCCESS,
+  UPLOAD_POST_IMAGES_FAILURE,
 } from '../reducer/post';
 
 // ! API 는 제네레이터 함수를 사용하지 않는다.
@@ -73,9 +79,34 @@ function* loadCategory(action) {
   }
 }
 
+// function loadPostAPI(lastId, id) {
+//   // 실제 서버에 요청을 보냄
+//   return axios.get(`/categories/${id}/?lastId=${lastId || 0}`);
+// }
+
+// function* loadPost(action) {
+//   try {
+//     const result = yield call(loadPostAPI, action.lastId, action.id);
+//     console.log(
+//       '포스트 로딩 결과 데이ㅓㅌ ㅓ : -------------------------- ',
+//       result.data
+//     );
+//     yield put({
+//       type: LOAD_POST_SUCCESS,
+//       data: result.data,
+//     });
+//   } catch (err) {
+//     console.log('포스트 로딩에러입니다: ', err);
+//     yield put({
+//       type: LOAD_POST_FAILURE,
+//       data: err.response.data,
+//     });
+//   }
+// }
+
 function addPostAPI(data) {
   //category/1/post
-  return axios.post(`/category/${data.postCategoryId}/post`, data);
+  return axios.post(`/category/post`, data);
 }
 
 function* addPost(action) {
@@ -109,6 +140,27 @@ function* uploadImages(action) {
     console.error(err);
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+function uploadPostImagesAPI(data) {
+  //category/1/post
+  return axios.post('/category/post/images', data);
+}
+
+function* uploadPostImages(action) {
+  try {
+    const result = yield call(uploadPostImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_POST_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPLOAD_POST_IMAGES_FAILURE,
       data: err.response.data,
     });
   }
@@ -183,17 +235,27 @@ function* watchLoadCategory() {
   yield throttle(5000, LOAD_CATEGORY_REQUEST, loadCategory);
 }
 
+// function* watchLoadPost() {
+//   yield throttle(5000, LOAD_POST_REQUEST, loadPost);
+// }
+
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 
+function* watchUploadPostImages() {
+  yield takeLatest(UPLOAD_POST_IMAGES_REQUEST, uploadPostImages);
+}
+
 export default function* postSaga() {
   yield all([
+    // fork(watchLoadPost),
     fork(watchLoadCategory),
     fork(watchAddCategory),
     fork(watchAddPost),
     fork(watchRemoveCategory),
     fork(watchRemovePost),
     fork(watchUploadImages),
+    fork(watchUploadPostImages),
   ]);
 }

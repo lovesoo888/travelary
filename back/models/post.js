@@ -8,11 +8,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       content: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      categoryTrue: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
+      thumbnail: {
+        type: DataTypes.STRING(200),
+        allowNull: true,
+      },
+      categoryCode: {
+        type: DataTypes.STRING(10),
+        allowNull: true,
       },
     },
     {

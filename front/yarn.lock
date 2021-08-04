@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@angular/router@^4.4.5":
+  version "4.4.7"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-4.4.7.tgz#b642ae00f5f93f5e864f3d2b3e735509cd814c05"
+  integrity sha512-WaVnBP41UdrUwReSUgB5YE6C37PrYFSaiFAoPRTx4RC0jeRE+ncFWwessVIh0kvfEK4ROkO3QK2BtLzMUY5GNg==
+  dependencies:
+    tslib "^1.7.1"
+
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -11046,6 +11053,13 @@ quick-lru@^4.0.1:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-4.0.1.tgz#5b8878f113a58217848c6482026c73e1ba57727f"
   integrity sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==
 
+quil@^1.1.30:
+  version "1.1.30"
+  resolved "https://registry.yarnpkg.com/quil/-/quil-1.1.30.tgz#28c7593ce7485b18f2a0392a0d7e5cb7e4630991"
+  integrity sha512-4kHLrx8eG3OXN7ig4lKoI7T2xnzghAyNbE4xqhqTsAf8n2F8DOoZJx5L6L4g1O7Z9sXaOr1lDe5jBoGLJrxMSw==
+  dependencies:
+    "@angular/router" "^4.4.5"
+
 raf@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
@@ -13220,7 +13234,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.8.1:
+tslib@^1.7.1, tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

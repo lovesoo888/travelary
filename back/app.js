@@ -22,8 +22,8 @@ var memberRouter = require('./routes/member');
 const postRouter = require('./routes/post');
 const categoryRouter = require('./routes/category');
 const categoriesRouter = require('./routes/categories');
-const postsRouter = require('./routes/posts');
-const postCategory = require('./models/postCategory.js');
+// const postsRouter = require('./routes/posts');
+// const postCategory = require('./models/postCategory.js');
 
 var app = express();
 //노드 어플리케이션에 cors기능 적용 - 모든 리소스 접근 CORS 허용하기
@@ -60,10 +60,10 @@ app.use('/users', usersRouter);
 app.use('/member', memberRouter);
 
 // post 라우터 불러오기
-app.use('/post', postRouter);
+// app.use('/post', postRouter);
 app.use('/category', categoryRouter); // 카테고리 단일
 app.use('/categories', categoriesRouter); // 카테고리 리스트 (복수)
-app.use(`/category/${postCategory.id}/post`, postsRouter); // 포스트 리스트
+// app.use(`/category/${postCategory.id}/post`, postsRouter); // 포스트 리스트
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

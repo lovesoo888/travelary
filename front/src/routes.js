@@ -67,9 +67,9 @@ var routes = [
     layout: '/auth',
   },
   {
-    path: '/index/:id/posts',
+    path: '/categories/:id',
     breadcrumb: 'My Travelary Post List',
-    component: CategoryList,
+    component: PostList,
     layout: '/admin',
   },
   {
