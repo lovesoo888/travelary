@@ -79,7 +79,7 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/post/view',
+    path: '/post/:id',
     breadcrumb: 'Travelary View',
     component: Post,
     layout: '/admin',

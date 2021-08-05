@@ -91,7 +91,7 @@ const PostList = ({ post }) => {
               {postList.map((post) => (
                 <Col key={post.id} lg='6' xl='4' className='postWrap'>
                   <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/post/view/${post.id}`}>
+                    <Link to={`/admin/post/${post.id}`}>
                       <div className='imageThumbnail'>
                         <img
                           alt='...'

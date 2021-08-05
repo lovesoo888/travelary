@@ -8,27 +8,33 @@ import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
 import { useParams } from 'react-router-dom';
 import PostBg from 'components/Headers/PostBg';
 
-const Post = ({ post }) => {
+const Post = () => {
   // 내 아이디 값 불러오는...건데
   // ? user reducer가 없으니까 어떻게 불러올지는 나중에 수정하자
   // const id = useSelector((state) => state.user.me?.id);
-  // const { postList, setPostList } = useState({
-  //   title: '',
-  //   content: '',
-  // });
+  const [postContent, setPostContent] = useState({
+    title: '',
+    contnet: '',
+  });
+  const [postIdx, setPostIdx] = useState(0);
 
-  const { postList } = useSelector((state) => state.post);
-  const { postId } = useParams(postList.id);
-  console.log('포스트 파람?????????', postId);
+  // 파라메터로 전달되는 와일드 카드 변수명으로 전달되는 값을 받아온다.
+  const { id } = useParams();
+  console.log(id);
+  // const { postList } = useSelector((state) => state.post);
+  // const { postId } = useParams(postList);
+  // console.log('포스트 파람?????????', postId);
 
   useEffect(() => {
+    setPostIdx(id);
     axios
-      .get(`/category/post/${postId}`)
+      .get(`/categories/post/${id}`)
       .then((res) => {
-        console.log('백엔드에서 제공된 전체 데이터 구조파악:', res);
+        // console.log('백엔드에서 제공된 전체 데이터 구조파악:', res);
         if (res.data.code === '200') {
-          //게시글 목록 세터함수를 통해 백엔드에서 전달된 json배열을 데이터로 목록을 갱신한다.
-          // setPostList(res.data.data);
+          //게시글 세터함수를 통해 백엔드에서 전달된 json을 데이터로 갱신한다.
+          console.log(res.data.posts);
+          setPostContent(res.data.posts);
         } else {
           alert('백엔드 호출 에러 발생');
         }
@@ -41,7 +47,10 @@ const Post = ({ post }) => {
   return (
     <>
       {/* 배경 백그라운드 이미지로 까는거 잊지 말기 */}
-      <div className='header postViewWrap pb-8 pt-md-6'>
+      <div
+        className='header postViewWrap pb-8 pt-md-6'
+        style={{ width: '100%' }}
+      >
         <PostBg />
         <Container className='mt--7' fluid>
           <Row>
@@ -50,7 +59,7 @@ const Post = ({ post }) => {
                 {}
                 <CardHeader className='bg-transparent'>
                   <Row className='align-items-center postHeader pl-3 pr-3'>
-                    <h3>{postList.title}</h3>
+                    <h3>{postContent.title}</h3>
                     <div>
                       <button class='btn btn-secondary'>목록</button>
                       <button class='btn btn-primary'>수정</button>
@@ -68,7 +77,7 @@ const Post = ({ post }) => {
                 <CardBody>
                   {/* Chart */}
                   <div>
-                    <p>{postList.content}</p>
+                    <p>{postContent.content}</p>
                   </div>
                 </CardBody>
               </Card>

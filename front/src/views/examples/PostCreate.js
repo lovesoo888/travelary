@@ -1,8 +1,10 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import axios from 'axios';
 import { Container, Form, Button } from 'reactstrap';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import Quill from 'quill';
+import { ImageUploader } from 'quill-image-upload';
+import 'react-quill/dist/quill.snow.css';
+
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addPostAction } from 'reducer/post';
@@ -23,18 +25,22 @@ const PostCreate = () => {
   );
   // const [imagePaths, setImagePaths] = useState([]);
 
+  // 퀄 설정
+  const quillInstance = useRef(null);
+  const quillElement = useRef(null);
+
   const { id } = useParams();
 
-  useEffect(() => {
-    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
-    if (addPostDone) {
-      history.push('admin/categories/');
-    }
-  }, [addPostDone]);
+  // useEffect(() => {
+  //   // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
+  //   if (addPostDone) {
+  //     history.push('admin/categories/');
+  //   }
+  // }, [addPostDone]);
 
   const [postContents, setPostContents] = useState({
     title: '',
-    contents: '',
+    content: '',
   });
 
   const onChangePosts = useCallback((e) => {
@@ -83,6 +89,31 @@ const PostCreate = () => {
   //     });
   // }, []);
 
+  const toolbarOptions = {
+    container: [
+      // [{ size: ['small', false, 'large', 'huge'] }], // custom dropdown
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      [{ align: [] }],
+      ['bold', 'italic', 'underline', 'strike'], // toggled buttons
+      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      [{ script: 'sub' }, { script: 'super' }], // superscript/subscript
+      [{ indent: '-1' }, { indent: '+1' }], // outdent/indent
+      [{ direction: 'rtl' }], // text direction
+      ['blockquote', 'link', 'image'], // media
+    ],
+  };
+
+  useEffect(() => {
+    quillInstance.current = new Quill(quillElement.current, {
+      theme: 'snow',
+      placeholder: '어떤 여행을 보내셨나요?',
+      modules: {
+        toolbar: toolbarOptions,
+      },
+    });
+  }, []);
+
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addPostDone) {
@@ -101,13 +132,14 @@ const PostCreate = () => {
         formData.append('image', p);
       });
       formData.append('title', postContents.title);
+      formData.append('content', postContents.content);
       return dispatch({
         type: ADD_POST_REQUEST,
         data: formData,
         id,
       });
     },
-    [postContents.title, imagePaths]
+    [postContents.title, postContents.content, imagePaths]
   );
 
   const onRemoveImage = useCallback((index) => () => {
@@ -163,27 +195,18 @@ const PostCreate = () => {
               ></input>
             </dd>
           </dl>
-          <dl>
+          <dl className='mb-4'>
             <dt>게시글 작성</dt>
             <dd className='mt-2'>
-              <CKEditor
-                editor={ClassicEditor}
-                // value={postContents.content}
-                data=''
-                onReady={(editor) => {
-                  // You can store the "editor" and use when it is needed.
-                  console.log('Editor is ready to use!', editor);
-                }}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  console.log(data);
-                  setPostContents({
-                    ...postContents,
-                    contents: data,
-                  });
-                  console.log(postContents);
-                }}
-              />
+              <div>
+                <input
+                  style={{ height: '400px', backgroundColor: '#ffffff' }}
+                  ref={quillElement}
+                  value={postContents.content}
+                  onChange={onChangePosts}
+                  name='content'
+                />
+              </div>
             </dd>
           </dl>
           <dl>

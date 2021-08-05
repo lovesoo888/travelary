@@ -1,6 +1,6 @@
 // 카테고리 목록 라우터
 const express = require('express');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 const { PostCategory, Member, Attachment, Post } = require('../models');
 const router = express.Router();
@@ -52,11 +52,14 @@ router.get('/:id', async (req, res, next) => {
         ['createdAt', 'DESC'], // 게시글 내림차순
       ],
       include: [
-        // {
-        //   model: Member,
-        // },
+        {
+          model: Member,
+        },
         {
           model: Attachment,
+        },
+        {
+          model: PostCategory,
         },
       ],
     }); // 모든 게시물 가져온다
@@ -72,39 +75,20 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // post 불러오기
-router.get('/:id/post/:id', async (req, res, next) => {
-  // GET /api/categories/1/post/1
-
+router.get('/post/:id', async (req, res, next) => {
+  // GET /posts
   try {
-    // const category = await PostCategory.findOne({
-    //   where: { id: req.params.id },
-    // });
-
-    // if (!category) {
-    //   return res.status(404).send('카테고리가 존재하지 않습니다.!!!!'); ///////////////////////////
-    // } //////////////////////////////////////////////////////////////////////////////////////////
-
-    const posts = await Post.findAll({
-      where: {
-        id: req.params.id,
-      },
-      include: [
-        {
-          model: Member,
-        },
-        {
-          model: Attachment,
-        },
-      ],
-
-      order: [['createdAt', 'DESC']], // DESC는 내림차순, ASC는 오름차순
+    const posts = await Post.findOne({
+      where: { id: req.params.id },
+    }); // 해당 아이디 값을 가진 게시물을 가져온다.
+    console.log(posts);
+    res.status(200).json({
+      code: '200',
+      posts,
     });
-
-    res.json(posts);
-  } catch (e) {
-    console.error(e);
-
-    next(e);
+  } catch (error) {
+    console.error(error);
+    next(error);
   }
 });
 
