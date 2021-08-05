@@ -4,10 +4,16 @@
 // reactstrap components
 // import { Card, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
 
-const PostBg = () => {
+const PostBg = ({ postContent }) => {
   return (
     <>
-      <div className='header postHeader'>
+      <div
+        className='header postHeader'
+        style={{
+          width: '100%',
+          // backgroundImage: `src: ${postcontent.thumbnail}`,
+        }}
+      >
         <div className='bg-gradient-info pb-8 pt-5 pt-md-8'></div>
       </div>
     </>

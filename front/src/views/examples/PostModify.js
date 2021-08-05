@@ -12,17 +12,12 @@ import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useInput from 'helpers/useInput';
-import {
-  ADD_POST_REQUEST,
-  UPLOAD_POST_IMAGES_REQUEST,
-  REMOVE_IMAGE,
-} from 'reducer/post';
+import { UPLOAD_POST_IMAGES_REQUEST, REMOVE_IMAGE } from 'reducer/post';
 import PropTypes from 'prop-types';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
-const PostCreate = () => {
+const PostModify = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const { addPostDone, imagePaths } = useSelector((state) => state.post);
 
   const { id } = useParams();
@@ -30,6 +25,26 @@ const PostCreate = () => {
   const [postContents, setPostContents] = useState({
     title: '',
   });
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    //setArticleIdx(idx);
+
+    axios
+      .get(`http://localhost:3005/category/post/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.code === 200) {
+          setPostContents(res.data.data);
+          setContent(res.data.data);
+        } else {
+          alert('백엔드 에러');
+        }
+      })
+      .catch((err) => {
+        alert('백엔드 호출 에러');
+      });
+  }, []);
 
   const onChangePosts = useCallback((e) => {
     const { name, value } = e.target;
@@ -59,7 +74,6 @@ const PostCreate = () => {
   // ///////////////
 
   // quill 이미지 멀터
-  const [content, setContent] = useState('');
   const quillRef = useRef();
   const imageHandler = () => {
     console.log('에디터에서 이미지 버튼을 클릭하면 이 핸들러가 시작됩니다!');
@@ -253,8 +267,4 @@ const PostCreate = () => {
   );
 };
 
-PostCreate.propTypes = {
-  post: PropTypes.object.isRequired,
-};
-
-export default PostCreate;
+export default PostModify;

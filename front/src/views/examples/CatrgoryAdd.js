@@ -22,37 +22,24 @@ const CatrgoryAdd = () => {
   const { imagePaths, addCategoryDone } = useSelector((state) => state.post);
   const [categoryName, onChangeTitle, setCategoryName] = useInput('');
 
-  useEffect(() => {
-    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
-    if (addCategoryDone) {
-      setCategoryName('');
-      history.push('admin/index');
-    }
-  }, [addCategoryDone]);
-
-  // const onChangeTitle = useCallback((e) => {
-  //   setTitle(e.target.value);
-  // }, []);
-
   // 카테고리 추가 액션
-  const onSubmit = useCallback(
-    (e) => {
-      if (!categoryName || !categoryName.trim()) {
-        return alert('카테고리명을 작성하세요');
-      }
-      e.preventDefault();
-      const formData = new FormData();
-      imagePaths.forEach((p) => {
-        formData.append('image', p);
-      });
-      formData.append('categoryName', categoryName);
-      return dispatch({
-        type: ADD_CATEGORY_REQUEST,
-        data: formData,
-      });
-    },
-    [categoryName, imagePaths]
-  );
+  const onSubmit = useCallback(() => {
+    if (!categoryName || !categoryName.trim()) {
+      return alert('카테고리명을 작성하세요');
+    }
+    if (!imagePaths) {
+      return alert('대표 이미지를 등록하세요');
+    }
+    const formData = new FormData();
+    imagePaths.forEach((p) => {
+      formData.append('image', p);
+    });
+    formData.append('categoryName', categoryName);
+    return dispatch({
+      type: ADD_CATEGORY_REQUEST,
+      data: formData,
+    });
+  }, [categoryName, imagePaths]);
 
   const imageInput = useRef();
 
@@ -72,12 +59,22 @@ const CatrgoryAdd = () => {
     });
   }, []);
 
-  const onRemoveImage = useCallback((index) => () => {
-    dispatch({
-      type: REMOVE_IMAGE,
-      data: index,
-    });
-  });
+  const onRemoveImage = useCallback(
+    (index) => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        data: index,
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
+    if (addCategoryDone) {
+      history.goBack();
+    }
+  }, [addCategoryDone]);
 
   return (
     <div className='pb-8 pt-2 pt-md-7 categoryAddWrap'>

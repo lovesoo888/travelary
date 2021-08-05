@@ -1,9 +1,9 @@
-// 카테고리 목록 라우터
+// 카테고리 목록, 포스트 목록 라우터
 const express = require('express');
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 
 const { PostCategory, Member, Attachment, Post } = require('../models');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get('/', async (req, res, next) => {
   // GET /categories
@@ -40,14 +40,13 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   // GET /posts
   try {
-    const where = {};
-    if (parseInt(req.query.lastId, 9)) {
-      // 초기 로딩이 아닐 때
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 9) };
-    }
+    // const where = {};
+    // if (parseInt(req.query.lastId, 9)) {
+    //   // 초기 로딩이 아닐 때
+    //   where.id = { [Op.lt]: parseInt(req.query.lastId, 9) };
+    // }
     const posts = await Post.findAll({
-      where,
-      limit: 9,
+      // limit: 9,
       order: [
         ['createdAt', 'DESC'], // 게시글 내림차순
       ],

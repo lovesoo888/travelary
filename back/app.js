@@ -3,12 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const multer = require('multer');
 //cors 노드 팩키지를 참조한다.
 const cors = require('cors');
 
 // .env 설정기능 참조 적용
-require('dotenv').config();
 
 // MVC(Model영역 모듈 참조) 시퀄라이즈 ORM 객체 참조하기
 var sequelize = require('./models/index.js').sequelize;
@@ -35,7 +34,7 @@ app.use(
 );
 
 app.use('/', express.static(path.join(__dirname, 'public/upload')));
-
+app.use(express.urlencoded({ extended: false }));
 // 시퀄라이즈 ORM객체를 이용해 지정한 MySQL 연결 동기화하기
 sequelize.sync();
 

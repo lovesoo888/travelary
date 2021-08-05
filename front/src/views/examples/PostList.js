@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Card, Container, Row, Col } from 'reactstrap';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_POST_REQUEST } from 'reducer/post';
 
-const PostList = ({ post }) => {
-  // const { postList, hasMorePost, loadPostLoading } = useSelector(
-  //   (state) => state.post
-  // );
+const PostList = (props) => {
+  const { categoryList, hasMorePost, loadPostLoading } = useSelector(
+    (state) => state.post
+  );
 
+  const history = useHistory();
   // const dispatch = useDispatch();
   // const { postList, hasMorePost, loadPostLoading } = useSelector(
   //   (state) => state.post
@@ -49,7 +50,7 @@ const PostList = ({ post }) => {
 
   useEffect(() => {
     axios
-      .get(`/categories/${id}/?lastId=${lastId || 0}`)
+      .get(`/categories/${id}`)
       .then((res) => {
         console.log('백엔드에서 제공된 전체 데이터 구조 파악', res);
         if (res.data.code === '200') {
@@ -75,7 +76,16 @@ const PostList = ({ post }) => {
       <div className='header pb-8 pt-2 pt-md-7'>
         <Container fluid>
           <Link to='/admin/post/add'>
-            <button class='btn btn-primary mb-4' type='button'>
+            <button
+              class='btn btn-primary mb-4'
+              type='button'
+              // onClick={() => {
+              //   history.push({
+              //     pathname: '/admin/post/add',
+              //     state: { categoryId: id },
+              //   });
+              // }}
+            >
               Add Post
             </button>
           </Link>

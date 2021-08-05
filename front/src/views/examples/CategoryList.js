@@ -30,6 +30,7 @@ const CategoryList = ({ post }) => {
 
   // 무한 스크롤
   useEffect(() => {
+    // if (categoryList) return;
     dispatch({
       type: LOAD_CATEGORY_REQUEST,
       // data: postCategoryId,
@@ -85,7 +86,7 @@ const CategoryList = ({ post }) => {
                   className='postWrap'
                 >
                   <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/categories/${post.id}`}>
+                    <Link to={`/admin/categories/${post.id}`} postId={post.id}>
                       <div className='imageThumbnail'>
                         <img
                           src={`http://localhost:3003/${post.thumbnail}`}
@@ -130,15 +131,8 @@ const CategoryList = ({ post }) => {
   }
 };
 
-// CategoryList.propTypes = {
-//   post: PropTypes.shape({
-//     id: PropTypes.number,
-//     Member: PropTypes.object,
-//     contents: PropTypes.string,
-//     title: PropTypes.string,
-//     createAt: PropTypes.object,
-//     ThumnailImg: PropTypes.object,
-//   }).isRequired,
-// };
+CategoryList.propTypes = {
+  post: PropTypes.object.isRequired,
+};
 
 export default CategoryList;

@@ -5,7 +5,7 @@ import faker from 'faker';
 // 초기 설정
 export const initialState = {
   categoryList: [],
-  postList: [],
+  // postList: [],
   postView: [],
   categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
@@ -52,6 +52,13 @@ export const generateDummyCategory = (number) =>
 //? 액션 함수 시작
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
+
+export const UPLOAD_POST_IMAGES_QUILL_REQUEST =
+  'UPLOAD_POST_IMAGES_QUILL_REQUEST';
+export const UPLOAD_POST_IMAGES_QUILL_SUCCESS =
+  'UPLOAD_POST_IMAGES_QUILL_SUCCESS';
+export const UPLOAD_POST_IMAGES_QUILL_FAILURE =
+  'UPLOAD_POST_IMAGES_QUILL_FAILURE';
 
 export const UPLOAD_POST_IMAGES_REQUEST = 'UPLOAD_POST_IMAGES_REQUEST';
 export const UPLOAD_POST_IMAGES_SUCCESS = 'UPLOAD_POST_IMAGES_SUCCESS';
@@ -226,6 +233,20 @@ const reducer = (state = initialState, action) =>
         draft.uploadImagesDone = true;
         break;
       case UPLOAD_POST_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+      case UPLOAD_POST_IMAGES_QUILL_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_POST_IMAGES_QUILL_SUCCESS:
+        draft.imagePaths = action.data;
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        break;
+      case UPLOAD_POST_IMAGES_QUILL_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
         break;

@@ -33,6 +33,9 @@ import {
   UPLOAD_POST_IMAGES_REQUEST,
   UPLOAD_POST_IMAGES_SUCCESS,
   UPLOAD_POST_IMAGES_FAILURE,
+  UPLOAD_POST_IMAGES_QUILL_REQUEST,
+  UPLOAD_POST_IMAGES_QUILL_SUCCESS,
+  UPLOAD_POST_IMAGES_QUILL_FAILURE,
 } from '../reducer/post';
 
 // ! API 는 제네레이터 함수를 사용하지 않는다.
@@ -49,6 +52,10 @@ function* addCategory(action) {
     yield put({
       type: ADD_CATEGORY_SUCCESS,
       data: result.data,
+    });
+    yield put({
+      type: ADD_CATEGORY_SUCCESS,
+      data: result.data.id,
     });
   } catch (err) {
     yield put({
@@ -166,6 +173,27 @@ function* uploadPostImages(action) {
   }
 }
 
+// quill 이미지
+function uploadPostQuillImagesAPI(data) {
+  return axios.post('/category/post/img', data);
+}
+
+function* uploadPostQuillImages(action) {
+  try {
+    const result = yield call(uploadPostQuillImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_POST_IMAGES_QUILL_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPLOAD_POST_IMAGES_QUILL_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
 function removeCategoryAPI(data) {
   return axios.delete(`/category/${data}`);
 }
@@ -232,7 +260,7 @@ function* watchRemovePost() {
 }
 
 function* watchLoadCategory() {
-  yield throttle(5000, LOAD_CATEGORY_REQUEST, loadCategory);
+  yield throttle(3000, LOAD_CATEGORY_REQUEST, loadCategory);
 }
 
 // function* watchLoadPost() {
@@ -246,6 +274,9 @@ function* watchUploadImages() {
 function* watchUploadPostImages() {
   yield takeLatest(UPLOAD_POST_IMAGES_REQUEST, uploadPostImages);
 }
+function* watchUploadPostQuillImages() {
+  yield takeLatest(UPLOAD_POST_IMAGES_QUILL_REQUEST, uploadPostQuillImages);
+}
 
 export default function* postSaga() {
   yield all([
@@ -257,5 +288,6 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchUploadImages),
     fork(watchUploadPostImages),
+    fork(watchUploadPostQuillImages),
   ]);
 }

@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 // reactstrap components
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import PostBg from 'components/Headers/PostBg';
 
 const Post = () => {
@@ -17,13 +17,11 @@ const Post = () => {
     contnet: '',
   });
   const [postIdx, setPostIdx] = useState(0);
+  const history = useHistory();
 
   // 파라메터로 전달되는 와일드 카드 변수명으로 전달되는 값을 받아온다.
   const { id } = useParams();
   console.log(id);
-  // const { postList } = useSelector((state) => state.post);
-  // const { postId } = useParams(postList);
-  // console.log('포스트 파람?????????', postId);
 
   useEffect(() => {
     setPostIdx(id);
@@ -44,6 +42,12 @@ const Post = () => {
       });
   }, []);
 
+  const onMoveModify = () => {
+    history.push(`/categories/post/${id}`);
+  };
+
+  const bgImgaeUrl = 'http://localhost:3003/';
+
   return (
     <>
       {/* 배경 백그라운드 이미지로 까는거 잊지 말기 */}
@@ -51,7 +55,18 @@ const Post = () => {
         className='header postViewWrap pb-8 pt-md-6'
         style={{ width: '100%' }}
       >
-        <PostBg />
+        <div
+          className='header postHeader'
+          style={{
+            width: '100%',
+            backgroundImage: `url( ${bgImgaeUrl}${postContent.thumbnail})`,
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+          }}
+        >
+          <div className='bg-gradient-info pb-8 pt-5 pt-md-8'></div>
+        </div>
         <Container className='mt--7' fluid>
           <Row>
             <Col className='mb-5 mb-xl-0' xl='12'>
@@ -62,7 +77,9 @@ const Post = () => {
                     <h3>{postContent.title}</h3>
                     <div>
                       <button class='btn btn-secondary'>목록</button>
-                      <button class='btn btn-primary'>수정</button>
+                      <button class='btn btn-primary' onClick={onMoveModify}>
+                        수정
+                      </button>
                       <button class='btn btn-danger'>삭제</button>
                       {/* 공유 다이어리에선 작성자만 수정가능하도록 처리해주는거 잊지 않기... */}
                       {/* {id && post.Member.id === id ? (
@@ -76,9 +93,11 @@ const Post = () => {
                 </CardHeader>
                 <CardBody>
                   {/* Chart */}
-                  <div>
-                    <p>{postContent.content}</p>
-                  </div>
+                  {/* <EdirotQuill postContent={postContent}  /> */}
+                  <div
+                    dangerouslySetInnerHTML={{ __html: postContent.content }}
+                  />
+                  {/* <div>{postContent.contnet}</div> */}
                 </CardBody>
               </Card>
             </Col>
