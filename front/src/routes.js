@@ -76,7 +76,7 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/categories/post/add',
+    path: '/post/add',
     breadcrumb: 'Created My Travelary',
     component: PostCreate,
     layout: '/admin',

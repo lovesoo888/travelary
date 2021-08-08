@@ -58,10 +58,6 @@ const PostList = ({ post }) => {
           // 게시글 목록 세터함수를 통해 백엔드에서 전달된 json 배열을 데이터로 목록을 갱신한다.
           setPostList(res.data.posts);
           console.log(res.data);
-          console.log(
-            '포스트 리스트 =================================== ',
-            postList
-          );
         } else {
           alert('백엔드 호출 에러 발생');
         }

@@ -42,6 +42,10 @@ const Post = () => {
       });
   }, []);
 
+  const onMoveModify = () => {
+    history.push(`/categories/post/modify/${id}`);
+  };
+
   const bgImgaeUrl = 'http://localhost:3003/';
 
   return (

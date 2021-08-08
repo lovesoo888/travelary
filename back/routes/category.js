@@ -108,7 +108,7 @@ router.post('/post', upload.none(), async (req, res, next) => {
       content: req.body.content,
       // MemberId: req.body.email,
       categoryCode: 0,
-      PostCategoryId: category.id,
+      CategoryId: parseInt(req.params.id, 10),
     });
 
     if (req.body.image) {

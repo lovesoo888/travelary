@@ -243,7 +243,7 @@ const PostCreate = () => {
             </dd>
           </dl> */}
           <div className='mt-8' style={{ textAlign: 'center' }}>
-            <button type='submit' className='btn btn-primary'>
+            <button type='submit' class='btn btn-primary'>
               Submit
             </button>
           </div>
