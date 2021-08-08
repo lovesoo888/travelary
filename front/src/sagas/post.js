@@ -113,7 +113,7 @@ function* loadCategory(action) {
 
 function addPostAPI(data) {
   //category/1/post
-  return axios.post(`/category/post`, data);
+  return axios.post(`/category/${data.postCategoryId}/post`, data);
 }
 
 function* addPost(action) {

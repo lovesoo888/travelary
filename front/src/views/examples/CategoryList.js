@@ -64,7 +64,7 @@ const CategoryList = ({ post }) => {
       <div className='header pb-8 pt-2 pt-md-7'>
         <Container fluid>
           <Link to='/admin/category/add'>
-            <button class='btn btn-primary mb-4' type='button'>
+            <button className='btn btn-primary mb-4' type='button'>
               Add Category
             </button>
           </Link>
@@ -86,7 +86,7 @@ const CategoryList = ({ post }) => {
                   className='postWrap'
                 >
                   <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/categories/${post.id}`} postId={post.id}>
+                    <Link to={`/admin/categories/${post.id}`}>
                       <div className='imageThumbnail'>
                         <img
                           src={`http://localhost:3003/${post.thumbnail}`}
@@ -95,7 +95,7 @@ const CategoryList = ({ post }) => {
                       </div>
                     </Link>
                   </Card>
-                  <Link to='/admin/post/list'>
+                  <Link to={`/admin/categories/${post.id}`}>
                     <p>{post.categoryName}</p>
                   </Link>
                   {/* <Button className='btn btn-danger' onClick={onRemovePost}>
@@ -114,7 +114,7 @@ const CategoryList = ({ post }) => {
         {/* 유저가 아무런 카테고리를 작성하지 않았을 때 */}
         <Container fluid>
           <Link to='/admin/category/add'>
-            <button class='btn btn-primary mb-4' type='button'>
+            <button className='btn btn-primary mb-4' type='button'>
               Add Category
             </button>
           </Link>

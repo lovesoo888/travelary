@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 // reactstrap components
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Link } from 'react-router-dom';
 import PostBg from 'components/Headers/PostBg';
 
 const Post = () => {
@@ -42,10 +42,6 @@ const Post = () => {
       });
   }, []);
 
-  const onMoveModify = () => {
-    history.push(`/categories/post/${id}`);
-  };
-
   const bgImgaeUrl = 'http://localhost:3003/';
 
   return (
@@ -77,9 +73,10 @@ const Post = () => {
                     <h3>{postContent.title}</h3>
                     <div>
                       <button class='btn btn-secondary'>목록</button>
-                      <button class='btn btn-primary' onClick={onMoveModify}>
-                        수정
-                      </button>
+                      <Link to={`/admin/post/modify/${id}`}>
+                        <button class='btn btn-primary'>수정</button>
+                      </Link>
+
                       <button class='btn btn-danger'>삭제</button>
                       {/* 공유 다이어리에선 작성자만 수정가능하도록 처리해주는거 잊지 않기... */}
                       {/* {id && post.Member.id === id ? (

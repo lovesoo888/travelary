@@ -137,11 +137,11 @@ const PostCreate = () => {
     });
     formData.append('title', postContents.title);
     formData.append('content', content);
-    // return dispatch({
-    //   type: ADD_POST_REQUEST,
-    //   data: formData,
-    //   id,
-    // });
+    return dispatch({
+      type: ADD_POST_REQUEST,
+      data: formData,
+      id,
+    });
   }, [postContents.title, content, imagePaths]);
 
   const onRemoveImage = useCallback((index) => () => {
@@ -243,7 +243,7 @@ const PostCreate = () => {
             </dd>
           </dl> */}
           <div className='mt-8' style={{ textAlign: 'center' }}>
-            <button type='submit' class='btn btn-primary'>
+            <button type='submit' className='btn btn-primary'>
               Submit
             </button>
           </div>

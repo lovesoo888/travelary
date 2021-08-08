@@ -14,6 +14,7 @@ import CatrgoryAdd from 'views/examples/CatrgoryAdd';
 import ForgotPassword from 'views/examples/ForgotPassword';
 import SharedMemberManage from 'views/examples/SharedMemberManage';
 import CategoryList from 'views/examples/CategoryList';
+import PostModify from 'views/examples/PostModify';
 
 var routes = [
   {
@@ -24,18 +25,12 @@ var routes = [
     layout: '/admin',
     breadcrumb: 'My Travelary',
   },
+
   {
     path: '/icons',
     name: 'Shared Travelary',
     icon: 'ni ni-world-2',
     component: Icons,
-    layout: '/admin',
-  },
-  {
-    path: '/maps',
-    name: 'Maps',
-    icon: 'ni ni-square-pin',
-    component: Maps,
     layout: '/admin',
   },
   {
@@ -46,23 +41,31 @@ var routes = [
     layout: '/admin',
   },
   {
+    path: '/maps',
+    // name: 'Maps',
+    // icon: 'ni ni-square-pin',
+    component: Maps,
+    layout: '/admin',
+  },
+
+  {
     path: '/tables',
-    name: 'Calendar',
-    icon: 'ni ni-calendar-grid-58',
+    // name: 'Calendar',
+    // icon: 'ni ni-calendar-grid-58',
     component: Tables,
     layout: '/admin',
   },
   {
     path: '/login',
-    name: 'Login',
-    icon: 'ni ni-key-25',
+    // name: 'Login',
+    // icon: 'ni ni-key-25',
     component: Login,
     layout: '/auth',
   },
   {
     path: '/register',
-    name: 'Register',
-    icon: 'ni ni-circle-08',
+    // name: 'Register',
+    // icon: 'ni ni-circle-08',
     component: Register,
     layout: '/auth',
   },
@@ -73,7 +76,7 @@ var routes = [
     layout: '/admin',
   },
   {
-    path: '/post/add',
+    path: '/categories/post/add',
     breadcrumb: 'Created My Travelary',
     component: PostCreate,
     layout: '/admin',
@@ -100,6 +103,12 @@ var routes = [
     path: '/shared-member-manage',
     breadcrumb: 'Shared Member Manage',
     component: SharedMemberManage,
+    layout: '/auth',
+  },
+  {
+    path: '/post/modify/:id',
+    breadcrumb: 'Shared Member Manage',
+    component: PostModify,
     layout: '/auth',
   },
 ];

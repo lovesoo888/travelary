@@ -5,7 +5,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOAD_POST_REQUEST } from 'reducer/post';
 
-const PostList = (props) => {
+const PostList = ({ post }) => {
   const { categoryList, hasMorePost, loadPostLoading } = useSelector(
     (state) => state.post
   );
@@ -77,7 +77,7 @@ const PostList = (props) => {
         <Container fluid>
           <Link to='/admin/post/add'>
             <button
-              class='btn btn-primary mb-4'
+              className='btn btn-primary mb-4'
               type='button'
               // onClick={() => {
               //   history.push({
@@ -126,7 +126,7 @@ const PostList = (props) => {
         {/* 유저가 아무런 카테고리를 작성하지 않았을 때 */}
         <Container fluid>
           <Link to='/admin/post/add'>
-            <button class='btn btn-primary mb-4' type='button'>
+            <button className='btn btn-primary mb-4' type='button'>
               Add Post
             </button>
           </Link>

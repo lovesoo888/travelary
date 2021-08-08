@@ -36,7 +36,7 @@ const upload_quill = multer({
   storage: multer.diskStorage({
     // 저장할 장소
     destination(req, file, cb) {
-      cb(null, 'public/uploads');
+      cb(null, 'public/upload/');
     },
     // 저장할 이미지의 파일명
     filename(req, file, cb) {
@@ -108,7 +108,7 @@ router.post('/post', upload.none(), async (req, res, next) => {
       content: req.body.content,
       // MemberId: req.body.email,
       categoryCode: 0,
-      CategoryId: parseInt(req.params.id, 10),
+      PostCategoryId: category.id,
     });
 
     if (req.body.image) {
@@ -213,7 +213,7 @@ router.post('/img', upload_quill.single('img'), async (req, res, next) => {
   console.log('전달받은 파일', req.file);
   console.log('저장된 파일의 이름', req.file.filename);
 
-  const IMG_URL = `http://localhost:3003/uploads/${req.file.filename}`;
+  const IMG_URL = `http://localhost:3003/upload/${req.file.filename}`;
   console.log(IMG_URL);
   res.json({ url: IMG_URL });
   // console.log(req.files);

@@ -5,8 +5,6 @@ import faker from 'faker';
 // 초기 설정
 export const initialState = {
   categoryList: [],
-  // postList: [],
-  postView: [],
   categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   hasMoreCategory: true, // 카테고리가 없어졌을때

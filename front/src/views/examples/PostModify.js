@@ -11,16 +11,19 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 
-import useInput from 'helpers/useInput';
 import { UPLOAD_POST_IMAGES_REQUEST, REMOVE_IMAGE } from 'reducer/post';
-import PropTypes from 'prop-types';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
 const PostModify = () => {
   const dispatch = useDispatch();
   const { addPostDone, imagePaths } = useSelector((state) => state.post);
+  const [postContent, setPostContent] = useState({
+    title: '',
+    contnet: '',
+  });
 
   const { id } = useParams();
+  console.log('수신한 게시글 고유번호는???:', id);
 
   const [postContents, setPostContents] = useState({
     title: '',
@@ -31,7 +34,7 @@ const PostModify = () => {
     //setArticleIdx(idx);
 
     axios
-      .get(`http://localhost:3005/category/post/${id}`)
+      .get(`http://localhost:3005/category/post/modify/${id}`)
       .then((res) => {
         console.log(res.data);
         if (res.data.code === 200) {
@@ -92,7 +95,7 @@ const PostModify = () => {
       const file = input.files[0];
       // multer에 맞는 형식으로 데이터 만들어준다.
       const formData = new FormData();
-      formData.append('img', file); // formData는 키-밸류 구조
+      formData.append('postImg', file); // formData는 키-밸류 구조
       // 백엔드 multer라우터에 이미지를 보낸다.
       try {
         const result = await axios.post(
@@ -257,7 +260,7 @@ const PostModify = () => {
             </dd>
           </dl> */}
           <div className='mt-8' style={{ textAlign: 'center' }}>
-            <button type='submit' class='btn btn-primary'>
+            <button type='submit' className='btn btn-primary'>
               Submit
             </button>
           </div>
