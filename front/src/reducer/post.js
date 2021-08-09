@@ -165,12 +165,13 @@ const reducer = (state = initialState, action) =>
         draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
-        // const category = draft.categoryList.find(
-        //   (v) => v.id === action.data.id
-        // );
+        const category = draft.categoryList.find(
+          (v) => v.id !== action.data.id
+        );
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.postList.unshift(action.data);
+        category.Posts.unshift(action.data);
+        // draft.postList.unshift(action.data);
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

@@ -22,8 +22,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',
+      modelName: 'Post',
+      tableName: 'posts',
       timestamps: true,
       paranoid: true,
+      sequelize,
     }
   );
   Post.associate = (db) => {

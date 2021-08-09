@@ -28,10 +28,13 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      modelName: 'PostCategory',
+      tableName: 'postCategories',
       charset: 'utf8mb4',
       collate: 'utf8mb4_general_ci',
       timestamps: true,
       paranoid: true,
+      sequelize,
     }
   );
   PostCategory.associate = (db) => {

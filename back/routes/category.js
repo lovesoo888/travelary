@@ -59,6 +59,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       categoryTrue: 1,
       // MemberId: req.body.email,
     });
+
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
@@ -92,24 +93,32 @@ router.post('/', upload.none(), async (req, res, next) => {
 });
 
 // 포스트 추가
-router.post('/post', upload.none(), async (req, res, next) => {
+router.post('/:id/post/add', upload.none(), async (req, res, next) => {
+  // router.post('/post/add', upload.none(), async (req, res, next) => {
   // category/post
   try {
-    // const category = await PostCategory.findOne({
-    //   where: { id: req.params.id },
-    // });
-    // if (!category) {
-    //   return res.status(404).send('카테고리가 존재하지 않습니다');
-    // }
-
+    const category = await PostCategory.findOne({
+      where: { id: req.params.id },
+    });
+    if (!category) {
+      return res.status(404).send('카테고리가 존재하지 않습니다');
+    }
+    console.log(
+      '================****************+=====================',
+      req.body
+    );
     const newPost = await Post.create({
       title: req.body.title,
-      thumbnail: req.body.image,
+      thumbnail: req.body.thumbnail,
       content: req.body.content,
       // MemberId: req.body.email,
       categoryCode: 0,
-      CategoryId: parseInt(req.params.id, 10),
+      PostCategoryId: category.id,
     });
+
+    console.log('타이틀 값', req.body.title);
+    console.log('컨텐츠 값', req.body.content);
+    console.log('섬네일 값', req.body.thumbnail);
 
     if (req.body.image) {
       // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
@@ -126,17 +135,16 @@ router.post('/post', upload.none(), async (req, res, next) => {
     }
 
     const fullPost = await Post.findOne({
-      where: { id: newPost.id },
+      where: {
+        id: newPost.id,
+      },
       include: [
         {
           model: Attachment,
         },
         {
           model: Member,
-        },
-        {
-          model: PostCategory,
-          attributes: ['id'],
+          attributes: ['email'],
         },
       ],
     });

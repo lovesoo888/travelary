@@ -113,7 +113,10 @@ function* loadCategory(action) {
 
 function addPostAPI(data) {
   //category/1/post
-  return axios.post(`/category/post`, data);
+  console.log('파람값....', data.id);
+  return axios.post(`/category/${data.id}/post/add`, data);
+
+  // return axios.post(`/category/post/add`, data);
 }
 
 function* addPost(action) {

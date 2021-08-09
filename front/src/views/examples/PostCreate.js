@@ -11,16 +11,16 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 
-import useInput from 'helpers/useInput';
 import {
   ADD_POST_REQUEST,
   UPLOAD_POST_IMAGES_REQUEST,
   REMOVE_IMAGE,
 } from 'reducer/post';
 import PropTypes from 'prop-types';
+import useInput from 'helpers/useInput';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
-const PostCreate = () => {
+const PostCreate = ({ post }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { addPostDone, imagePaths } = useSelector((state) => state.post);
@@ -127,22 +127,31 @@ const PostCreate = () => {
   ];
 
   //
-  const onSubmit = useCallback(() => {
-    if (!postContents.title || !postContents.title.trim()) {
-      return alert('타이틀을 작성하세요');
-    }
-    const formData = new FormData();
-    imagePaths.forEach((p) => {
-      formData.append('image', p);
-    });
-    formData.append('title', postContents.title);
-    formData.append('content', content);
-    return dispatch({
-      type: ADD_POST_REQUEST,
-      data: formData,
-      id,
-    });
-  }, [postContents.title, content, imagePaths]);
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!postContents.title || !postContents.title.trim()) {
+        return alert('타이틀을 작성하세요');
+      }
+      const formData = new FormData();
+      imagePaths.forEach((p) => {
+        formData.append('image', p);
+      });
+      formData.append('title', postContents.title);
+      formData.append('content', content);
+      return dispatch({
+        type: ADD_POST_REQUEST,
+        data: {
+          // formData,
+          title: postContents.title,
+          content: content,
+          thumbnail: imagePaths[0],
+          id,
+        },
+      });
+    },
+    [postContents.title, content, imagePaths]
+  );
 
   const onRemoveImage = useCallback((index) => () => {
     dispatch({
@@ -154,6 +163,7 @@ const PostCreate = () => {
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addPostDone) {
+      alert('성공!');
     }
   }, [addPostDone]);
 

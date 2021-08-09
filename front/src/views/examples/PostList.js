@@ -11,6 +11,7 @@ const PostList = ({ post }) => {
   );
 
   const history = useHistory();
+
   // const dispatch = useDispatch();
   // const { postList, hasMorePost, loadPostLoading } = useSelector(
   //   (state) => state.post
@@ -48,11 +49,14 @@ const PostList = ({ post }) => {
   // const lastId = postList[postList.length - 1]?.id;
   const lastId = 0;
 
+  console.log('포스트 아이디는???????', id);
+
   useEffect(() => {
     axios
       .get(`/categories/${id}`)
       .then((res) => {
         console.log('백엔드에서 제공된 전체 데이터 구조 파악', res);
+        // console.log('PostCategoryId ??', res.data.posts[i].PostCategoryId);
         if (res.data.code === '200') {
           //code가 서버에서 data에 담겨서 옮...
           // 게시글 목록 세터함수를 통해 백엔드에서 전달된 json 배열을 데이터로 목록을 갱신한다.
@@ -71,17 +75,9 @@ const PostList = ({ post }) => {
     return (
       <div className='header pb-8 pt-2 pt-md-7'>
         <Container fluid>
-          <Link to='/admin/post/add'>
-            <button
-              className='btn btn-primary mb-4'
-              type='button'
-              // onClick={() => {
-              //   history.push({
-              //     pathname: '/admin/post/add',
-              //     state: { categoryId: id },
-              //   });
-              // }}
-            >
+          <Link to={`/admin/${id}/post/add`}>
+            {/* <Link to={`/admin/post/add`}> */}
+            <button className='btn btn-primary mb-4' type='button'>
               Add Post
             </button>
           </Link>
@@ -94,23 +90,30 @@ const PostList = ({ post }) => {
           <div className='header-body'>
             {/* Card stats */}
             <Row>
-              {postList.map((post) => (
-                <Col key={post.id} lg='6' xl='4' className='postWrap'>
-                  <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/post/${post.id}`}>
-                      <div className='imageThumbnail'>
-                        <img
-                          alt='...'
-                          src={`http://localhost:3003/${post.thumbnail}`}
-                        />
-                      </div>
-                    </Link>
-                  </Card>
-                  <Link to='/admin/post/view'>
-                    <p>{post.title}</p>
-                  </Link>
-                </Col>
-              ))}
+              {/* const categoryId = window.location.href.split("/").reverse()[0] 와 같이 
+              url 일부분 가져와서 카테고리 파람과 같은 postCategoryId 가지고 있는 게시물만 뿌려주기 */}
+              {postList.map((post) => {
+                const categoryId = window.location.href.split('/').reverse()[0];
+                if (categoryId == post.PostCategoryId) {
+                  return (
+                    <Col key={post.id} lg='6' xl='4' className='postWrap'>
+                      <Card className='card-stats mb-4 mb-xl-0'>
+                        <Link to={`/admin/post/${post.id}`}>
+                          <div className='imageThumbnail'>
+                            <img
+                              alt='...'
+                              src={`http://localhost:3003/${post.thumbnail}`}
+                            />
+                          </div>
+                        </Link>
+                      </Card>
+                      <Link to='/admin/post/view'>
+                        <p>{post.title}</p>
+                      </Link>
+                    </Col>
+                  );
+                }
+              })}
             </Row>
           </div>
         </Container>
@@ -121,7 +124,7 @@ const PostList = ({ post }) => {
       <div className='header pb-8 pt-2 pt-md-7'>
         {/* 유저가 아무런 카테고리를 작성하지 않았을 때 */}
         <Container fluid>
-          <Link to='/admin/post/add'>
+          <Link to={`/admin/${id}/post/add`}>
             <button className='btn btn-primary mb-4' type='button'>
               Add Post
             </button>

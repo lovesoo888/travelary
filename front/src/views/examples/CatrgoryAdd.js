@@ -35,6 +35,9 @@ const CatrgoryAdd = () => {
       formData.append('image', p);
     });
     formData.append('categoryName', categoryName);
+
+    console.log('데이터가 여기 못들어가니???', formData);
+
     return dispatch({
       type: ADD_CATEGORY_REQUEST,
       data: formData,
@@ -72,7 +75,7 @@ const CatrgoryAdd = () => {
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addCategoryDone) {
-      history.goBack();
+      setCategoryName('');
     }
   }, [addCategoryDone]);
 
@@ -104,7 +107,7 @@ const CatrgoryAdd = () => {
                         className='custom-file-input'
                         id='customFileLang'
                         multiple
-                        name='thumnailImg'
+                        // name='thumnailImg'
                         name='image'
                         ref={imageInput}
                         onChange={onChangeImages}
@@ -135,7 +138,7 @@ const CatrgoryAdd = () => {
                 </ul>
                 <div className='btnWrap mt-5'>
                   <button
-                    class='btn btn-default'
+                    className='btn btn-default'
                     type='submit'
                     // onClick={onCategoryAdd}
                   >
