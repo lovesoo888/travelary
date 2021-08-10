@@ -3,17 +3,16 @@ var router = express.Router();
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-// const ejs = require('ejs');
-// const path = require('path');
-// var appDir = path.dirname(require.main.filename);
+const passport = require('passport');
 const { v4: uuidv4 } = require('uuid');
+const { isNotLoggedIn } = require('./middlewares');
 
 //ORM 참조하기
 var db = require('../models/index');
 var Member = db.Member;
 
 //! 로그인
-// localhost:3003/member/login
+// localhost: 3003 / member / login;
 router.post('/login', async (req, res) => {
   const email = req.body.email;
   const userPwd = req.body.userPwd;
@@ -21,10 +20,13 @@ router.post('/login', async (req, res) => {
   //동일 이메일주소 사용자 조회
   const loginUser = await Member.findOne({ where: { email: email } });
 
+  console.log(loginUser);
   if (loginUser) {
-    //전달 받은 사용자 암호와 DB에 저장된 암호가 같은지 비교
+    //일치하는 사용자 있을 경우 : 전달 받은 사용자 암호와 DB에 저장된 암호가 같은지 비교
     const result = await bcrypt.compare(userPwd, loginUser.userPwd);
     if (result) {
+      // 암호가 일치 하는 경우
+
       //JWT 토큰에 담을 JSON 데이터
       var memberData = {
         email: loginUser.email,
@@ -43,6 +45,7 @@ router.post('/login', async (req, res) => {
         msg: 'Ok',
       });
     } else {
+      // 일치하는 사용자는 있으나 비밀번호가 틀렸을 때
       return res.json({
         code: '400',
         data: {},
@@ -50,6 +53,7 @@ router.post('/login', async (req, res) => {
       });
     }
   } else {
+    // 사용자와 일치하는 정보가 없을 때
     return res.json({
       code: '400',
       data: {},
@@ -57,6 +61,64 @@ router.post('/login', async (req, res) => {
     });
   }
 });
+
+// 카카오 로컬 로그인
+// router.post('/login', isNotLoggedIn, (req, res, next) => {
+//   passport.authenticate('local', (authError, user, info) => {
+//     if (authError) {
+//       // 첫번째 매개변수가 있는 경우 : 실패
+//       console.error(authError);
+//       // return next(authError);
+//       return res.json({
+//         code: '400',
+//         data: {},
+//         msg: 'Wrong password. Please try again',
+//       });
+//     }
+//     if (!user) {
+//       // 두번째 매개변수가 없는 경우 : 실패
+//       console.error(`user 없음? local login error : ${info.message}`);
+//       // return res.redirect(`/?loginError=${info.message}`);
+//       return res.json({
+//         code: '400',
+//         data: {},
+//         msg: 'Email address does not exists.',
+//       });
+//     }
+//     // 두번째 매개변수가 있는 경우 : 성공 -> req.login 메서드 호출
+//     // Passport는 req객체에 login과 logout메서드를 추가한다.
+//     // req.login은 passport.serializeuser를 호출한다.
+//     // req.login에 제공하는 user 객체가 serializeUser로 넘어가게 된다.
+//     return req.logIn(user, (loginError) => {
+//       if (loginError) {
+//         console.error(loginError);
+//         return next(loginError);
+//       }
+//       // 로긴에러 없이 로긴에 성공한 경우
+//       //JWT 토큰에 담을 JSON 데이터
+
+//       console.log('받아온 로긴 데이터 ', user);
+//       var memberData = {
+//         // email: user.email,
+//         // userName: user.userName,
+//         // email: '1004@aaa.aaa',
+//         // userName: '1004',
+//       };
+
+//       //jwt.sign('JSON데이터',토큰인증키,{옵션(유효기간,발급자)})
+//       const token = jwt.sign(memberData, process.env.JWT_SECRET, {
+//         expiresIn: '24h', // 60m,10s,24h 60분,10초,24시간
+//         issuer: 'travelary',
+//       });
+
+//       return res.json({
+//         code: '200',
+//         data: { token: token, member: memberData },
+//         msg: 'Ok',
+//       });
+//     });
+//   })(req, res, next);
+// });
 
 //! 회원가입
 //localhost:3003/member/register
@@ -252,5 +314,32 @@ router.post('/delete', async (req, res) => {
     });
   }
 });
+
+//! kakao 로그인 라우터
+router.get('/kakao', passport.authenticate('kakao'));
+
+router.get(
+  '/kakao/callback',
+  passport.authenticate('kakao', {
+    failureRedirect: '/',
+  }),
+  (req, res) => {
+    // res.redirect('/');
+    console.log('~~~~~~~~~~~~~~~~~~', req.user.userName);
+    var memberData = {
+      email: req.user.email,
+      userName: req.user.userName,
+    };
+
+    //jwt.sign('JSON데이터',토큰인증키,{옵션(유효기간,발급자)})
+    const token = jwt.sign(memberData, process.env.JWT_SECRET, {
+      expiresIn: '24h', // 60m,10s,24h 60분,10초,24시간
+      issuer: 'travelary',
+    });
+    res.cookie('token', token, { httpOnly: this.true });
+    res.redirect('http://localhost:3000/auth/login');
+    // return res.json(res);
+  }
+);
 
 module.exports = router;

@@ -8,14 +8,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       userPwd: {
         type: DataTypes.STRING(100),
-        allowNull: false,
+        allowNull: true,
       },
       userName: {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
       birthday: {
-        type: DataTypes.DATEONLY, //DataTypes.DATEONLY
+        type: DataTypes.DATEONLY,
         allowNull: true,
       },
       userStatus: {
@@ -31,12 +31,19 @@ module.exports = (sequelize, DataTypes) => {
       profileImg: {
         type: DataTypes.TEXT('medium'),
         allowNull: true,
-        // defaultValue: '',
       },
       profileImgTitle: {
         type: DataTypes.TEXT,
         allowNull: true,
-        //defaultValue: '',
+      },
+      provider: {
+        type: DataTypes.STRING(10),
+        allowNull: false,
+        defaultValue: 'local',
+      },
+      snsId: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
       },
     },
     {

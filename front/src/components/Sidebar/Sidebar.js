@@ -44,13 +44,12 @@ import {
   getLoginMember,
 } from '../../helpers/authUtils';
 import axios from 'axios';
-import { isProfileChanged } from 'reducer/member';
+// import { isProfileChanged } from 'reducer/member';
 
 var ps;
 
 const Sidebar = (props) => {
   // 사용자 정보 초기화
-  // const [userName, setUserName] = useState();
   const [loginMember, setLoginMember] = useState({
     userName: '',
     profileImg: '',
@@ -59,6 +58,7 @@ const Sidebar = (props) => {
   const profilePicUpdate = useSelector(
     (state) => state.member.profilePicUpdate
   );
+  const member = useSelector((state) => state.member.loginMember);
 
   const dispatch = useDispatch();
 
@@ -136,23 +136,24 @@ const Sidebar = (props) => {
       });
   }, []);
 
-  useEffect(() => {
-    if (profilePicUpdate) {
-      axios
-        .post('http://localhost:3003/member/userProfile', { userEmail })
-        .then((res) => {
-          setLoginMember({
-            ...loginMember,
-            profileImg: res.data.data.profileImg,
-            userName: res.data.data.userName,
-          });
-          dispatch(isProfileChanged(false));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [profilePicUpdate]);
+  // useEffect(() => {
+  //   console.log(member);
+  //   if (profilePicUpdate) {
+  //     axios
+  //       .post('http://localhost:3003/member/userProfile', { userEmail })
+  //       .then((res) => {
+  //         setLoginMember({
+  //           ...loginMember,
+  //           profileImg: res.data.data.profileImg,
+  //           userName: res.data.data.userName,
+  //         });
+  //         dispatch(isProfileChanged(false));
+  //       })
+  //       .catch((err) => {
+  //         console.error(err);
+  //       });
+  //   }
+  // }, [profilePicUpdate, member]);
 
   return (
     <Navbar
@@ -195,16 +196,17 @@ const Sidebar = (props) => {
               }}
               alt='...'
               src={
-                loginMember.profileImg == null || loginMember.profileImg == ''
+                member.profileImg == null || member.profileImg == ''
                   ? require('../../assets/img/theme/default-avatar.png').default
-                  : loginMember.profileImg
+                  : member.profileImg
               }
             />
           </div>
           <div className='flexbox'>
             <Media className='ml-2 d-lg-block align-items-center'>
               <span className='mb-0 text-ml font-weight-bold'>
-                {loginMember.userName}
+                {/* {loginMember.userName} */}
+                {member.userName}
               </span>
               {/* <span className='mb-0 text-ml font-weight-bold'>UserName</span> */}
             </Media>

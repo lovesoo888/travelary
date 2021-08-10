@@ -33,7 +33,7 @@ import {
 } from 'reactstrap';
 //각종 유틸리티 함수를 참조한다.
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -46,6 +46,8 @@ import {
 } from '../../helpers/authUtils';
 
 const Login = () => {
+  // const emailInput = useRef();
+
   const [login, setLogin] = useState({
     email: '',
     userPwd: '',
@@ -54,6 +56,13 @@ const Login = () => {
   const history = useHistory();
   // 전역데이터 제어용 디스패치 함수 생성
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   console.log('a;lfj;wl-----', emailInput);
+  //   setTimeout(() => {
+  //     emailInput.current.focus();
+  //   }, 2000);
+  // }, []);
 
   // 로그인 여부 체크 - 로긴 했으면 메인 페이지로 이동시키기
   const isLogin = isMemberLogined('login.js');
@@ -65,12 +74,39 @@ const Login = () => {
     setLogin({ ...login, [e.target.name]: e.target.value });
   };
 
+  // 카카오 로그인을 위한 비둘기 목돌리기
+  useEffect(() => {
+    if (document.cookie) {
+      // alert(document.cookie);
+      var getCookie = function (name) {
+        var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return value ? value[2] : null;
+      };
+
+      const token = getCookie('token');
+      //토큰값을 웹브라우저 로컬스토리지에 보관하기
+
+      window.localStorage.setItem('jwtToken', token);
+      //백엔드 API 호출시 발급된 JWT토큰을 Ajax 헤더에 x-access-token 영역에 기본 포함시키기
+      axios.defaults.headers.common['x-access-token'] = `${token}`;
+      //발급된 토큰값과 로그인한 유저 정보를 전역 데이터에 반영한다.
+      dispatch(memberLoginToken(token));
+      // dispatch(memberLoginUpdate(res.data.data.member));
+
+      // alert(`WELCOME, ${res.data.data.member.userName}!`);
+
+      history.push('/');
+    } else {
+      // alert('no cookie');
+    }
+  }, []);
+
   const onLogin = () => {
     axios
       .post('http://localhost:3003/member/login', login)
       .then((res) => {
         if (res.data.code === '200') {
-          //토큰값을 웹브라우저 로컬스토리지에 보관하기
+          //토큰값을 웹브라우저 로컬스토리지에 보관하기 - 로그인 유지하기
           window.localStorage.setItem('jwtToken', res.data.data.token);
 
           //백엔드 API 호출시 발급된 JWT토큰을 Ajax 헤더에 x-access-token 영역에 기본 포함시키기
@@ -150,6 +186,7 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    // ref={emailInput}
                     name='email'
                     value={setLogin.email}
                     onChange={onLoginChange}

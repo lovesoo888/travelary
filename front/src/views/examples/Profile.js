@@ -60,6 +60,7 @@ import {
   isMemberLogined,
   getLoginMember,
 } from '../../helpers/authUtils';
+import { memberLoginUpdate } from 'reducer/member';
 
 const Profile = () => {
   const [member, setMember] = useState({
@@ -134,9 +135,7 @@ const Profile = () => {
       return;
     }
 
-    // 파일 이름 담아주기 - 이곳에 담겼다가 지먹대로 초기화됨
-    console.log('업로드 된 파일의 이름', file.name);
-    // setMember({ ...member, profileImgTitle: file.name });
+    // console.log('업로드 된 파일의 이름', file.name);
     // FileReader 인스턴스 생성
     let fileReader = new FileReader();
 
@@ -162,6 +161,7 @@ const Profile = () => {
       .then((res) => {
         if (res.data.code === '200') {
           dispatch(isProfileChanged(true));
+          dispatch(memberLoginUpdate(member));
           alert('Profile has changed successfully!');
         }
       })

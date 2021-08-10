@@ -69,7 +69,7 @@ const AdminNavbar = (props) => {
             <UncontrolledDropdown nav>
               <DropdownToggle nav className='nav-link-icon'>
                 <i className='ni ni-bell-55' />
-                <span class='badge badge-default'>7</span>
+                <span className='badge badge-default'>7</span>
               </DropdownToggle>
               <DropdownMenu
                 aria-labelledby='navbar-default_dropdown_1'

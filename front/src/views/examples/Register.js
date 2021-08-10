@@ -33,7 +33,7 @@ import {
 } from 'reactstrap';
 import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Register = () => {
   const [member, setMember] = useState({
@@ -47,7 +47,7 @@ const Register = () => {
   const [pwdPass, setPwdPass] = useState(true);
 
   const history = useHistory();
-  const userNameRef = useRef();
+  const userNameRef = React.useRef(null);
   const userPwdRef = useRef(null);
   const emailRef = useRef(null);
   const birthdayRef = useRef(null);
@@ -210,6 +210,17 @@ const Register = () => {
     }
   };
 
+  // const onKakaoLogin = () => {
+  //   axios
+  //     .post('http://localhost:3003/member/kakao')
+  //     .then((res) => {
+  //       console.log('카카오 로그인 데이터 처리결과:', res.data);
+  //       // alert('Welcome to Travelary! Please Sign In.');
+  //       // history.push('/auth/login');
+  //     })
+  //     .catch(() => {});
+  // };
+
   return (
     <>
       <Col lg='6' md='8'>
@@ -219,11 +230,13 @@ const Register = () => {
               <small>Sign up with</small>
             </div>
             <div className='text-center'>
+              {/* <Link> */}
               <Button
                 className='btn-neutral btn-icon mr-4'
                 color='default'
-                href='#pablo'
-                onClick={(e) => e.preventDefault()}
+                href='http://localhost:3003/member/kakao'
+                // onClick={(e) => e.preventDefault()}
+                // onClick={onKakaoLogin}
               >
                 <span className='btn-inner--icon'>
                   <img
@@ -236,6 +249,7 @@ const Register = () => {
                 </span>
                 <span className='btn-inner--text'>Github</span>
               </Button>
+              {/* </Link> */}
               <Button
                 className='btn-neutral btn-icon'
                 color='default'
