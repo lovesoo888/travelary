@@ -107,10 +107,10 @@ var routes = [
     layout: '/auth',
   },
   {
-    path: '/post/modify/:id',
+    path: '/modify/:id',
     breadcrumb: 'Shared Member Manage',
     component: PostModify,
-    layout: '/auth',
+    layout: '/admin',
   },
 ];
 export default routes;

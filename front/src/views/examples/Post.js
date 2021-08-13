@@ -42,8 +42,21 @@ const Post = () => {
       });
   }, []);
 
-  const onMoveModify = () => {
-    history.push(`/categories/post/modify/${id}`);
+  // 게시글 삭제
+  const onDeletePost = () => {
+    axios
+      .delete(`category/post/${id}`)
+      .then((res) => {
+        console.log('데이터 처리결과:', res.data);
+        alert('삭제완료');
+        history.goBack();
+      })
+      .catch(() => {});
+  };
+
+  // 목록 이동
+  const onMovePostList = () => {
+    history.goBack();
   };
 
   const bgImgaeUrl = 'http://localhost:3003/';
@@ -76,12 +89,19 @@ const Post = () => {
                   <Row className='align-items-center postHeader pl-3 pr-3'>
                     <h3>{postContent.title}</h3>
                     <div>
-                      <button class='btn btn-secondary'>목록</button>
-                      <Link to={`/admin/post/modify/${id}`}>
+                      <button
+                        class='btn btn-secondary'
+                        onClick={onMovePostList}
+                      >
+                        목록
+                      </button>
+                      <Link to={`/admin/modify/${id}`}>
                         <button class='btn btn-primary'>수정</button>
                       </Link>
 
-                      <button class='btn btn-danger'>삭제</button>
+                      <button class='btn btn-danger' onClick={onDeletePost}>
+                        삭제
+                      </button>
                       {/* 공유 다이어리에선 작성자만 수정가능하도록 처리해주는거 잊지 않기... */}
                       {/* {id && post.Member.id === id ? (
                         <>

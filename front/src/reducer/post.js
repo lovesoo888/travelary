@@ -5,6 +5,7 @@ import faker from 'faker';
 // 초기 설정
 export const initialState = {
   categoryList: [],
+  posts: [],
   categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   hasMoreCategory: true, // 카테고리가 없어졌을때
@@ -166,12 +167,13 @@ const reducer = (state = initialState, action) =>
         break;
       case ADD_POST_SUCCESS:
         const category = draft.categoryList.find(
-          (v) => v.id !== action.data.id
+          (v) => v.id !== action.data.PostCategoryId
         );
+        // category.Posts.unshift(action.data);
+        draft.posts = draft.posts.concat(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        category.Posts.unshift(action.data);
-        // draft.postList.unshift(action.data);
+        // draft.posts.unshift(action.data);
         break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;

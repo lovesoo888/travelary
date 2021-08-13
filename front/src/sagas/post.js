@@ -111,22 +111,22 @@ function* loadCategory(action) {
 //   }
 // }
 
-function addPostAPI(data) {
+function addPostAPI(data, categoryId) {
   //category/1/post
-  console.log('파람값....', data.id);
-  return axios.post(`/category/${data.id}/post/add`, data);
-
-  // return axios.post(`/category/post/add`, data);
+  console.log('data 값이 안나오늘걸까?2222', data);
+  return axios.post(`/category/${categoryId}/post/add`, data);
 }
 
 function* addPost(action) {
   try {
-    const result = yield call(addPostAPI, action.data);
+    const result = yield call(addPostAPI, action.data, action.categoryId);
+    console.log('data 값이 안나오늘걸까?', result.data);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
     });
   } catch (err) {
+    console.error(err);
     yield put({
       type: ADD_POST_FAILURE,
       data: err.response.data,

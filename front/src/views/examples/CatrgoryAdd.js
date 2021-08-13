@@ -11,8 +11,7 @@ import {
   REMOVE_IMAGE,
 } from 'reducer/post';
 import useInput from 'helpers/useInput';
-
-import CategoryList from './CategoryList';
+import { getLoginMember } from '../../helpers/authUtils';
 
 const CatrgoryAdd = () => {
   // 데이터 담는 함수
@@ -22,27 +21,32 @@ const CatrgoryAdd = () => {
   const { imagePaths, addCategoryDone } = useSelector((state) => state.post);
   const [categoryName, onChangeTitle, setCategoryName] = useInput('');
 
+  // 멤버 아이디 값 가져오기
+  const memberId = getLoginMember().memberId;
+
   // 카테고리 추가 액션
-  const onSubmit = useCallback(() => {
-    if (!categoryName || !categoryName.trim()) {
-      return alert('카테고리명을 작성하세요');
-    }
-    if (!imagePaths) {
-      return alert('대표 이미지를 등록하세요');
-    }
-    const formData = new FormData();
-    imagePaths.forEach((p) => {
-      formData.append('image', p);
-    });
-    formData.append('categoryName', categoryName);
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!categoryName || !categoryName.trim()) {
+        return alert('카테고리명을 작성하세요');
+      }
+      const formData = new FormData();
+      imagePaths.forEach((p) => {
+        formData.append('image', p);
+      });
+      formData.append('categoryName', categoryName);
+      formData.append('memberId', memberId);
 
-    console.log('데이터가 여기 못들어가니???', formData);
+      console.log('데이터가 여기 못들어가니???', formData);
 
-    return dispatch({
-      type: ADD_CATEGORY_REQUEST,
-      data: formData,
-    });
-  }, [categoryName, imagePaths]);
+      return dispatch({
+        type: ADD_CATEGORY_REQUEST,
+        data: formData,
+      });
+    },
+    [categoryName, imagePaths, memberId]
+  );
 
   const imageInput = useRef();
 
@@ -73,9 +77,10 @@ const CatrgoryAdd = () => {
   );
 
   useEffect(() => {
-    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addCategoryDone) {
+      alert('카테고리가 생성되었습니다!');
       setCategoryName('');
+      history.push('/admin/index');
     }
   }, [addCategoryDone]);
 

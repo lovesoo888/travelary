@@ -16,7 +16,6 @@ import {
   UPLOAD_POST_IMAGES_REQUEST,
   REMOVE_IMAGE,
 } from 'reducer/post';
-import PropTypes from 'prop-types';
 import useInput from 'helpers/useInput';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 
@@ -141,13 +140,8 @@ const PostCreate = ({ post }) => {
       formData.append('content', content);
       return dispatch({
         type: ADD_POST_REQUEST,
-        data: {
-          // formData,
-          title: postContents.title,
-          content: content,
-          thumbnail: imagePaths[0],
-          id,
-        },
+        data: formData,
+        categoryId: id,
       });
     },
     [postContents.title, content, imagePaths]
@@ -163,7 +157,8 @@ const PostCreate = ({ post }) => {
   useEffect(() => {
     // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
     if (addPostDone) {
-      alert('성공!');
+      alert('포스트가 작성되었습니다!');
+      history.push(`/admin/categories/${id}`);
     }
   }, [addPostDone]);
 
@@ -261,10 +256,6 @@ const PostCreate = ({ post }) => {
       </Container>
     </div>
   );
-};
-
-PostCreate.propTypes = {
-  post: PropTypes.object.isRequired,
 };
 
 export default PostCreate;

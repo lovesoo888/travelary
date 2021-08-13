@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from 'react';
 import { Card, Container, Row, Col, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
   LOAD_CATEGORY_REQUEST,
   REMOVE_CATEGORY_REQUEST,
@@ -30,10 +29,8 @@ const CategoryList = ({ post }) => {
 
   // 무한 스크롤
   useEffect(() => {
-    // if (categoryList) return;
     dispatch({
       type: LOAD_CATEGORY_REQUEST,
-      // data: postCategoryId,
     });
   }, []);
 
@@ -129,10 +126,6 @@ const CategoryList = ({ post }) => {
       </div>
     );
   }
-};
-
-CategoryList.propTypes = {
-  post: PropTypes.object.isRequired,
 };
 
 export default CategoryList;
