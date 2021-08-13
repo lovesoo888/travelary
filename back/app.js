@@ -33,12 +33,16 @@ const categoriesRouter = require('./routes/categories');
 
 var app = express();
 //노드 어플리케이션에 cors기능 적용 - 모든 리소스 접근 CORS 허용하기
-app.use(
-  cors({
-    origin: '*',
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: '*',
+//     credentials: true,
+//   })
+// );
+// origin 에 * 넣으니까 에러 cors 에러 발생
+// origin: true는 프론트 도메인 주소가 자동으로 Access-Control-Allow-Origin에 들어간다.
+app.use(cors({ origin: true, credentials: true }));
+// app.use(cors());
 
 app.use('/', express.static(path.join(__dirname, 'public/upload')));
 // app.use(express.urlencoded({ extended: false }));
@@ -77,6 +81,7 @@ app.use(
 // req객체에 passport설정 심기
 app.use(passport.initialize());
 // req.session 객체에 passport정보 저장하기
+// 패스포트가 성공/미성공 여부 정보를 이곳에 제공
 app.use(passport.session());
 
 app.use('/', indexRouter);

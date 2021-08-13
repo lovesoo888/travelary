@@ -34,6 +34,8 @@ const AdminNavbar = (props) => {
   const logOut = () => {
     if (window.confirm('Are you sure to log-out?') === true) {
       window.localStorage.removeItem('jwtToken');
+      window.localStorage.removeItem('loginMemberInfo');
+
       history.push('/auth/login');
     } else {
       return;

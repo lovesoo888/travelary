@@ -225,6 +225,7 @@ const Profile = () => {
             alert('Account deleted successfully.');
             // 토큰 지우기
             window.localStorage.removeItem('jwtToken');
+            window.localStorage.removeItem('loginMemberInfo');
             // 페이지 이동
             history.push('/auth/regist');
           } else {

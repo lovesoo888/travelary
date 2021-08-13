@@ -44,7 +44,7 @@ import {
   getLoginMember,
 } from '../../helpers/authUtils';
 import axios from 'axios';
-// import { isProfileChanged } from 'reducer/member';
+import { isProfileChanged } from 'reducer/member';
 
 var ps;
 
@@ -55,10 +55,14 @@ const Sidebar = (props) => {
     profileImg: '',
   });
 
+  // 프로필 업데이트 확인
   const profilePicUpdate = useSelector(
     (state) => state.member.profilePicUpdate
   );
+  // 로긴한 유저 정보
   const member = useSelector((state) => state.member.loginMember);
+  // 로그인 상태 정보
+  const loginSuccess = useSelector((state) => state.member.loginSuccess);
 
   const dispatch = useDispatch();
 
@@ -112,16 +116,40 @@ const Sidebar = (props) => {
   const logOut = () => {
     if (window.confirm('Are you sure to log-out?') === true) {
       window.localStorage.removeItem('jwtToken');
-      history.push('/auth/login');
+      window.localStorage.removeItem('loginMemberInfo');
+
+      // 쿠키 삭제하기 - 안됨
+      var deleteCookie = function (name) {
+        document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+      };
+      deleteCookie('jwtToken');
+      deleteCookie('connect.sid');
+      // 백엔드에서 쿠키 삭제하기 - 안됨
+      axios
+        .post('http://localhost:3003/member/logout')
+        .then((res) => {
+          if (res.data.code === '200') {
+            console.log('로그아웃 성공');
+            history.push('/auth/login');
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       return;
     }
   };
 
+  // const userEmail = member.userEmail;
   const userEmail = getLoginMember().email;
+  const memberId = getLoginMember().memberId;
 
   // 로딩 시 최초 한 번 실행
   useEffect(() => {
+    // const memberinfo = JSON.parse(localStorage.getItem('loginMemberInfo'));
+    console.log('ddddddd', memberId);
+
     axios
       .post('http://localhost:3003/member/userProfile', { userEmail })
       .then((res) => {
@@ -130,6 +158,7 @@ const Sidebar = (props) => {
           profileImg: res.data.data.profileImg,
           userName: res.data.data.userName,
         });
+        dispatch(memberLoginUpdate(member));
       })
       .catch((err) => {
         console.error(err);
@@ -137,23 +166,27 @@ const Sidebar = (props) => {
   }, []);
 
   // useEffect(() => {
-  //   console.log(member);
-  //   if (profilePicUpdate) {
-  //     axios
-  //       .post('http://localhost:3003/member/userProfile', { userEmail })
-  //       .then((res) => {
-  //         setLoginMember({
-  //           ...loginMember,
-  //           profileImg: res.data.data.profileImg,
-  //           userName: res.data.data.userName,
-  //         });
-  //         dispatch(isProfileChanged(false));
-  //       })
-  //       .catch((err) => {
-  //         console.error(err);
-  //       });
+  //   if (loginSuccess) {
   //   }
-  // }, [profilePicUpdate, member]);
+  // }, [loginSuccess]);
+
+  useEffect(() => {
+    if (profilePicUpdate) {
+      axios
+        .post('http://localhost:3003/member/userProfile', { userEmail })
+        .then((res) => {
+          setLoginMember({
+            ...loginMember,
+            profileImg: res.data.data.profileImg,
+            userName: res.data.data.userName,
+          });
+          dispatch(isProfileChanged(false));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [profilePicUpdate]);
 
   return (
     <Navbar
@@ -196,17 +229,17 @@ const Sidebar = (props) => {
               }}
               alt='...'
               src={
-                member.profileImg == null || member.profileImg == ''
+                loginMember.profileImg == null || loginMember.profileImg == ''
                   ? require('../../assets/img/theme/default-avatar.png').default
-                  : member.profileImg
+                  : loginMember.profileImg
               }
             />
           </div>
           <div className='flexbox'>
             <Media className='ml-2 d-lg-block align-items-center'>
               <span className='mb-0 text-ml font-weight-bold'>
-                {/* {loginMember.userName} */}
-                {member.userName}
+                {loginMember.userName}
+                {/* {member.userName} */}
               </span>
               {/* <span className='mb-0 text-ml font-weight-bold'>UserName</span> */}
             </Media>

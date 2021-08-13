@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt');
 var db = require('../models/index');
 var Member = db.Member;
 
+// username, password로 태그 name을 하기 싫을때는
+// new LocalStrategy 의 첫번재 인자로 바꿔줄 수 있다.
 module.exports = () => {
   passport.use(
     new LocalStrategy(
@@ -14,12 +16,12 @@ module.exports = () => {
         usernameField: 'email',
         passwordField: 'userPwd',
       },
-      async (email, userPwd, done) => {
+      async (email, password, done) => {
         try {
           const exUser = await Member.findOne({ where: { email } });
           console.log('로컬전략에서 조회한 회원 ', exUser);
           if (exUser) {
-            const result = await bcrypt.compare(userPwd, exUser.userPwd);
+            const result = await bcrypt.compare(password, exUser.userPwd);
             if (result) {
               done(null, exUser);
             } else {

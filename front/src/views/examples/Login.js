@@ -37,7 +37,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { memberLoginToken, memberLoginUpdate } from 'reducer/member';
+import {
+  memberLoginToken,
+  memberLoginUpdate,
+  memberLogin,
+} from 'reducer/member';
 
 import {
   getJWTToken,
@@ -77,49 +81,74 @@ const Login = () => {
   // 카카오 로그인을 위한 비둘기 목돌리기
   useEffect(() => {
     if (document.cookie) {
-      // alert(document.cookie);
+      alert(document.cookie);
       var getCookie = function (name) {
         var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
         return value ? value[2] : null;
       };
-
-      const token = getCookie('token');
+      const jwtToken = getCookie('jwtToken');
       //토큰값을 웹브라우저 로컬스토리지에 보관하기
-
-      window.localStorage.setItem('jwtToken', token);
+      window.localStorage.setItem('jwtToken', jwtToken);
       //백엔드 API 호출시 발급된 JWT토큰을 Ajax 헤더에 x-access-token 영역에 기본 포함시키기
-      axios.defaults.headers.common['x-access-token'] = `${token}`;
+      axios.defaults.headers.common['x-access-token'] = `${jwtToken}`;
       //발급된 토큰값과 로그인한 유저 정보를 전역 데이터에 반영한다.
-      dispatch(memberLoginToken(token));
-      // dispatch(memberLoginUpdate(res.data.data.member));
+      dispatch(memberLoginToken(jwtToken));
+      dispatch(memberLogin(true));
+      const email = getLoginMember().email;
+      // axios
+      //   .post('http://localhost:3003/member/userProfile', email)
+      //   .then((res) => {
+      //     if (res.data.code === '200') {
+      //       //토큰값을 웹브라우저 로컬스토리지에 보관하기 - 로그인 유지하기
+      //       console.log(res.data.data);
+      //       window.localStorage.setItem(
+      //         'loginMemberInfo',
+      //         res.data.data.loginUser
+      //       );
 
-      // alert(`WELCOME, ${res.data.data.member.userName}!`);
+      //       //발급된 토큰값과 로그인한 유저 정보를 전역 데이터에 반영한다.
+      //       dispatch(memberLoginUpdate(res.data.data.member));
 
+      //       alert(`WELCOME, ${res.data.data.member.userName}!`);
       history.push('/');
+      //     } else {
+      //       //서버측 에러 메시지 출력
+      //       alert(res.data.msg);
+      //     }
+      //   })
+      //   .catch(() => {});
+
+      // dispatch(memberLoginUpdate(res.data.data.member));
+      // alert(`WELCOME, ${res.data.data.member.userName}!`);
     } else {
       // alert('no cookie');
     }
   }, []);
 
   const onLogin = () => {
+    // axios.defaults.withCredentials = true;
     axios
       .post('http://localhost:3003/member/login', login)
       .then((res) => {
         if (res.data.code === '200') {
           //토큰값을 웹브라우저 로컬스토리지에 보관하기 - 로그인 유지하기
           window.localStorage.setItem('jwtToken', res.data.data.token);
+          window.localStorage.setItem(
+            'loginMemberInfo',
+            JSON.stringify(res.data.data.member)
+          );
 
           //백엔드 API 호출시 발급된 JWT토큰을 Ajax 헤더에 x-access-token 영역에 기본 포함시키기
           axios.defaults.headers.common[
             'x-access-token'
           ] = `${res.data.data.token}`;
+          alert(`WELCOME, ${res.data.data.member.userName}!`);
+          history.push('/');
 
           //발급된 토큰값과 로그인한 유저 정보를 전역 데이터에 반영한다.
           dispatch(memberLoginToken(res.data.data.token));
           dispatch(memberLoginUpdate(res.data.data.member));
-
-          alert(`WELCOME, ${res.data.data.member.userName}!`);
-          history.push('/');
+          dispatch(isLogin(true));
         } else {
           //서버측 에러 메시지 출력
           alert(res.data.msg);

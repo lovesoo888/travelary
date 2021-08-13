@@ -210,17 +210,6 @@ const Register = () => {
     }
   };
 
-  // const onKakaoLogin = () => {
-  //   axios
-  //     .post('http://localhost:3003/member/kakao')
-  //     .then((res) => {
-  //       console.log('카카오 로그인 데이터 처리결과:', res.data);
-  //       // alert('Welcome to Travelary! Please Sign In.');
-  //       // history.push('/auth/login');
-  //     })
-  //     .catch(() => {});
-  // };
-
   return (
     <>
       <Col lg='6' md='8'>
