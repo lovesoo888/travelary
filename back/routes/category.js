@@ -32,6 +32,7 @@ const upload = multer({
   limits: { fileSize: 20 * 1024 * 1024 }, //20 메가 제한
 });
 
+// 이미지 퀄 업로드 멀터 함수
 const upload_quill = multer({
   storage: multer.diskStorage({
     // 저장할 장소
@@ -57,8 +58,10 @@ router.post('/', upload.none(), async (req, res, next) => {
       categoryName: req.body.categoryName,
       thumbnail: req.body.image,
       categoryTrue: 1,
-      // MemberId: req.body.email,
+      MemberId: req.body.memberId,
     });
+
+    console.log('아이디', req.body.userEmail);
 
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
@@ -109,7 +112,7 @@ router.post('/:id/post/add', upload.none(), async (req, res, next) => {
     );
     const newPost = await Post.create({
       title: req.body.title,
-      thumbnail: req.body.thumbnail,
+      thumbnail: req.body.image,
       content: req.body.content,
       // MemberId: req.body.email,
       categoryCode: 0,
@@ -155,43 +158,72 @@ router.post('/:id/post/add', upload.none(), async (req, res, next) => {
   }
 });
 
-// 포스트 수정
+// 포스트 수정 게시글 불러오기
 router.get('/post/:id', upload.none(), async (req, res, next) => {
   // category/post
   try {
-    const newPost = await Post.create({
-      title: req.body.title,
-      thumbnail: req.body.image,
-      content: req.body.content,
-      categoryCode: 0,
-      CategoryId: parseInt(req.params.id, 10),
+    const postContents = await Post.findOne({
+      where: { id: req.params.id },
     });
+    res.json(postContents);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// 포스트 수정 게시글 저장하기
+router.put('/post/modify/:id', upload.none(), async (req, res, next) => {
+  // category/post/modify/1
+  console.log('백단 파람 아이디', req.params.id);
+  try {
+    const category = await PostCategory.findOne({
+      where: { id: req.params.id },
+    });
+    if (!category) {
+      return res.status(404).send('카테고리가 존재하지 않습니다');
+    }
+    console.log(
+      '================****************+=====================',
+      req.body
+    );
+    const newPost = await Post.update(
+      {
+        title: req.body.title,
+        thumbnail: req.body.image,
+        content: req.body.content,
+        // MemberId: req.body.email,
+      },
+      {
+        where: { id: req.params.id },
+      }
+    );
 
     if (req.body.image) {
       // 이미지 주소를 여러개 올리면 image: [주소1, 주소2]
-      if (Array.isArray(req.body.image)) {
-        const images = await Promise.all(
-          req.body.image.map((image) => Attachment.create({ src: image }))
-        );
-        await newPost.addAttachments(images);
-      } else {
-        // 이미지를 하나만 올리면 image: 주소1
-        const image = await Attachment.create({ src: req.body.image });
-      }
+      // if (Array.isArray(req.body.image)) {
+      //   const images = await Promise.all(
+      //     req.body.image.map((image) => Attachment.create({ src: image }))
+      //   );
+      //   await newPost.addAttachments(images);
+      // } else {
+      // 이미지를 하나만 올리면 image: 주소1
+      const image = await Attachment.create({ src: req.body.image });
+      await newPost.addAttachment(image);
+      // }
     }
 
     const fullPost = await Post.findOne({
-      where: { id: newPost.id },
+      where: {
+        where: { id: req.params.id },
+      },
       include: [
         {
           model: Attachment,
         },
         {
           model: Member,
-        },
-        {
-          model: PostCategory,
-          attributes: ['id'],
+          attributes: ['email'],
         },
       ],
     });
@@ -228,12 +260,16 @@ router.post('/img', upload_quill.single('img'), async (req, res, next) => {
   // res.json(req.files.map((id) => id.filename)); // 업로드된 파일명을 프론트로 넘겨줌
 });
 
-router.delete('/:postCategoryId', async (req, res, next) => {
+router.delete('/post/:id', async (req, res, next) => {
+  // DELETE /post/10
   try {
-    await PostCategory.destroy({
-      where: { id: req.params.postCategoryId },
+    await Post.destroy({
+      where: {
+        id: req.params.id,
+        // UserId: req.user.id,
+      },
     });
-    res.json({ PostCategoryId: req.params.postCategoryId });
+    res.status(200).json({ id: parseInt(req.params.id, 10) });
   } catch (error) {
     console.error(error);
     next(error);

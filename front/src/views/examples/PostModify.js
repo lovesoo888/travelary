@@ -11,43 +11,26 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { UPLOAD_POST_IMAGES_REQUEST, REMOVE_IMAGE } from 'reducer/post';
+import {
+  ADD_POST_REQUEST,
+  UPLOAD_POST_IMAGES_REQUEST,
+  REMOVE_IMAGE,
+} from 'reducer/post';
+import PropTypes from 'prop-types';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
+import CategoryList from './CategoryList';
 
-const PostModify = () => {
+const PostCreate = () => {
   const dispatch = useDispatch();
-  const { addPostDone, imagePaths } = useSelector((state) => state.post);
-  const [postContent, setPostContent] = useState({
-    title: '',
-    contnet: '',
-  });
+  const history = useHistory();
+  const { imagePaths } = useSelector((state) => state.post);
 
   const { id } = useParams();
-  console.log('수신한 게시글 고유번호는???:', id);
 
   const [postContents, setPostContents] = useState({
     title: '',
   });
-  const [content, setContent] = useState('');
-
-  useEffect(() => {
-    //setArticleIdx(idx);
-
-    axios
-      .get(`http://localhost:3005/category/post/modify/${id}`)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.code === 200) {
-          setPostContents(res.data.data);
-          setContent(res.data.data);
-        } else {
-          alert('백엔드 에러');
-        }
-      })
-      .catch((err) => {
-        alert('백엔드 호출 에러');
-      });
-  }, []);
+  const [thumbnail, setThumbnail] = useState('');
 
   const onChangePosts = useCallback((e) => {
     const { name, value } = e.target;
@@ -77,6 +60,7 @@ const PostModify = () => {
   // ///////////////
 
   // quill 이미지 멀터
+  const [content, setContent] = useState('');
   const quillRef = useRef();
   const imageHandler = () => {
     console.log('에디터에서 이미지 버튼을 클릭하면 이 핸들러가 시작됩니다!');
@@ -95,7 +79,7 @@ const PostModify = () => {
       const file = input.files[0];
       // multer에 맞는 형식으로 데이터 만들어준다.
       const formData = new FormData();
-      formData.append('postImg', file); // formData는 키-밸류 구조
+      formData.append('img', file); // formData는 키-밸류 구조
       // 백엔드 multer라우터에 이미지를 보낸다.
       try {
         const result = await axios.post(
@@ -143,24 +127,33 @@ const PostModify = () => {
     'image',
   ];
 
-  //
-  const onSubmit = useCallback(() => {
-    if (!postContents.title || !postContents.title.trim()) {
-      return alert('타이틀을 작성하세요');
-    }
-    const formData = new FormData();
-    imagePaths.forEach((p) => {
-      formData.append('image', p);
-    });
-    formData.append('title', postContents.title);
-    formData.append('content', content);
-    // return dispatch({
-    //   type: ADD_POST_REQUEST,
-    //   data: formData,
-    //   id,
-    // });
-  }, [postContents.title, content, imagePaths]);
+  // 수정 등록
+  const onSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (!postContents.title || !postContents.title.trim()) {
+        return alert('타이틀을 작성하세요');
+      }
+      const formData = new FormData();
+      imagePaths.forEach((p) => {
+        formData.append('image', p);
+      });
+      formData.append('title', postContents.title);
+      formData.append('content', content);
+      console.log('서버 id 값 ===========', id);
+      axios
+        .put(`/category/post/modify/${id}`, formData)
+        .then((res) => {
+          console.log('데이터 처리결과:', res.data);
+          alert('수정완료');
+          history.push('/article/list');
+        })
+        .catch(() => {});
+    },
+    [postContents.title, content, imagePaths]
+  );
 
+  // 섬네일 이미지 삭제
   const onRemoveImage = useCallback((index) => () => {
     dispatch({
       type: REMOVE_IMAGE,
@@ -168,11 +161,23 @@ const PostModify = () => {
     });
   });
 
+  console.log('썸네일 이미지 ', thumbnail);
+
+  // 수정할 게시물 뿌려주기
   useEffect(() => {
-    // 카테고리 추가가 성공하면 인풋창 날리기..아니지 링크 이동?
-    if (addPostDone) {
-    }
-  }, [addPostDone]);
+    axios
+      .get(`/categories/post/${id}`)
+      .then((res) => {
+        console.log('데이터 목록!!!', res.data.posts.thumbnail);
+        setContent(res.data.posts.content);
+        setPostContents(res.data.posts);
+        setThumbnail(res.data.posts.thumbnail);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert('백엔드 호출 에러');
+      });
+  }, []);
 
   return (
     <div className='pb-8 pt-2 pt-md-7'>
@@ -180,7 +185,7 @@ const PostModify = () => {
         <Form encType='multipart/form-data' onSubmit={onSubmit}>
           <dl>
             <dt>Category Name</dt>
-            <dd className='mt-2'></dd>
+            <dd className='mt-2'>{CategoryList.categoryName}</dd>
           </dl>
           <dl>
             <dt> * Title : </dt>
@@ -225,6 +230,8 @@ const PostModify = () => {
                   id='customFileLang'
                   lang='en'
                   name='image'
+                  ref={imageInput}
+                  // value={thumbnail}
                   onChange={onChangeImages}
                 />
                 <label
@@ -270,4 +277,8 @@ const PostModify = () => {
   );
 };
 
-export default PostModify;
+PostCreate.propTypes = {
+  post: PropTypes.object.isRequired,
+};
+
+export default PostCreate;
