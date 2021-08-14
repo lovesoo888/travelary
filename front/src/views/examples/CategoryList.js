@@ -6,6 +6,7 @@ import {
   LOAD_CATEGORY_REQUEST,
   REMOVE_CATEGORY_REQUEST,
 } from '../../reducer/post';
+import { getLoginMember } from '../../helpers/authUtils';
 
 const CategoryList = ({ post }) => {
   const dispatch = useDispatch();
@@ -21,9 +22,13 @@ const CategoryList = ({ post }) => {
   //   });
   // }, []);
 
+  // 멤버 아이디 값 가져오기
+  const memberId = getLoginMember().memberId;
+
   const onRemovePost = useCallback(() => {
     dispatch({
       type: REMOVE_CATEGORY_REQUEST,
+      memberId,
     });
   }, []);
 
@@ -31,8 +36,11 @@ const CategoryList = ({ post }) => {
   useEffect(() => {
     dispatch({
       type: LOAD_CATEGORY_REQUEST,
+      memberId,
     });
-  }, []);
+  }, [memberId]);
+
+  // 멤버 데이터 받기..
 
   useEffect(() => {
     function onScroll() {
@@ -74,32 +82,36 @@ const CategoryList = ({ post }) => {
           <div className='header-body'>
             {/* Card stats */}
             <Row>
-              {categoryList.map((post) => (
-                <Col
-                  key={post.id}
-                  post={post}
-                  lg='6'
-                  xl='4'
-                  className='postWrap'
-                >
-                  <Card className='card-stats mb-4 mb-xl-0'>
-                    <Link to={`/admin/categories/${post.id}`}>
-                      <div className='imageThumbnail'>
-                        <img
-                          src={`http://localhost:3003/${post.thumbnail}`}
-                          alt={post.thumbnail}
-                        />
-                      </div>
-                    </Link>
-                  </Card>
-                  <Link to={`/admin/categories/${post.id}`}>
-                    <p>{post.categoryName}</p>
-                  </Link>
-                  {/* <Button className='btn btn-danger' onClick={onRemovePost}>
+              {categoryList.map((post) => {
+                if (post.MemberId === memberId) {
+                  return (
+                    <Col
+                      key={post.id}
+                      post={post}
+                      lg='6'
+                      xl='4'
+                      className='postWrap'
+                    >
+                      <Card className='card-stats mb-4 mb-xl-0'>
+                        <Link to={`/admin/categories/${post.id}`}>
+                          <div className='imageThumbnail'>
+                            <img
+                              src={`http://localhost:3003/${post.thumbnail}`}
+                              alt={post.thumbnail}
+                            />
+                          </div>
+                        </Link>
+                      </Card>
+                      <Link to={`/admin/categories/${post.id}`}>
+                        <p>{post.categoryName}</p>
+                      </Link>
+                      {/* <Button className='btn btn-danger' onClick={onRemovePost}>
                     삭제
                   </Button> */}
-                </Col>
-              ))}
+                    </Col>
+                  );
+                }
+              })}
             </Row>
           </div>
         </Container>

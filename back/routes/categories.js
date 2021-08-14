@@ -9,20 +9,26 @@ router.get('/', async (req, res, next) => {
   // GET /categories
   try {
     const where = {};
-    if (parseInt(req.query.lastId, 9)) {
+    if (parseInt(req.query.lastId, 10)) {
       // 초기 로딩이 아닐 때
-      where.id = { [Op.lt]: parseInt(req.query.lastId, 9) };
+      // lastid 가 parseInt(req.query.lastId, 10)보다 작은...
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
     }
+
+    // const member = await Member.findOne({
+    //   where: { id: parseInt(req.query.id, 10) },
+    // });
+    console.log('멤버 아이디 값', req.body.memberId);
     const categories = await PostCategory.findAll({
-      where,
+      where: { MemberId: req.query.memberId },
       limit: 9,
       order: [
         ['createdAt', 'DESC'], // 게시글 내림차순
       ],
       include: [
-        // {
-        //   model: Member,
-        // },
+        {
+          model: Member,
+        },
         {
           model: Attachment,
         },

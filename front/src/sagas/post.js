@@ -65,14 +65,16 @@ function* addCategory(action) {
   }
 }
 
-function loadCategoryAPI(lastId) {
+function loadCategoryAPI(lastId, memberId) {
   // 실제 서버에 요청을 보냄
-  return axios.get(`/categories?lastId=${lastId || 0}`);
+  console.log('에이피아이 멤버 아이디는??????', memberId);
+  return axios.get(`/categories?lastId=${lastId || 0}&memberId=${memberId}`);
 }
 
 function* loadCategory(action) {
   try {
-    const result = yield call(loadCategoryAPI, action.lastId);
+    const result = yield call(loadCategoryAPI, action.lastId, action.memberId);
+    console.log('멤버 아이디는?', action.memberId);
     yield put({
       type: LOAD_CATEGORY_SUCCESS,
       data: result.data,

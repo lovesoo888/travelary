@@ -49,8 +49,6 @@ const PostList = ({ post }) => {
   // const lastId = postList[postList.length - 1]?.id;
   const lastId = 0;
 
-  console.log('포스트 아이디는???????', id);
-
   useEffect(() => {
     axios
       .get(`/categories/${id}`)
