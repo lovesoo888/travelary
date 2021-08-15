@@ -18,7 +18,6 @@ router.get('/', async (req, res, next) => {
     // const member = await Member.findOne({
     //   where: { id: parseInt(req.query.id, 10) },
     // });
-    console.log('멤버 아이디 값', req.body.memberId);
     const categories = await PostCategory.findAll({
       where: { MemberId: req.query.memberId },
       limit: 9,

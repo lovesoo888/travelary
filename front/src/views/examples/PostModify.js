@@ -11,11 +11,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  ADD_POST_REQUEST,
-  UPLOAD_POST_IMAGES_REQUEST,
-  REMOVE_IMAGE,
-} from 'reducer/post';
+import { UPLOAD_POST_IMAGES_REQUEST, REMOVE_IMAGE } from 'reducer/post';
 import PropTypes from 'prop-types';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
 import CategoryList from './CategoryList';
@@ -27,19 +23,13 @@ const PostCreate = () => {
 
   const { id } = useParams();
 
-  const [postContents, setPostContents] = useState({
-    title: '',
-  });
+  const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
 
-  const onChangePosts = useCallback((e) => {
-    const { name, value } = e.target;
-    setPostContents({
-      ...postContents,
-      [name]: value,
-    });
-    console.log(postContents);
-  });
+  const onChangePosts = (e) => {
+    // setTitle({ ...title, [e.target.name]: e.target.value });
+    setTitle(e.target.value);
+  };
 
   // 썸네일 이미지 멀터
   const imageInput = useRef();
@@ -58,6 +48,8 @@ const PostCreate = () => {
     });
   }, []);
   // ///////////////
+
+  console.log('이미지...', imageInput.current);
 
   // quill 이미지 멀터
   const [content, setContent] = useState('');
@@ -131,14 +123,14 @@ const PostCreate = () => {
   const onSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      if (!postContents.title || !postContents.title.trim()) {
+      if (!title || !title.trim()) {
         return alert('타이틀을 작성하세요');
       }
       const formData = new FormData();
       imagePaths.forEach((p) => {
         formData.append('image', p);
       });
-      formData.append('title', postContents.title);
+      formData.append('title', title);
       formData.append('content', content);
       console.log('서버 id 값 ===========', id);
       axios
@@ -150,7 +142,7 @@ const PostCreate = () => {
         })
         .catch(() => {});
     },
-    [postContents.title, content, imagePaths]
+    [title, content, imagePaths]
   );
 
   // 섬네일 이미지 삭제
@@ -168,10 +160,15 @@ const PostCreate = () => {
     axios
       .get(`/categories/post/${id}`)
       .then((res) => {
-        console.log('데이터 목록!!!', res.data.posts.thumbnail);
+        console.log(
+          '데이터 목록!!!',
+          res.data.posts.thumbnail,
+          res.data.posts.title
+        );
         setContent(res.data.posts.content);
-        setPostContents(res.data.posts);
+        setTitle(res.data.posts.title);
         setThumbnail(res.data.posts.thumbnail);
+        // imageInput.current.value(res.data.posts.thumbnail);
       })
       .catch((err) => {
         console.log(err);
@@ -195,7 +192,7 @@ const PostCreate = () => {
                 className='form-control'
                 placeholder='제목을 입력해주세요'
                 onChange={onChangePosts}
-                value={postContents.title}
+                value={title}
                 name='title'
               />
             </dd>
@@ -216,7 +213,7 @@ const PostCreate = () => {
               </div>
             </dd>
           </dl>
-          <dl>
+          {/* <dl>
             <dt>
               대표 이미지
               <br />
@@ -231,7 +228,7 @@ const PostCreate = () => {
                   lang='en'
                   name='image'
                   ref={imageInput}
-                  // value={thumbnail}
+                  // value={}
                   onChange={onChangeImages}
                 />
                 <label
@@ -257,7 +254,7 @@ const PostCreate = () => {
                 ))}
               </div>
             </dd>
-          </dl>
+          </dl> */}
           {/* <dl>
             <dt>공유 카테고리</dt>
             <dd className='mt-2'>

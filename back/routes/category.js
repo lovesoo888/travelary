@@ -175,24 +175,19 @@ router.get('/post/:id', upload.none(), async (req, res, next) => {
 // 포스트 수정 게시글 저장하기
 router.put('/post/modify/:id', upload.none(), async (req, res, next) => {
   // category/post/modify/1
-  console.log('백단 파람 아이디', req.params.id);
   try {
-    const category = await PostCategory.findOne({
-      where: { id: req.params.id },
-    });
-    if (!category) {
-      return res.status(404).send('카테고리가 존재하지 않습니다');
-    }
-    console.log(
-      '================****************+=====================',
-      req.body
-    );
-    const newPost = await Post.update(
+    // const category = await PostCategory.findOne({
+    //   where: { id: req.params.id },
+    // });
+    // if (!category) {
+    //   return res.status(404).send('카테고리가 존재하지 않습니다');
+    // }
+
+    const updatePost = await Post.update(
       {
         title: req.body.title,
         thumbnail: req.body.image,
         content: req.body.content,
-        // MemberId: req.body.email,
       },
       {
         where: { id: req.params.id },
@@ -208,28 +203,14 @@ router.put('/post/modify/:id', upload.none(), async (req, res, next) => {
       //   await newPost.addAttachments(images);
       // } else {
       // 이미지를 하나만 올리면 image: 주소1
-      const image = await Attachment.create({ src: req.body.image });
-      await newPost.addAttachment(image);
+      const image = await Attachment.update({ src: req.body.image });
+      await updatePost.addAttachment(image);
       // }
     }
 
-    const fullPost = await Post.findOne({
-      where: {
-        where: { id: req.params.id },
-      },
-      include: [
-        {
-          model: Attachment,
-        },
-        {
-          model: Member,
-          attributes: ['email'],
-        },
-      ],
-    });
-    res.json(fullPost);
+    res.json(updatePost);
   } catch (e) {
-    console.error(e);
+    console.error('수정 에러 메시지!!!!! ======= ', e);
     next(e);
   }
 });
