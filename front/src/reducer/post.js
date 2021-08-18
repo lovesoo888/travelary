@@ -1,11 +1,9 @@
-import shortId from 'shortid';
 import produce from 'immer';
-import faker from 'faker';
 
 // 초기 설정
 export const initialState = {
   categoryList: [],
-  posts: [],
+  postlist: [],
   categoryCode: 1, // 공유/개인 인지 확인
   imagePaths: [], // 이미지 업로드할때 이미지 경로 저장
   hasMoreCategory: true, // 카테고리가 없어졌을때
@@ -33,21 +31,6 @@ export const initialState = {
   uploadImagesError: false,
 };
 
-export const generateDummyCategory = (number) =>
-  Array(9)
-    .fill()
-    .map(() => ({
-      id: shortId.generate(),
-      ThumnailImg: {
-        src: faker.image.image(),
-      },
-      Member: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      title: faker.lorem.text(),
-    }));
-
 //? 액션 함수 시작
 // 카테고리 추가
 // 액션 타입을 상수로 빼준 이유 : 오타방지
@@ -67,9 +50,9 @@ export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS';
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE';
 
-// export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
-// export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
-// export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
+export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 
 export const LOAD_CATEGORY_REQUEST = 'LOAD_CATEGORY_REQUEST';
 export const LOAD_CATEGORY_SUCCESS = 'LOAD_CATEGORY_SUCCESS';
@@ -114,32 +97,51 @@ export const addPostAction = (data) => ({
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-      // case LOAD_POST_REQUEST:
-      //   draft.loadPostLoading = true;
-      //   draft.loadPostDone = false;
-      //   draft.loadPostError = null;
-      //   break;
-      // case LOAD_POST_SUCCESS:
-      //   draft.loadPostLoading = false;
-      //   draft.loadPostDone = true;
-      //   // draft.postlist = draft.postlist.concat(action);
-      //   draft.postlist = action.data;
-      //   // draft.hasMorePost = action.data.length === 9;
-      //   break;
-      // case LOAD_POST_FAILURE:
-      //   draft.loadCategoryLoading = false;
-      //   draft.loadCategoryError = action.error;
-      //   break;
+      case LOAD_POST_REQUEST:
+        if (action.lastId) {
+          //  기존과 같이...
+          draft.loadPostLoading = true;
+          draft.addPostDone = false;
+
+          draft.loadPostDone = false;
+          draft.loadPostError = null;
+        } else {
+          draft.postlist = [];
+          draft.addPostDone = false;
+        }
+
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.postlist = draft.postlist.concat(action.data);
+        draft.hasMorePost = action.data.length === 9;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadCategoryLoading = false;
+        draft.loadCategoryError = action.error;
+        break;
       case LOAD_CATEGORY_REQUEST:
-        draft.loadCategoryLoading = true;
-        draft.loadCategoryDone = false;
-        draft.loadCategoryError = null;
+        if (action.lastId) {
+          //  기존과 같이...
+          draft.addCategoryDone = false;
+          draft.loadCategoryLoading = true;
+          draft.loadCategoryDone = false;
+          draft.loadCategoryError = null;
+        } else {
+          draft.addCategoryDone = false;
+          draft.categoryList = [];
+        }
+        // if (draft.categoryList.find(action.data.lastId) === null) {
+        //   const categoryList = [];
+        //   return categoryList;
+        // }
         break;
       case LOAD_CATEGORY_SUCCESS:
         draft.loadCategoryLoading = false;
         draft.loadCategoryDone = true;
         draft.categoryList = draft.categoryList.concat(action.data);
-        draft.hasMoreCategory = action.data.length === 9;
+        draft.hasMoreCategory = action.data.length === 12;
         break;
       case LOAD_CATEGORY_FAILURE:
         draft.loadCategoryLoading = false;
@@ -166,11 +168,13 @@ const reducer = (state = initialState, action) =>
         draft.addPostError = null;
         break;
       case ADD_POST_SUCCESS:
-        const category = draft.categoryList.find(
-          (v) => v.id !== action.data.PostCategoryId
-        );
+        // const category = draft.categoryList.find(
+        //   (v) => v.id !== action.data.PostCategoryId
+        // );
         // category.Posts.unshift(action.data);
-        draft.posts = draft.posts.concat(action.data);
+        draft.postlist.unshift(action.data);
+
+        // draft.posts = draft.posts.concat(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
         // draft.posts.unshift(action.data);

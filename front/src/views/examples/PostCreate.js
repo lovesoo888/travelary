@@ -28,6 +28,7 @@ const PostCreate = ({ post }) => {
 
   const [postContents, setPostContents] = useState({
     title: '',
+    categoryCode: '',
   });
 
   const onChangePosts = useCallback((e) => {
@@ -137,6 +138,8 @@ const PostCreate = ({ post }) => {
         formData.append('image', p);
       });
       formData.append('title', postContents.title);
+      formData.append('categoryCode', postContents.categoryCode);
+
       formData.append('content', content);
       return dispatch({
         type: ADD_POST_REQUEST,
@@ -239,14 +242,21 @@ const PostCreate = ({ post }) => {
               </div>
             </dd>
           </dl>
-          {/* <dl>
+          <dl>
             <dt>공유 카테고리</dt>
             <dd className='mt-2'>
-              <select class='form-control' name='categoryCode'>
-                <option value={postContents.categoryCode}>공유 안함</option>
+              <select
+                class='form-control'
+                name='categoryCode'
+                onChange={onChangePosts}
+              >
+                <option selected value='0'>
+                  공유안함
+                </option>
+                <option value='1'>공유함</option>
               </select>
             </dd>
-          </dl> */}
+          </dl>
           <div className='mt-8' style={{ textAlign: 'center' }}>
             <button type='submit' class='btn btn-primary'>
               Submit

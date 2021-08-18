@@ -138,7 +138,7 @@ const PostCreate = () => {
         .then((res) => {
           console.log('데이터 처리결과:', res.data);
           alert('수정완료');
-          history.push('/article/list');
+          history.push(`/admin/post/${id}`);
         })
         .catch(() => {});
     },

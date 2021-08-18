@@ -24,9 +24,9 @@ import {
   LOAD_CATEGORY_REQUEST,
   LOAD_CATEGORY_SUCCESS,
   LOAD_CATEGORY_FAILURE,
-  // LOAD_POST_REQUEST,
-  // LOAD_POST_SUCCESS,
-  // LOAD_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
@@ -67,7 +67,6 @@ function* addCategory(action) {
 
 function loadCategoryAPI(lastId, memberId) {
   // 실제 서버에 요청을 보냄
-  console.log('에이피아이 멤버 아이디는??????', memberId);
   return axios.get(`/categories?lastId=${lastId || 0}&memberId=${memberId}`);
 }
 
@@ -80,7 +79,7 @@ function* loadCategory(action) {
       data: result.data,
     });
   } catch (err) {
-    console.log('로딩에러입니다: ', err);
+    console.error('로딩에러입니다: ', err);
     yield put({
       type: LOAD_CATEGORY_FAILURE,
       data: err.response.data,
@@ -88,41 +87,39 @@ function* loadCategory(action) {
   }
 }
 
-// function loadPostAPI(lastId, id) {
-//   // 실제 서버에 요청을 보냄
-//   return axios.get(`/categories/${id}/?lastId=${lastId || 0}`);
-// }
+function loadPostAPI(lastId, id) {
+  // 실제 서버에 요청을 보냄
+  return axios.get(`/categories/${id}/?lastId=${lastId || 0}`);
+}
 
-// function* loadPost(action) {
-//   try {
-//     const result = yield call(loadPostAPI, action.lastId, action.id);
-//     console.log(
-//       '포스트 로딩 결과 데이ㅓㅌ ㅓ : -------------------------- ',
-//       result.data
-//     );
-//     yield put({
-//       type: LOAD_POST_SUCCESS,
-//       data: result.data,
-//     });
-//   } catch (err) {
-//     console.log('포스트 로딩에러입니다: ', err);
-//     yield put({
-//       type: LOAD_POST_FAILURE,
-//       data: err.response.data,
-//     });
-//   }
-// }
+function* loadPost(action) {
+  try {
+    const result = yield call(loadPostAPI, action.lastId, action.id);
+    console.log(
+      '포스트 로딩 결과 데이ㅓㅌ ㅓ : -------------------------- ',
+      result.data
+    );
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log('포스트 로딩에러입니다: ', err);
+    yield put({
+      type: LOAD_POST_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
 
 function addPostAPI(data, categoryId) {
   //category/1/post
-  console.log('data 값이 안나오늘걸까?2222', data);
   return axios.post(`/category/${categoryId}/post/add`, data);
 }
 
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data, action.categoryId);
-    console.log('data 값이 안나오늘걸까?', result.data);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
@@ -265,12 +262,12 @@ function* watchRemovePost() {
 }
 
 function* watchLoadCategory() {
-  yield throttle(3000, LOAD_CATEGORY_REQUEST, loadCategory);
+  yield throttle(4000, LOAD_CATEGORY_REQUEST, loadCategory);
 }
 
-// function* watchLoadPost() {
-//   yield throttle(5000, LOAD_POST_REQUEST, loadPost);
-// }
+function* watchLoadPost() {
+  yield throttle(4000, LOAD_POST_REQUEST, loadPost);
+}
 
 function* watchUploadImages() {
   yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
@@ -285,7 +282,7 @@ function* watchUploadPostQuillImages() {
 
 export default function* postSaga() {
   yield all([
-    // fork(watchLoadPost),
+    fork(watchLoadPost),
     fork(watchLoadCategory),
     fork(watchAddCategory),
     fork(watchAddPost),

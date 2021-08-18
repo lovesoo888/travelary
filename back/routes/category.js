@@ -115,7 +115,7 @@ router.post('/:id/post/add', upload.none(), async (req, res, next) => {
       thumbnail: req.body.image,
       content: req.body.content,
       // MemberId: req.body.email,
-      categoryCode: 0,
+      categoryCode: req.body.categoryCode,
       PostCategoryId: category.id,
     });
 

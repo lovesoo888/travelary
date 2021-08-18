@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
-import { Card, Container, Row, Col, Button } from 'reactstrap';
+import React, { useEffect, useRef } from 'react';
+import { Card, Container, Row, Col } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   LOAD_CATEGORY_REQUEST,
-  REMOVE_CATEGORY_REQUEST,
+  //REMOVE_CATEGORY_REQUEST,
 } from '../../reducer/post';
 import { getLoginMember } from '../../helpers/authUtils';
 
@@ -18,19 +18,12 @@ const CategoryList = ({ post }) => {
   // const onRemovePost = useCallback(() => {
   //   dispatch({
   //     type: REMOVE_CATEGORY_REQUEST,
-  //     data: post.id,
+  //     data: id,
   //   });
   // }, []);
 
   // 멤버 아이디 값 가져오기
   const memberId = getLoginMember().memberId;
-
-  const onRemovePost = useCallback(() => {
-    dispatch({
-      type: REMOVE_CATEGORY_REQUEST,
-      memberId,
-    });
-  }, []);
 
   // 무한 스크롤
   useEffect(() => {
@@ -38,7 +31,7 @@ const CategoryList = ({ post }) => {
       type: LOAD_CATEGORY_REQUEST,
       memberId,
     });
-  }, [memberId]);
+  }, []);
 
   // 멤버 데이터 받기..
 
@@ -53,6 +46,7 @@ const CategoryList = ({ post }) => {
           dispatch({
             type: LOAD_CATEGORY_REQUEST,
             lastId,
+            memberId,
           });
         }
       }
@@ -91,6 +85,7 @@ const CategoryList = ({ post }) => {
                       lg='6'
                       xl='4'
                       className='postWrap'
+                      style={{ marginBottom: '20px' }}
                     >
                       <Card className='card-stats mb-4 mb-xl-0'>
                         <Link to={`/admin/categories/${post.id}`}>
