@@ -116,6 +116,7 @@ const reducer = (state = initialState, action) =>
         draft.loadPostDone = true;
         draft.postlist = draft.postlist.concat(action.data);
         draft.hasMorePost = action.data.length === 9;
+        draft.imagePaths = [];
         break;
       case LOAD_POST_FAILURE:
         draft.loadCategoryLoading = false;
@@ -141,7 +142,8 @@ const reducer = (state = initialState, action) =>
         draft.loadCategoryLoading = false;
         draft.loadCategoryDone = true;
         draft.categoryList = draft.categoryList.concat(action.data);
-        draft.hasMoreCategory = action.data.length === 12;
+        draft.hasMoreCategory = action.data.length === 9;
+        draft.imagePaths = [];
         break;
       case LOAD_CATEGORY_FAILURE:
         draft.loadCategoryLoading = false;

@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { Card, CardBody, CardHeader, Container, Row, Col } from 'reactstrap';
 import { useHistory, useParams, Link } from 'react-router-dom';
 import PostBg from 'components/Headers/PostBg';
+import DeleteModal from './DeleteModal';
 
 const Post = () => {
   // 내 아이디 값 불러오는...건데
@@ -41,18 +42,6 @@ const Post = () => {
         console.error(err);
       });
   }, []);
-
-  // 게시글 삭제
-  const onDeletePost = () => {
-    axios
-      .delete(`category/post/${id}`)
-      .then((res) => {
-        console.log('데이터 처리결과:', res.data);
-        alert('삭제완료');
-        history.goBack();
-      })
-      .catch(() => {});
-  };
 
   // 목록 이동
   const onMovePostList = () => {
@@ -90,18 +79,24 @@ const Post = () => {
                     <h3>{postContent.title}</h3>
                     <div>
                       <button
-                        class='btn btn-secondary'
+                        className='btn btn-secondary'
                         onClick={onMovePostList}
                       >
                         목록
                       </button>
-                      <Link to={`/admin/modify/${id}`}>
-                        <button class='btn btn-primary'>수정</button>
+                      <Link
+                        style={{ marginRight: '.5rem' }}
+                        to={`/admin/modify/${id}`}
+                      >
+                        <button className='btn btn-primary'>수정</button>
                       </Link>
 
-                      <button class='btn btn-danger' onClick={onDeletePost}>
+                      {/* <button
+                        className='btn btn-danger'
+                        onClick={onRemoveClick}
+                      >
                         삭제
-                      </button>
+                      </button> */}
                       {/* 공유 다이어리에선 작성자만 수정가능하도록 처리해주는거 잊지 않기... */}
                       {/* {id && post.Member.id === id ? (
                         <>
@@ -109,6 +104,7 @@ const Post = () => {
                           <button class='btn btn-danger'>삭제</button>
                         </>
                       ) : null} */}
+                      <DeleteModal />
                     </div>
                   </Row>
                 </CardHeader>

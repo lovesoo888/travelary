@@ -186,7 +186,7 @@ router.put('/post/modify/:id', upload.none(), async (req, res, next) => {
     const updatePost = await Post.update(
       {
         title: req.body.title,
-        thumbnail: req.body.image,
+        // thumbnail: req.body.image,
         content: req.body.content,
       },
       {

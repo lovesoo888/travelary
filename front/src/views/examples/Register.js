@@ -214,13 +214,13 @@ const Register = () => {
     <>
       <Col lg='6' md='8'>
         <Card className='bg-secondary shadow border-0'>
-          <CardHeader className='bg-transparent pb-5'>
+          {/* <CardHeader className='bg-transparent pb-5'>
             <div className='text-muted text-center mt-2 mb-4'>
               <small>Sign up with</small>
             </div>
-            <div className='text-center'>
-              {/* <Link> */}
-              <Button
+            <div className='text-center'> */}
+          {/* <Link> */}
+          {/* <Button
                 className='btn-neutral btn-icon mr-4'
                 color='default'
                 href='http://localhost:3003/member/kakao'
@@ -237,9 +237,9 @@ const Register = () => {
                   />
                 </span>
                 <span className='btn-inner--text'>Github</span>
-              </Button>
-              {/* </Link> */}
-              <Button
+              </Button> */}
+          {/* </Link> */}
+          {/* <Button
                 className='btn-neutral btn-icon'
                 color='default'
                 href='#pablo'
@@ -257,10 +257,10 @@ const Register = () => {
                 <span className='btn-inner--text'>Google</span>
               </Button>
             </div>
-          </CardHeader>
+          </CardHeader> */}
           <CardBody className='px-lg-5 py-lg-5'>
             <div className='text-center text-muted mb-4'>
-              <small>Or sign up with credentials</small>
+              <big>Register</big>
             </div>
             <Form role='form' onSubmit={onRegister}>
               <FormGroup>
@@ -278,6 +278,7 @@ const Register = () => {
                     ref={userNameRef}
                     placeholder='Name'
                     type='text'
+                    autocomplete='off'
                   />
                 </InputGroup>
               </FormGroup>
@@ -297,6 +298,7 @@ const Register = () => {
                     placeholder='Email'
                     type='email'
                     autoComplete='new-email'
+                    autocomplete='off'
                   />
                   <InputGroupAddon addonType='append'>
                     <InputGroupText>
@@ -326,6 +328,7 @@ const Register = () => {
                     // placeholder='8 - 15 characters, must contain both letters and numbers'
                     type='password'
                     autoComplete='new-password'
+                    autocomplete='off'
                   />
                 </InputGroup>
                 <small className='text-muted text-center'>
@@ -354,6 +357,7 @@ const Register = () => {
                     placeholder='Confirm Password'
                     type='password'
                     autoComplete='new-password'
+                    autocomplete='off'
                   />
                   <InputGroupAddon addonType='append'>
                     <InputGroupText>
@@ -378,6 +382,7 @@ const Register = () => {
                     placeholder='Birthday'
                     type='date'
                     autoComplete='new-password'
+                    autocomplete='off'
                   />
                 </InputGroup>
               </FormGroup>

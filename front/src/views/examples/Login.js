@@ -222,6 +222,7 @@ const Login = () => {
                     placeholder='Email'
                     type='email'
                     autoComplete='new-email'
+                    autocomplete='off'
                   />
                 </InputGroup>
               </FormGroup>
@@ -239,6 +240,7 @@ const Login = () => {
                     placeholder='Password'
                     type='password'
                     autoComplete='new-password'
+                    autocomplete='off'
                   />
                 </InputGroup>
               </FormGroup>

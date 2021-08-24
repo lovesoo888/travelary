@@ -28,7 +28,7 @@ router.get('/', async (req, res, next) => {
     // });
     const categories = await PostCategory.findAll({
       where,
-      limit: 12,
+      limit: 9,
       order: [
         ['createdAt', 'DESC'], // 게시글 내림차순
       ],

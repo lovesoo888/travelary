@@ -262,7 +262,7 @@ function* watchRemovePost() {
 }
 
 function* watchLoadCategory() {
-  yield throttle(4000, LOAD_CATEGORY_REQUEST, loadCategory);
+  yield throttle(3500, LOAD_CATEGORY_REQUEST, loadCategory);
 }
 
 function* watchLoadPost() {

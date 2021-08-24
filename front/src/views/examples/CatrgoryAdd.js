@@ -80,9 +80,11 @@ const CatrgoryAdd = () => {
     if (addCategoryDone) {
       alert('카테고리가 생성되었습니다!');
       setCategoryName('');
+      // imagePaths = [];
+      onRemoveImage();
       history.push('/admin/index');
     }
-  }, [addCategoryDone]);
+  }, [addCategoryDone, imagePaths]);
 
   return (
     <div className='pb-8 pt-2 pt-md-7 categoryAddWrap'>
@@ -102,6 +104,7 @@ const CatrgoryAdd = () => {
                       name='categoryName'
                       value={categoryName}
                       onChange={onChangeTitle}
+                      autoComplete='off'
                     ></input>
                   </li>
                   <li className='mt-5'>

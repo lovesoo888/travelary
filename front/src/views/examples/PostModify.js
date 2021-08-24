@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import axios from 'axios';
-import { Container, Form, Button } from 'reactstrap';
+import { Container, Form } from 'reactstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,24 +32,24 @@ const PostCreate = () => {
   };
 
   // 썸네일 이미지 멀터
-  const imageInput = useRef();
-  const onClickImageUpload = useCallback(() => {
-    imageInput.current.click();
-  }, [imageInput.current]);
-  const onChangeImages = useCallback((e) => {
-    console.log('images', e.target.files);
-    const imageFormData = new FormData();
-    [].forEach.call(e.target.files, (f) => {
-      imageFormData.append('image', f);
-    });
-    dispatch({
-      type: UPLOAD_POST_IMAGES_REQUEST,
-      data: imageFormData,
-    });
-  }, []);
+  // const imageInput = useRef();
+  // const onClickImageUpload = useCallback(() => {
+  //   imageInput.current.click();
+  // }, [imageInput.current]);
+  // const onChangeImages = useCallback((e) => {
+  //   console.log('images', e.target.files);
+  //   const imageFormData = new FormData();
+  //   [].forEach.call(e.target.files, (f) => {
+  //     imageFormData.append('image', f);
+  //   });
+  //   dispatch({
+  //     type: UPLOAD_POST_IMAGES_REQUEST,
+  //     data: imageFormData,
+  //   });
+  // }, []);
   // ///////////////
 
-  console.log('이미지...', imageInput.current);
+  // console.log('이미지...', imageInput.current);
 
   // quill 이미지 멀터
   const [content, setContent] = useState('');
@@ -132,7 +132,6 @@ const PostCreate = () => {
       });
       formData.append('title', title);
       formData.append('content', content);
-      console.log('서버 id 값 ===========', id);
       axios
         .put(`/category/post/modify/${id}`, formData)
         .then((res) => {
@@ -146,14 +145,14 @@ const PostCreate = () => {
   );
 
   // 섬네일 이미지 삭제
-  const onRemoveImage = useCallback((index) => () => {
-    dispatch({
-      type: REMOVE_IMAGE,
-      data: index,
-    });
-  });
+  // const onRemoveImage = useCallback((index) => () => {
+  //   dispatch({
+  //     type: REMOVE_IMAGE,
+  //     data: index,
+  //   });
+  // });
 
-  console.log('썸네일 이미지 ', thumbnail);
+  // console.log('썸네일 이미지 ', thumbnail);
 
   // 수정할 게시물 뿌려주기
   useEffect(() => {
@@ -162,12 +161,12 @@ const PostCreate = () => {
       .then((res) => {
         console.log(
           '데이터 목록!!!',
-          res.data.posts.thumbnail,
+          // res.data.posts.thumbnail,
           res.data.posts.title
         );
         setContent(res.data.posts.content);
         setTitle(res.data.posts.title);
-        setThumbnail(res.data.posts.thumbnail);
+        // setThumbnail(res.data.posts.thumbnail);
         // imageInput.current.value(res.data.posts.thumbnail);
       })
       .catch((err) => {
@@ -194,6 +193,7 @@ const PostCreate = () => {
                 onChange={onChangePosts}
                 value={title}
                 name='title'
+                autoComplete='off'
               />
             </dd>
           </dl>

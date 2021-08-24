@@ -723,7 +723,7 @@ const Profile = () => {
         </Card>
 
         {/* Table */}
-        <Row>
+        <Row style={{ display: 'none' }}>
           <div className='col'>
             <Card className='shadow'>
               <CardHeader className='border-0'>

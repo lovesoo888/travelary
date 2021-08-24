@@ -138,7 +138,7 @@ const PostCreate = ({ post }) => {
         formData.append('image', p);
       });
       formData.append('title', postContents.title);
-      formData.append('categoryCode', postContents.categoryCode);
+      // formData.append('categoryCode', postContents.categoryCode);
 
       formData.append('content', content);
       return dispatch({
@@ -183,6 +183,7 @@ const PostCreate = ({ post }) => {
                 onChange={onChangePosts}
                 value={postContents.title}
                 name='title'
+                autoComplete='off'
               />
             </dd>
           </dl>
@@ -242,7 +243,7 @@ const PostCreate = ({ post }) => {
               </div>
             </dd>
           </dl>
-          <dl>
+          {/* <dl>
             <dt>공유 카테고리</dt>
             <dd className='mt-2'>
               <select
@@ -256,7 +257,7 @@ const PostCreate = ({ post }) => {
                 <option value='1'>공유함</option>
               </select>
             </dd>
-          </dl>
+          </dl> */}
           <div className='mt-8' style={{ textAlign: 'center' }}>
             <button type='submit' class='btn btn-primary'>
               Submit

@@ -39,7 +39,7 @@ const CategoryList = ({ post }) => {
     function onScroll() {
       if (
         window.pageYOffset + document.documentElement.clientHeight >
-        document.documentElement.scrollHeight - 300
+        document.documentElement.scrollHeight - 150
       ) {
         if (hasMoreCategory && !loadCategoryLoading) {
           const lastId = categoryList[categoryList.length - 1]?.id;
